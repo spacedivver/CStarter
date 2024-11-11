@@ -2,8 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '../pages/HomePage.vue';
 import SelectCurriculum from '../pages/cstest/SelectCurriculum.vue';
 import SelectCompany from '../pages/letter/SelectCompany.vue';
-import Interview from '../pages/interview/interview.vue';
+import Interview from '../pages/interview/Interview.vue';
 import Result from '../pages/report/Result.vue';
+import Write from '../pages/common/Write.vue';
 
 import authRotes from './auth';
 import boardRotes from './board';
@@ -37,6 +38,11 @@ const router = createRouter({
       path: '/Report/Result',
       name: 'Result',
       component: Result,
+    },
+    {
+      path: '/Write/:id',
+      name: 'Write',
+      component: Write,
     },
     ...authRotes,
     ...boardRotes,
