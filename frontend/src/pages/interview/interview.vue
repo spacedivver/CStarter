@@ -1,9 +1,7 @@
 <template>
   <div class="container mt-5">
     <!-- 질문1 동그라미 버튼 -->
-    <div class="question-circle">
-      질문 {{ currentQuestionIndex + 1 }}
-    </div>
+    <div class="question-circle">질문 {{ currentQuestionIndex + 1 }}</div>
 
     <!-- 질문 내용 동적으로 변경 -->
     <div class="question-text mt-3">
@@ -20,9 +18,7 @@
       </div>
       <!-- 오른쪽: 시간 초 -->
       <div class="col-6 d-flex justify-content-center align-items-center">
-        <div class="circle timer">
-          {{ time }}초
-        </div>
+        <div class="circle timer">{{ time }}초</div>
       </div>
     </div>
 
@@ -34,18 +30,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'; 
+import { ref, computed, onMounted } from "vue";
 
 // 시간 상태
 const time = ref(0);
-let timerInterval = null;  // 타이머를 추적할 변수
+let timerInterval = null; // 타이머를 추적할 변수
 
 // 질문 배열
 const questions = [
   "MVC 패턴에 대해 설명해주세요.",
   "왜 이 문제를 선택했나요?",
   "이 문제를 해결하는 방법에 대해 설명해주세요.",
-  "당신의 강점은 무엇인가요?"
+  "당신의 강점은 무엇인가요?",
 ];
 
 // 현재 질문 인덱스
@@ -91,23 +87,20 @@ onMounted(() => {
 const submitAnswer = () => {
   console.log("답변 완료");
   // 질문을 다음으로 변경
-  currentQuestionIndex.value = (currentQuestionIndex.value + 1) % questions.length;
-  
+  currentQuestionIndex.value =
+    (currentQuestionIndex.value + 1) % questions.length;
+
   // 타이머를 초기화하고 다시 시작
   startTimer();
 };
 </script>
 
 <style scoped>
-.container {
-  max-width: 800px;
-}
-
 .question-circle {
   width: 100px;
   height: 50px;
   border-radius: 25px;
-  background-color: #BFD3FF;
+  background-color: #bfd3ff;
   color: black;
   font-size: 20px;
   font-weight: bold;

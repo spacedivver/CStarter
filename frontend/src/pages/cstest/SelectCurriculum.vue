@@ -4,17 +4,16 @@
 
     <!-- 키워드 검색 영역 -->
     <div class="search-container">
-      <label for="keyword" class="col-2 col-form-label">키워드 검색</label>
+      <label for="keyword" class="col-2 col-form-label">과정명 검색</label>
       <div class="col-9">
-        <div class="mt-2">
-          <div class="input-group input-group-sm">
-            <input
-              type="text"
-              class="form-control ms-1 rounded"
-              placeholder="과정명을 입력해 주세요."
-              v-model="searchValue"
-            />
-          </div>
+        <div class="input-group input-group-sm">
+          <input
+            type="text"
+            class="form-control ms-1 rounded"
+            placeholder="과정명을 입력해 주세요."
+            v-model="searchValue"
+          />
+          <button class="btn btn-primary ms-2" @click="search">검색하기</button>
         </div>
       </div>
     </div>
@@ -110,10 +109,8 @@
     </div>
 
     <!-- 선택된 항목 보내기 버튼 -->
-    <div class="row">
-      <button class="send-button" @click="sendSelectedItems">
-        선택된 항목 보내기
-      </button>
+    <div class="row col-2">
+      <button class="send-button" @click="sendSelectedItems">선택 완료</button>
     </div>
   </div>
 </template>
@@ -147,11 +144,6 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  width: 80%;
-  margin: 0 auto;
-}
-
 .title {
   font-size: 24px;
   font-weight: bold;
