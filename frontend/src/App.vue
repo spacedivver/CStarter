@@ -11,4 +11,4 @@ import DefaultLayout from './components/layouts/DefaultLayout.vue';
 
 <style scoped></style>
 
-<!-- 푸시 테스트 -->
+<!-- 푸시 테스트2 -->
