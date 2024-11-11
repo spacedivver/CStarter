@@ -110,35 +110,49 @@
 
     <!-- 선택된 항목 보내기 버튼 -->
     <div class="row col-2">
-      <button class="send-button" @click="sendSelectedItems">선택 완료</button>
+      <button class="send-button" @click="handleComplete">선택 완료</button>
     </div>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 export default {
-  data() {
-    return {
-      searchValue: "",
-      showFrontendPills: false,
-      showBackendPills: false,
-      selectedItems: [],
+  setup() {
+    const router = useRouter();
+    const searchValue = ref('');
+    const showFrontendPills = ref(false);
+    const showBackendPills = ref(false);
+    const selectedItems = ref([]);
+
+    const handleComplete = () => {
+      router.push('/interview/setting');
     };
-  },
-  methods: {
-    sendSelectedItems() {
-      console.log("선택된 항목:", this.selectedItems);
-      fetch("/api/selected-items", {
-        method: "POST",
+
+    const sendSelectedItems = () => {
+      console.log('선택된 항목:', selectedItems.value);
+      fetch('/api/selected-items', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ selectedItems: this.selectedItems }),
+        body: JSON.stringify({ selectedItems: selectedItems.value }),
       })
         .then((response) => response.json())
-        .then((data) => console.log("서버 응답:", data))
-        .catch((error) => console.error("오류:", error));
-    },
+        .then((data) => console.log('서버 응답:', data))
+        .catch((error) => console.error('오류:', error));
+    };
+
+    return {
+      searchValue,
+      showFrontendPills,
+      showBackendPills,
+      selectedItems,
+      handleComplete,
+      sendSelectedItems,
+    };
   },
 };
 </script>
