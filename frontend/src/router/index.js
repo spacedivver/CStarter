@@ -3,6 +3,8 @@ import HomePage from '../pages/HomePage.vue';
 import SelectCurriculum from '../pages/cstest/SelectCurriculum.vue';
 import SelectCompany from '../pages/letter/SelectCompany.vue';
 import Interview from '../pages/interview/Interview.vue';
+import Setting from '../pages/interview/Setting.vue';
+
 import Result from '../pages/report/Result.vue';
 import Write from '../pages/common/Write.vue';
 
@@ -33,6 +35,11 @@ const router = createRouter({
       path: '/Interview',
       name: 'Interview',
       component: Interview,
+    },
+    {
+      path: '/Interview/Setting',
+      name: 'Setting',
+      component: Setting,
     },
     {
       path: '/Report/Result',
