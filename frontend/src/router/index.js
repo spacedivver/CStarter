@@ -53,7 +53,7 @@ const router = createRouter({
       component: Result,
     },
     {
-      path: '/Write/:id',
+      path: '/Write/:id?',
       name: 'Write',
       component: Write,
     },

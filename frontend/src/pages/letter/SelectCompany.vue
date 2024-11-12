@@ -34,10 +34,9 @@
         </div>
       </div>
     </div>
-    <router-link to="/Write" class="btn btn-primary mt-3">
+    <button class="btn btn-primary mt-3" @click="navigateToManualInput">
       수동으로 입력하기
-    </router-link>
-
+    </button>
    
     <!-- Custom Modal -->
     <div v-if="isModalOpen" class="custom-modal-overlay" @click.self="closeModal">
@@ -108,10 +107,19 @@ const companies = ref([
 ]);
 const selectedCompany = ref({ name: "", description: "" });
 const isModalOpen = ref(false);
-
-function navigateToPersonalStatement(companyId) {
-  router.push({ name: "Write", params: { id: companyId } });
+const isManual = ref(false);
+//자동
+function navigateToPersonalStatement(companyId, isManual = false) {
+  localStorage.setItem('manual', JSON.stringify(isManual));
+  router.push({ name: "Write", params: { id: companyId }, state: { manual: isManual } });
 }
+
+function navigateToManualInput() {
+  localStorage.setItem('manual', 'true');
+  router.push({ name: "Write", state: { manual: true } });
+}
+
+
 
 function openModal(company) {
   selectedCompany.value = company;
