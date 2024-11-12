@@ -116,33 +116,33 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 export default {
   setup() {
     const router = useRouter();
-    const searchValue = ref('');
+    const searchValue = ref("");
     const showFrontendPills = ref(false);
     const showBackendPills = ref(false);
     const selectedItems = ref([]);
 
     const handleComplete = () => {
-      router.push('/interview/setting');
+      router.push("/CSTest/SelectTests");
     };
 
     const sendSelectedItems = () => {
-      console.log('선택된 항목:', selectedItems.value);
-      fetch('/api/selected-items', {
-        method: 'POST',
+      console.log("선택된 항목:", selectedItems.value);
+      fetch("/api/selected-items", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ selectedItems: selectedItems.value }),
       })
         .then((response) => response.json())
-        .then((data) => console.log('서버 응답:', data))
-        .catch((error) => console.error('오류:', error));
+        .then((data) => console.log("서버 응답:", data))
+        .catch((error) => console.error("오류:", error));
     };
 
     return {

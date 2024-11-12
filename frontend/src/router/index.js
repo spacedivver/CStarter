@@ -4,6 +4,7 @@ import SelectCurriculum from '../pages/cstest/SelectCurriculum.vue';
 import SelectCompany from '../pages/letter/SelectCompany.vue';
 import Interview from '../pages/interview/Interview.vue';
 import Setting from '../pages/interview/Setting.vue';
+import SelectTests from '../pages/cstest/SelectTests.vue';
 
 import Result from '../pages/report/Result.vue';
 import Write from '../pages/common/Write.vue';
@@ -25,6 +26,11 @@ const router = createRouter({
       path: '/CSTest/SelectCurriculum',
       name: 'SelectCurriculum',
       component: SelectCurriculum,
+    },
+    {
+      path:'/CSTest/SelectTests',
+      name: 'SelectTests',
+      component: SelectTests,
     },
     {
       path: '/Letter/SelectCompany',
