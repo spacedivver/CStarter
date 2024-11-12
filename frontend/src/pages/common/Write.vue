@@ -49,13 +49,20 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';  // 라우터 사용을 위한 import
+import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
-// 수동 입력 모드 여부
-const isManual = ref(true);  // 기본값을 수동 입력으로 설정
-// 기업명 관리 (자동 또는 수동 입력)
+const router = useRouter();
+const route = useRoute();
+
+// 기본값이 없을 경우 false로 설정
+const isManual = ref(route.state?.manual ?? JSON.parse(localStorage.getItem('manual') || 'false'));
 const companyName = ref(isManual.value ? '' : '자동기업명');
+
+// 상태가 바뀔 때마다 `localStorage`에 저장하여 새로고침해도 유지
+onMounted(() => {
+  localStorage.setItem('manual', JSON.stringify(isManual.value));
+});
 
 // 수동 입력 항목들 관리
 const inputItems = ref([{ title: '', content: '' }]);

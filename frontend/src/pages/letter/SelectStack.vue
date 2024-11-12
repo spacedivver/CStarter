@@ -128,7 +128,7 @@ export default {
     const selectedItems = ref([]);
 
     const handleComplete = () => {
-      router.push("/CSTest/SelectTests");
+      router.push("/Letter/SelectCompany");
     };
 
     const sendSelectedItems = () => {

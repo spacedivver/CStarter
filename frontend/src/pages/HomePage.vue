@@ -23,7 +23,7 @@
 
     <!-- 두 번째 버튼 -->
     <a
-      href="/Letter/SelectCompany"
+      href="/Letter/SelectStack"
       class="btn btn-primary d-flex flex-column align-items-center ms-3"
     >
       <div class="d-flex justify-content-between align-items-center w-100">
