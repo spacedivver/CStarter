@@ -9,13 +9,20 @@
 
     <!-- 질문과 답변 -->
     <div class="question-section mt-4">
-      <!-- AI의 질문 -->
+        <!-- AI의 질문 -->
       <div class="ai-response mb-3">
-        <div class="d-flex align-items-center">
-          <div class="ai-icon">🤖</div>
-          <div class="question-index">[질문 1]</div>
+        <div class="d-flex">
+          <!-- 아이콘 부분 (왼쪽) -->
+          <div class="ai-icon">
+            <span>🤖</span>
+          </div>
+          
+          <!-- 질문 텍스트 부분 (오른쪽) -->
+          <div class="ml-3">
+            <div class="question-index">[질문 1]</div>
+            <div class="question-text">{{ question }}</div>
+          </div>
         </div>
-        <div class="question-text">{{ question }}</div>
       </div>
 
       <!-- 사용자 답변 및 STT 텍스트 -->
@@ -154,7 +161,6 @@ const listenToAnswer = () => {
 
 .question-text {
   font-size: 1.5rem;
-  margin-left: 20px;
 }
 
 .user-icon {
