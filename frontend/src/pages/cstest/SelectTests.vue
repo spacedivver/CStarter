@@ -299,8 +299,8 @@ load(pageRequest);
   border: 1px solid #ddd;
 }
 
-.table-striped tbody tr {
-  background-color: #ffffff !important; /* 줄무늬 효과 완전히 제거 */
+.table tbody tr:hover {
+  background-color: #f9f9f9 !important; /* 마우스 오버 시 배경색 */
 }
 
 .table th,
@@ -312,10 +312,6 @@ load(pageRequest);
 .table thead th {
   background-color: #f8f9fa;
   font-weight: bold;
-}
-
-.table tbody tr:hover {
-  background-color: #f9f9f9; /* 마우스 오버 시 배경색 */
 }
 
 /* 기술 스택 색상 지정 */
@@ -342,9 +338,5 @@ load(pageRequest);
 .router-link {
   color: #333 !important; /* 파란색 링크 제거 */
   text-decoration: none;
-}
-
-.router-link:hover {
-  color: #0056b3; /* 마우스 오버 시 강조 */
 }
 </style>
