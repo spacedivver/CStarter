@@ -20,7 +20,7 @@
             </div>
             <button
               class="btn btn-secondary me-1"
-              @click="openModal(company)"
+              @click="navigateToViewInfo(company.id)"
             >
               공고보기
             </button>
@@ -38,7 +38,7 @@
       수동으로 입력하기
     </button>
    
-    <!-- Custom Modal -->
+    <!-- Custom Modal
     <div v-if="isModalOpen" class="custom-modal-overlay" @click.self="closeModal">
       <div class="custom-modal">
         <div class="custom-modal-header">
@@ -52,7 +52,7 @@
           <button class="btn btn-secondary" @click="closeModal">닫기</button>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup>
@@ -105,8 +105,7 @@ const companies = ref([
     description: "모집모집6"
   },
 ]);
-const selectedCompany = ref({ name: "", description: "" });
-const isModalOpen = ref(false);
+// const selectedCompany = ref({ name: "", description: "" });
 const isManual = ref(false);
 //자동
 function navigateToPersonalStatement(companyId, isManual = false) {
@@ -120,14 +119,10 @@ function navigateToManualInput() {
 }
 
 
-
-function openModal(company) {
-  selectedCompany.value = company;
-  isModalOpen.value = true;
-}
-
-function closeModal() {
-  isModalOpen.value = false;
+// 새 탭에서 공고보기
+function navigateToViewInfo(companyId) {
+  const url = `/Letter/ViewInfo/${companyId}`;
+  window.open(url, '_blank');  // 새 탭에서 열기
 }
 </script>
 <style scoped>
