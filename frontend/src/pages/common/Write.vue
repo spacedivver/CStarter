@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <h3 class="text-center">자기소개서 작성</h3>
     <div class="form-group mb-3 ">
+      <h5 class="mb-3">기업명</h5>
       <input
         type="text"
         class="form-control"
@@ -11,6 +11,8 @@
       />
     </div>
 
+    <div>
+      <h5 class="mb-3">직무선택</h5>
     <el-select v-model="selectedJob" placeholder="직무를 선택하세요" class="mb-3">
       <el-option label="백엔드" value="백엔드"></el-option>
       <el-option label="프론트엔드" value="프론트엔드"></el-option>
@@ -18,7 +20,8 @@
       <el-option label="DBA" value="DBA"></el-option>
       <el-option label="기획" value="기획"></el-option>
     </el-select>
-
+  </div>
+  <h5 class="mb-3">자기소개서 입력</h5>
 
     <div v-if="isManual">
       <!-- 수동 입력일 때 제목과 내용 동적으로 추가 -->
