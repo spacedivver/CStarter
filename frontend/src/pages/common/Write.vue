@@ -10,6 +10,16 @@
         :readonly="!isManual"
       />
     </div>
+
+    <el-select v-model="selectedJob" placeholder="직무를 선택하세요" class="mb-3">
+      <el-option label="백엔드" value="백엔드"></el-option>
+      <el-option label="프론트엔드" value="프론트엔드"></el-option>
+      <el-option label="인프라" value="인프라"></el-option>
+      <el-option label="DBA" value="DBA"></el-option>
+      <el-option label="기획" value="기획"></el-option>
+    </el-select>
+
+
     <div v-if="isManual">
       <!-- 수동 입력일 때 제목과 내용 동적으로 추가 -->
       <div v-for="(item, index) in inputItems" :key="index" class="input-item mb-3">
@@ -51,9 +61,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { ElSelect, ElOption } from 'element-plus';
+import 'element-plus/dist/index.css';
 
 const router = useRouter();
 const route = useRoute();
+const selectedJob = ref('프론트엔드'); // 기본값 설정
 
 // 기본값이 없을 경우 false로 설정
 const isManual = ref(route.state?.manual ?? JSON.parse(localStorage.getItem('manual') || 'false'));
@@ -83,10 +96,7 @@ const addInputItem = () => {
 </script>
 
 <style scoped>
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-}
+
 
 .form-group {
   margin-bottom: 15px;
@@ -135,4 +145,5 @@ const addInputItem = () => {
   width: 150px;
   margin: 0 auto;
 }
+
 </style>
