@@ -161,9 +161,10 @@ const nextQuestion = () => {
     sttTexts.value = []; // 다음 질문을 위해 답변 초기화
   } else {
     // 모든 질문이 끝난 경우
-    alert("모든 질문이 완료되었습니다.");
+    window.location.href = '/report/result'; // 결과 페이지로 이동
   }
 };
+
 
 // 다시 답변하기
 const resetAnswer = () => {
