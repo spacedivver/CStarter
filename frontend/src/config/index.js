@@ -3,19 +3,19 @@ export default {
   subtitle: '(Vue+Spring)',
   menus: [
     {
-      title: '게시판',
-      url: '/board/list',
-      icon: 'fa-solid fa-paste',
+      title: 'CS테스트',
+      url: '/CSTest/SelectCurriculum',
+      // icon: 'fa-solid fa-paste',
     },
     {
-      title: '여행',
-      url: '/travel/list',
-      icon: 'fa-solid fa-plane-departure',
+      title: '모의면접',
+      url: '/Letter/SelectStack',
+      // icon: 'fa-solid fa-plane-departure',
     },
     {
-      title: '갤러리',
+      title: '마이페이지',
       url: '/gallery/list',
-      icon: 'fa-regular fa-images',
+      // icon: 'fa-regular fa-images',
     },
   ],
 

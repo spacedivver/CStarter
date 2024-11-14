@@ -6,7 +6,7 @@ import Footer from './Footer.vue';
 
 <template>
   <div class="container-lg">
-    <Header />
+    <!-- <Header /> -->
     <NavBar />
     <div class="content my-5 px-3">
       <slot></slot>
