@@ -36,6 +36,7 @@
           <button class="btn btn-primary" @click="startRecording" v-if="!isRecording && sttTexts.length === 0">답변하기</button>
           <button class="btn btn-secondary ml-3" @click="listenToAnswer" v-if="sttTexts.length > 0">내 답변 듣기</button>
           <button class="btn btn-warning ml-3" @click="resetAnswer" v-if="sttTexts.length > 0">다시 답변하기</button>
+          <button class="btn btn-danger ml-3" @click="stopRecording" v-if="isRecording && sttTexts.length === 0">중지하기</button>
         </div>
       </div>
 
@@ -139,6 +140,13 @@ const startRecording = () => {
   }
 };
 
+// 음성 인식 중지
+const stopRecording = () => {
+  if (recognition) {
+    recognition.stop(); // 음성 인식 중지
+  }
+};
+
 // 내 답변 듣기
 const listenToAnswer = () => {
   const msg = new SpeechSynthesisUtterance(sttTexts.value.join(' '));
@@ -231,5 +239,27 @@ const stopVolumeVisualization = () => {
   background-color: #28a745;
   border-radius: 5px;
   transition: height 0.05s;
+}
+
+/* 버튼 스타일 */
+.btn {
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-danger {
+  background-color: #dc3545; /* 중지 버튼 색상 */
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333; /* 호버 효과 */
 }
 </style>
