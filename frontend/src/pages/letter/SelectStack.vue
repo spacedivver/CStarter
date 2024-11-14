@@ -2,29 +2,16 @@
   <div class="container">
     <div class="title">커리큘럼</div>
 
-    <!-- 키워드 검색 영역 -->
-    <div class="search-container">
-      <label for="keyword" class="col-2 col-form-label">과정명 선택</label>
-      <div class="col-9">
-        <div class="input-group input-group-sm">
-          <input
-            type="text"
-            class="form-control ms-1 rounded"
-            placeholder="과정명을 입력해 주세요."
-            v-model="searchValue"
-            @input="filterCourses"
-          />
-          <button class="btn btn-primary ms-2" @click="search">검색하기</button>
-        </div>
-      </div>
-    </div>
-
     <!-- 과정 선택 -->
     <div class="course-selection">
       <el-select
         v-model="selectedCourse"
         placeholder="과정을 선택해 주세요."
         class="w-100"
+        filterable
+        :remote="true"
+        :remote-method="handleFilterCourses"
+        :loading="loading"
       >
         <el-option
           v-for="course in filteredCourses"
@@ -99,11 +86,12 @@ import { useRouter } from "vue-router";
 export default {
   setup() {
     const router = useRouter();
-    const searchValue = ref("");
     const selectedCourse = ref(null);
     const showFrontendPills = ref(false);
     const showBackendPills = ref(false);
     const selectedItems = ref([]);
+    const loading = ref(false);
+    const searchQuery = ref("");
 
     // 부트캠프 과정 데이터
     const courses = ref([
@@ -117,13 +105,19 @@ export default {
 
     // 필터링된 과정 배열
     const filteredCourses = computed(() => {
-      if (!searchValue.value) {
+      if (!searchQuery.value) {
         return courses.value; // 검색어가 없으면 전체 과정 반환
       }
       return courses.value.filter(course =>
-        course.label.toLowerCase().includes(searchValue.value.toLowerCase())
+        course.label.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
     });
+
+    const handleFilterCourses = (query) => {
+      loading.value = true;
+      searchQuery.value = query; // 검색어를 업데이트
+      loading.value = false; // 로딩 상태 종료
+    };
 
     const handleComplete = () => {
       console.log("선택된 과정:", selectedCourse.value);
@@ -132,7 +126,6 @@ export default {
     };
 
     return {
-      searchValue,
       selectedCourse,
       filteredCourses,
       showFrontendPills,
@@ -141,10 +134,13 @@ export default {
       frontendLinks,
       backendLinks,
       handleComplete,
+      handleFilterCourses,
+      loading,
     };
   },
 };
 </script>
+
 
 <style scoped>
 .title {
