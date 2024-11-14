@@ -22,24 +22,22 @@
           </div>
         </div>
 
-          <!-- 사용자 답변 -->
-            <div class="answer-section mt-2">
-              <div class="d-flex align-items-center mb-2" v-if="sttTexts.length || isRecording"> <!-- 답변이 있거나 음성 인식 중일 때 보이도록 설정 -->
-                <img src="@/assets/images/usericon.png" alt="" style="width: 50px; height: 50px;" class="me-3"></img>
-                <div class="user-answer">내 답변</div>
-              </div>
-              <div v-if="isRecording" class="answer-box"> <!-- 음성 인식 중일 때만 박스를 보여줌 -->
-                <div class="stt-text bubble mt-2">
-                  <img src="@/assets/images/microphone.png" alt="마이크" style="width: 20px; height: 20px;" class="me-2"> 
-                  답변 중...
-                </div>
-              </div>
-              <div v-if="sttTexts.length" class="answer-box"> <!-- 이전 답변이 있을 때만 박스를 보여줌 -->
-                <div v-for="(text, idx) in sttTexts" :key="idx" class="stt-text bubble mt-2">{{ text }}</div>
-              </div>
+        <!-- 사용자 답변 -->
+        <div class="answer-section mt-2">
+          <div class="d-flex align-items-center mb-2" v-if="sttTexts.length || isRecording">
+            <img src="@/assets/images/usericon.png" alt="" style="width: 50px; height: 50px;" class="me-3"></img>
+            <div class="user-answer">내 답변</div>
+          </div>
+          <div v-if="isRecording" class="answer-box"> <!-- 음성 인식 중일 때만 박스를 보여줌 -->
+            <div class="stt-text bubble mt-2">
+              <img src="@/assets/images/microphone.png" alt="마이크" style="width: 20px; height: 20px;" class="me-2"> 
+              답변 중...
             </div>
-
-
+          </div>
+          <div v-if="sttTexts.length" class="answer-box"> <!-- 이전 답변이 있을 때만 박스를 보여줌 -->
+            <div v-for="(text, idx) in sttTexts" :key="idx" class="stt-text bubble mt-2">{{ text }}</div>
+          </div>
+        </div>
 
         <!-- 마이크 및 음성 인식 -->
         <div class="d-flex justify-content-center mt-3">
@@ -149,7 +147,7 @@ const listenToAnswer = () => {
 const nextQuestion = () => {
   if (currentQuestionIndex.value < questions.value.length - 1) {
     currentQuestionIndex.value++;
-    // 이전 답변 유지
+    sttTexts.value = []; // 다음 질문을 위해 답변 초기화
   } else {
     // 모든 질문이 끝난 경우
     alert("모든 질문이 완료되었습니다.");
@@ -158,10 +156,8 @@ const nextQuestion = () => {
 
 // 다시 답변하기
 const resetAnswer = () => {
-  // 이전 답변 유지
-  if (!isRecording.value) { // 음성 인식이 진행 중이지 않을 때만 시작
-    startRecording(); // 새로운 답변 녹음 시작
-  }
+  sttTexts.value = []; // 이전 답변 초기화
+  startRecording(); // 새로운 답변 녹음 시작
 };
 </script>
 
