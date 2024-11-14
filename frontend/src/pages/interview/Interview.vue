@@ -28,30 +28,32 @@
             <img src="@/assets/images/usericon.png" alt="" style="width: 50px; height: 50px;" class="me-3"></img>
             <div class="user-answer">내 답변</div>
           </div>
-          <div v-if="isRecording" class="answer-box"> <!-- 음성 인식 중일 때만 박스를 보여줌 -->
-            <div class="stt-text bubble mt-2">
-              <img src="@/assets/images/microphone.png" alt="마이크" style="width: 20px; height: 20px;" class="me-2"> 
-              답변 중...
+          <div v-if="isRecording" class="mb-2"> <!-- 음성 인식 중일 때만 박스를 보여줌 -->
+            <div class="stt-text bubble">
+              <img src="@/assets/images/microphone.png" alt="마이크" style="width: 35px; height: 35px;" class="ms-2 me-3"> 
+                답변 중 ...
             </div>
           </div>
           <div v-if="sttTexts.length" class="answer-box"> <!-- 이전 답변이 있을 때만 박스를 보여줌 -->
-            <div v-for="(text, idx) in sttTexts" :key="idx" class="stt-text bubble mt-2">{{ text }}</div>
+            <div v-for="(text, idx) in sttTexts" :key="idx" class="stt-text bubble m-2">{{ text }}</div>
           </div>
         </div>
 
         <!-- 마이크 및 음성 인식 -->
         <div class="d-flex justify-content-center mt-3">
-          <button class="btn btn-primary" @click="startRecording" v-if="!isRecording && sttTexts.length === 0">답변하기</button>
-          <button class="btn btn-secondary ml-3" @click="listenToAnswer" v-if="sttTexts.length > 0">내 답변 듣기</button>
-          <button class="btn btn-warning ml-3" @click="resetAnswer" v-if="sttTexts.length > 0">다시 답변하기</button>
-          <button class="btn btn-danger ml-3" @click="stopRecording" v-if="isRecording">중지하기</button>
-        </div>
+        <button class="btn btn-primary" @click="startRecording" v-if="!isRecording && sttTexts.length === 0">답변하기</button>
+        <button class="btn btn-secondary ml-3" @click="listenToAnswer" v-if="sttTexts.length > 0 && !isRecording">내 답변 듣기</button>
+        <button class="btn btn-warning ml-3" @click="resetAnswer" v-if="sttTexts.length > 0 && !isRecording">다시 답변하기</button>
+        <button class="btn btn-danger ml-3" @click="stopRecording" v-if="isRecording">중지하기</button>
+      </div>
+
       </div>
 
       <!-- 다음 질문 버튼 -->
-      <div v-if="sttTexts.length && currentQuestionIndex < questions.length" class="d-flex justify-content-center mt-4">
+      <div v-if="sttTexts.length && currentQuestionIndex < questions.length && !isRecording" class="d-flex justify-content-center mt-4">
         <button class="btn btn-success" @click="nextQuestion">다음 질문</button>
       </div>
+
     </div>
   </div>
 </template>
@@ -164,10 +166,9 @@ const resetAnswer = () => {
 <style scoped>
 /* 사용자 답변 박스 스타일 */
 .answer-box {
-  background-color: #E9F0FF; /* 회색 배경 */
+  background-color: #E9F0FF;
   border-radius: 10px; /* 라운드 처리 */
   padding: 10px; /* 패딩 추가 */
-  margin-top: 10px; /* 마진 추가 */
 }
 
 .timer {
