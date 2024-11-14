@@ -39,13 +39,22 @@
           </div>
         </div>
 
-        <!-- 마이크 및 음성 인식 -->
-        <div class="d-flex justify-content-center mt-3">
-        <button class="btn btn-primary" @click="startRecording" v-if="!isRecording && sttTexts.length === 0">답변하기</button>
-        <button class="btn btn-secondary ml-3" @click="listenToAnswer" v-if="sttTexts.length > 0 && !isRecording">내 답변 듣기</button>
-        <button class="btn btn-warning ml-3" @click="resetAnswer" v-if="sttTexts.length > 0 && !isRecording">다시 답변하기</button>
-        <button class="btn btn-danger ml-3" @click="stopRecording" v-if="isRecording">중지하기</button>
-      </div>
+        <div class="d-flex justify-content-between mt-1">
+          <div class="mx-auto mt-2"> <!-- 중앙 정렬을 위해 mx-auto 사용 -->
+            <button class="btn btn-primary" @click="startRecording" v-if="!isRecording && sttTexts.length === 0">답변하기</button>
+            <button class="btn btn-danger ml-3" @click="stopRecording" v-if="isRecording">중지하기</button>
+          </div>
+
+          <div class="d-flex">
+            <button class="icon-button ml-3" @click="resetAnswer" v-if="sttTexts.length > 0 && !isRecording">
+              <i class="fas fa-microphone"></i> 다시 답변하기
+            </button>
+            <button class="icon-button ml-3" @click="listenToAnswer" v-if="sttTexts.length > 0 && !isRecording">
+              <i class="fas fa-volume-up"></i> 내 답변 듣기
+            </button>
+          </div>
+        </div>
+
 
       </div>
 
@@ -218,4 +227,26 @@ const resetAnswer = () => {
 .question-text {
   font-size: 18px;
 }
+
+/* 다시 답변하기 버튼 회색들 */
+.icon-button {
+  background: none; /* 배경 없음 */
+  border: none; /* 테두리 없음 */
+  color: gray; /* 텍스트 색상 */
+  font-size: 14px; /* 폰트 크기 */
+  display: flex; /* 아이콘과 텍스트를 수평으로 배치 */
+  align-items: center; /* 중앙 정렬 */
+  cursor: pointer; /* 포인터 커서 */
+  transition: color 0.3s; /* 색상 변화 애니메이션 */
+  margin-top: 2px;
+}
+
+.icon-button:hover {
+  color: #007bff; /* 호버 시 색상 변화 */
+}
+
+.icon-button i {
+  margin-right: 5px; /* 아이콘과 텍스트 간격 */
+}
+
 </style>
