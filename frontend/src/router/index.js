@@ -8,6 +8,7 @@ import SelectTests from '../pages/cstest/SelectTests.vue';
 import SelectStack from '../pages/letter/SelectStack.vue';
 import Result from '../pages/report/Result.vue';
 import Write from '../pages/common/Write.vue';
+import ViewInfo from '../pages/letter/ViewInfo.vue';
 
 import authRotes from './auth';
 import boardRotes from './board';
@@ -36,6 +37,11 @@ const router = createRouter({
       path: '/Letter/SelectCompany',
       name: 'SelectCompany',
       component: SelectCompany,
+    },
+    {
+      path: '/Letter/ViewInfo/:id?',
+      name: 'ViewInfo',
+      component: ViewInfo,
     },
     {
       path: '/Letter/SelectStack',
