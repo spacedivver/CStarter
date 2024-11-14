@@ -4,7 +4,7 @@
 
     <!-- 키워드 검색 영역 -->
     <div class="search-container">
-      <label for="keyword" class="col-2 col-form-label">과정명 검색</label>
+      <label for="keyword" class="col-2 col-form-label">과정명 선택</label>
       <div class="col-9">
         <div class="input-group input-group-sm">
           <input
@@ -12,10 +12,27 @@
             class="form-control ms-1 rounded"
             placeholder="과정명을 입력해 주세요."
             v-model="searchValue"
+            @input="filterCourses"
           />
           <button class="btn btn-primary ms-2" @click="search">검색하기</button>
         </div>
       </div>
+    </div>
+
+    <!-- 과정 선택 -->
+    <div class="course-selection">
+      <el-select
+        v-model="selectedCourse"
+        placeholder="과정을 선택해 주세요."
+        class="w-100"
+      >
+        <el-option
+          v-for="course in filteredCourses"
+          :key="course.value"
+          :label="course.label"
+          :value="course.value"
+        />
+      </el-select>
     </div>
 
     <!-- Frontend 체크박스 -->
@@ -30,35 +47,15 @@
     </div>
     <div class="pill-container" v-show="showFrontendPills">
       <ul class="nav nav-pills flex-row">
-        <li class="nav-item">
+        <li class="nav-item" v-for="(link, index) in frontendLinks" :key="index">
           <input
             type="checkbox"
-            id="pill1"
+            :id="'frontend-pill' + index"
             class="nav-checkbox"
             v-model="selectedItems"
-            value="Frontend Link1"
+            :value="link"
           />
-          <label for="pill1" class="nav-label">Link 1</label>
-        </li>
-        <li class="nav-item">
-          <input
-            type="checkbox"
-            id="pill2"
-            class="nav-checkbox"
-            v-model="selectedItems"
-            value="Frontend Link2"
-          />
-          <label for="pill2" class="nav-label">Link 2</label>
-        </li>
-        <li class="nav-item">
-          <input
-            type="checkbox"
-            id="pill3"
-            class="nav-checkbox"
-            v-model="selectedItems"
-            value="Frontend Link3"
-          />
-          <label for="pill3" class="nav-label">Link 3</label>
+          <label :for="'frontend-pill' + index" class="nav-label">{{ link }}</label>
         </li>
       </ul>
     </div>
@@ -75,35 +72,15 @@
     </div>
     <div class="pill-container" v-show="showBackendPills">
       <ul class="nav nav-pills flex-row">
-        <li class="nav-item">
+        <li class="nav-item" v-for="(link, index) in backendLinks" :key="index">
           <input
             type="checkbox"
-            id="pill4"
+            :id="'backend-pill' + index"
             class="nav-checkbox"
             v-model="selectedItems"
-            value="Backend Link1"
+            :value="link"
           />
-          <label for="pill4" class="nav-label">Link 1</label>
-        </li>
-        <li class="nav-item">
-          <input
-            type="checkbox"
-            id="pill5"
-            class="nav-checkbox"
-            v-model="selectedItems"
-            value="Backend Link2"
-          />
-          <label for="pill5" class="nav-label">Link 2</label>
-        </li>
-        <li class="nav-item">
-          <input
-            type="checkbox"
-            id="pill6"
-            class="nav-checkbox"
-            v-model="selectedItems"
-            value="Backend Link3"
-          />
-          <label for="pill6" class="nav-label">Link 3</label>
+          <label :for="'backend-pill' + index" class="nav-label">{{ link }}</label>
         </li>
       </ul>
     </div>
@@ -116,42 +93,54 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 
 export default {
   setup() {
     const router = useRouter();
     const searchValue = ref("");
+    const selectedCourse = ref(null);
     const showFrontendPills = ref(false);
     const showBackendPills = ref(false);
     const selectedItems = ref([]);
 
-    const handleComplete = () => {
-      router.push("/Letter/SelectCompany");
-    };
+    // 부트캠프 과정 데이터
+    const courses = ref([
+      { value: 'frontend', label: 'Frontend 과정' },
+      { value: 'backend', label: 'Backend 과정' },
+      { value: 'fullstack', label: 'Fullstack 과정' },
+    ]);
 
-    const sendSelectedItems = () => {
+    const frontendLinks = ref(["Frontend Link 1", "Frontend Link 2", "Frontend Link 3"]);
+    const backendLinks = ref(["Backend Link 1", "Backend Link 2", "Backend Link 3"]);
+
+    // 필터링된 과정 배열
+    const filteredCourses = computed(() => {
+      if (!searchValue.value) {
+        return courses.value; // 검색어가 없으면 전체 과정 반환
+      }
+      return courses.value.filter(course =>
+        course.label.toLowerCase().includes(searchValue.value.toLowerCase())
+      );
+    });
+
+    const handleComplete = () => {
+      console.log("선택된 과정:", selectedCourse.value);
       console.log("선택된 항목:", selectedItems.value);
-      fetch("/api/selected-items", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ selectedItems: selectedItems.value }),
-      })
-        .then((response) => response.json())
-        .then((data) => console.log("서버 응답:", data))
-        .catch((error) => console.error("오류:", error));
+      router.push("/Letter/SelectCompany");
     };
 
     return {
       searchValue,
+      selectedCourse,
+      filteredCourses,
       showFrontendPills,
       showBackendPills,
       selectedItems,
+      frontendLinks,
+      backendLinks,
       handleComplete,
-      sendSelectedItems,
     };
   },
 };
@@ -165,6 +154,10 @@ export default {
 }
 
 .search-container {
+  margin-bottom: 20px;
+}
+
+.course-selection {
   margin-bottom: 20px;
 }
 
