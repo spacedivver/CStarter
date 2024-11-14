@@ -13,30 +13,40 @@
         <div class="ai-response mb-3">
           <div class="d-flex">
             <div class="ai-icon">
-              <span>🤖</span>
+              <img src="@/assets/images/aiicon.png" alt="" style="width: 50px; height: 50px;" class="me-3"></img>
             </div>
             <div class="ml-3">
-              <div class="question-index">[질문 {{ currentQuestionIndex + 1 }}]</div>
+              <div class="question-index mb-1">질문 {{ currentQuestionIndex + 1 }}</div>
               <div class="question-text">{{ questions[currentQuestionIndex] }}</div>
             </div>
           </div>
         </div>
 
-        <!-- 사용자 답변 -->
-        <div v-if="sttTexts.length" class="answer-section mt-2">
-          <div class="d-flex align-items-center mb-2">
-            <div class="user-icon">👤</div>
-            <div class="user-answer">[내 답변]</div>
-          </div>
-          <div v-for="(text, idx) in sttTexts" :key="idx" class="stt-text bubble mt-2">"{{ text }}"</div>
-        </div>
+          <!-- 사용자 답변 -->
+            <div class="answer-section mt-2">
+              <div class="d-flex align-items-center mb-2" v-if="sttTexts.length || isRecording"> <!-- 답변이 있거나 음성 인식 중일 때 보이도록 설정 -->
+                <img src="@/assets/images/usericon.png" alt="" style="width: 50px; height: 50px;" class="me-3"></img>
+                <div class="user-answer">내 답변</div>
+              </div>
+              <div v-if="isRecording" class="answer-box"> <!-- 음성 인식 중일 때만 박스를 보여줌 -->
+                <div class="stt-text bubble mt-2">
+                  <img src="@/assets/images/microphone.png" alt="마이크" style="width: 20px; height: 20px;" class="me-2"> 
+                  답변 중...
+                </div>
+              </div>
+              <div v-if="sttTexts.length" class="answer-box"> <!-- 이전 답변이 있을 때만 박스를 보여줌 -->
+                <div v-for="(text, idx) in sttTexts" :key="idx" class="stt-text bubble mt-2">{{ text }}</div>
+              </div>
+            </div>
+
+
 
         <!-- 마이크 및 음성 인식 -->
         <div class="d-flex justify-content-center mt-3">
           <button class="btn btn-primary" @click="startRecording" v-if="!isRecording && sttTexts.length === 0">답변하기</button>
           <button class="btn btn-secondary ml-3" @click="listenToAnswer" v-if="sttTexts.length > 0">내 답변 듣기</button>
           <button class="btn btn-warning ml-3" @click="resetAnswer" v-if="sttTexts.length > 0">다시 답변하기</button>
-          <button class="btn btn-danger ml-3" @click="stopRecording" v-if="isRecording && sttTexts.length === 0">중지하기</button>
+          <button class="btn btn-danger ml-3" @click="stopRecording" v-if="isRecording">중지하기</button>
         </div>
       </div>
 
@@ -44,11 +54,6 @@
       <div v-if="sttTexts.length && currentQuestionIndex < questions.length" class="d-flex justify-content-center mt-4">
         <button class="btn btn-success" @click="nextQuestion">다음 질문</button>
       </div>
-    </div>
-
-    <!-- 음성 인식 볼륨 시각화 -->
-    <div v-if="isRecording" class="volume-visual mt-4">
-      <div class="volume-bar" :style="{ height: volumeHeight + 'px' }"></div>
     </div>
   </div>
 </template>
@@ -71,17 +76,10 @@ let timerInterval = null;
 
 // 음성 인식 상태
 const isRecording = ref(false);
-const volumeHeight = ref(0); // 볼륨 높이
 const currentQuestionIndex = ref(0); // 현재 질문 인덱스
 
 // 음성 인식 객체
 let recognition = null;
-
-// Web Audio API 관련 변수
-let audioContext = null;
-let analyser = null;
-let mediaStreamSource = null;
-let analyserDataArray = null;
 
 onMounted(() => {
   startTimer();
@@ -95,24 +93,19 @@ onMounted(() => {
 
     recognition.onstart = () => {
       isRecording.value = true;
-      setupAudioContext();
       nextTick(() => {
-        startVolumeVisualization(); // DOM 업데이트가 완료된 후 호출
+        // DOM 업데이트가 완료된 후 호출
       });
     };
 
     recognition.onend = () => {
       isRecording.value = false;
-      stopVolumeVisualization();
     };
 
     recognition.onresult = (event) => {
-      let interimTranscript = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
           sttTexts.value.push(event.results[i][0].transcript);
-        } else {
-          interimTranscript += event.results[i][0].transcript;
         }
       }
     };
@@ -135,7 +128,6 @@ const startTimer = () => {
 // 음성 인식 시작
 const startRecording = () => {
   if (recognition) {
-    sttTexts.value = [];  // STT 텍스트 초기화
     recognition.start();
   }
 };
@@ -157,7 +149,7 @@ const listenToAnswer = () => {
 const nextQuestion = () => {
   if (currentQuestionIndex.value < questions.value.length - 1) {
     currentQuestionIndex.value++;
-    sttTexts.value = []; // 다음 질문을 위해 답변 초기화
+    // 이전 답변 유지
   } else {
     // 모든 질문이 끝난 경우
     alert("모든 질문이 완료되었습니다.");
@@ -166,50 +158,22 @@ const nextQuestion = () => {
 
 // 다시 답변하기
 const resetAnswer = () => {
-  sttTexts.value = []; // 이전 답변 초기화
+  // 이전 답변 유지
   if (!isRecording.value) { // 음성 인식이 진행 중이지 않을 때만 시작
     startRecording(); // 새로운 답변 녹음 시작
   }
 };
-
-// Web Audio API 초기화
-const setupAudioContext = () => {
-  audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  analyser = audioContext.createAnalyser();
-  analyser.fftSize = 256;  // 주파수 분석의 크기
-  analyserDataArray = new Uint8Array(analyser.frequencyBinCount);
-  
-  // 마이크 스트리밍을 받기 위한 setup
-  navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-    mediaStreamSource = audioContext.createMediaStreamSource(stream);
-    mediaStreamSource.connect(analyser);
-  }).catch((err) => {
-    console.log("마이크 권한 오류:", err);
-  });
-};
-
-// 실시간 볼륨 시각화
-const startVolumeVisualization = () => {
-  const updateVolume = () => {
-    analyser.getByteFrequencyData(analyserDataArray);  // 현재의 볼륨 데이터를 가져옵니다.
-    const average = analyserDataArray.reduce((a, b) => a + b, 0) / analyserDataArray.length;
-    volumeHeight.value = average;  // 평균 볼륨 값을 높이로 설정
-
-    if (isRecording.value) {
-      requestAnimationFrame(updateVolume);  // 계속해서 업데이트
-    }
-  };
-
-  updateVolume();
-};
-
-// 볼륨 시각화 종료
-const stopVolumeVisualization = () => {
-  volumeHeight.value = 0; // 볼륨 높이 초기화
-};
 </script>
 
 <style scoped>
+/* 사용자 답변 박스 스타일 */
+.answer-box {
+  background-color: #E9F0FF; /* 회색 배경 */
+  border-radius: 10px; /* 라운드 처리 */
+  padding: 10px; /* 패딩 추가 */
+  margin-top: 10px; /* 마진 추가 */
+}
+
 .timer {
   font-size: 20px;
   font-weight: bold;
@@ -224,21 +188,6 @@ const stopVolumeVisualization = () => {
 
 .question-section {
   margin-top: 30px;
-}
-
-.volume-visual {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  height: 100px; /* 높이 조정 */
-  margin-top: 20px;
-}
-
-.volume-bar {
-  width: 10px; /* 바의 너비 */
-  background-color: #28a745;
-  border-radius: 5px;
-  transition: height 0.05s;
 }
 
 /* 버튼 스타일 */
@@ -261,5 +210,15 @@ const stopVolumeVisualization = () => {
 
 .btn-danger:hover {
   background-color: #c82333; /* 호버 효과 */
+}
+
+.question-index {
+  color: #FF8000;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.question-text {
+  font-size: 18px;
 }
 </style>
