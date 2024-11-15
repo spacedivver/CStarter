@@ -1,123 +1,229 @@
+<template>
+  <div
+    class="mt-2 row g-0 justify-content-center gradient-bottom-right middle-indigo end-pink"
+  >
+    <div
+      class="col-md-6 col-lg-5 col-xl-5 position-absolute start-0 vh-100 overflow-y-hidden d-none d-lg-flex flex-lg-column back-img"
+    >
+      <div class="p-150">
+        <div class="mt-20">
+          <h1 class="ls-tight fw-bolder display-6 text-white mb-5">
+            환영합니다!
+            <br />CStarter 입니다.
+          </h1>
+          <p class="text-white text-opacity-75 pe-xl-24">
+            회원가입을 완료하시면 시뮬레이션 리포트를 저장하고,
+            <BR /> 내 가게를 연동할 수 있어요. <br />
+            또한, 커뮤니티 활동을 통해 다른 사장님과 소통해보세요.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col-12 col-md-12 col-lg-7 offset-lg-5 vh-100 d-flex justify-content-center align-items-center border-start-lg shadow-soft-5"
+    >
+    <div class="w-md-50 mx-auto px-10 px-md-0 py-10 container">
+        <div class="mb-3">
+          <a class="d-inline-block d-lg-none mb-10" href="/pages/dashboard.html"
+            ><img
+              src="../../img/logos/logo-dark.svg"
+              class="h-rem-10"
+              alt="..."
+          /></a>
+          <h1 class="ls-tight fw-bolder h3 mt-7">회원가입</h1>
+          <div class="mt-3 text-sm text-muted">
+            <span>이미 회원이라면</span>
+            <a href="/auth/login" class="fw-semibold"> 로그인 </a>페이지로 이동
+          </div>
+        </div>
+        <form @submit.prevent="submitForm">
+          <div class="row g-5">
+            <div class="col-sm-12">
+              <label for="id" class="form-label">사용자 아이디</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  v-model="form.id"
+                  class="form-control"
+                  id="id"
+                  required
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  @click="checkDuplicate"
+                >
+                  중복 확인
+                </button>
+              </div>
+              <p v-if="isDuplicate" class="text-danger small">
+                해당 아이디는 이미 사용 중입니다.
+              </p>
+              <p v-if="isAvailable" class="text-success small">
+                사용 가능한 아이디입니다.
+              </p>
+            </div>
+            <div class="col-sm-12">
+              <label for="password" class="form-label">사용자 비밀번호</label>
+              <input
+                type="password"
+                v-model="form.password"
+                id="password"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="col-sm-12">
+              <label for="confirmPassword" class="form-label"
+                >비밀번호 확인</label
+              >
+              <input
+                type="password"
+                v-model="form.confirmPassword"
+                id="confirmPassword"
+                class="form-control"
+                required
+              />
+              <p
+                v-if="
+                  form.password !== form.confirmPassword &&
+                  form.confirmPassword.length > 0
+                "
+                class="text-danger small"
+              >
+                비밀번호가 일치하지 않습니다.
+              </p>
+            </div>
+            <div class="col-sm-12">
+              <label for="name" class="form-label">닉네임</label>
+              <input
+                type="text"
+                v-model="form.name"
+                class="form-control"
+                id="name"
+                required
+              />
+            </div>
+            <div class="col-sm-12">
+              <label for="email" class="form-label">사용자 이메일</label>
+              <input
+                type="email"
+                v-model="form.email"
+                class="form-control"
+                id="email"
+                required
+              />
+            </div>
+            <div class="col-sm-12">
+              <button
+                type="submit"
+                class="btn btn-dark w-100 mb-5"
+                :disabled="!isFormValid || isDuplicate"
+              >
+                회원가입
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- <div class="row g-2">
+          <div class="col-sm-6">
+            <a href="#" class="btn btn-neutral w-100"
+              ><span class="icon icon-sm pe-2"
+                ><img src="../../img/social/github.svg" alt="..." /> </span
+              >Github</a
+            >
+          </div>
+          <div class="col-sm-6">
+            <a href="#" class="btn btn-neutral w-100"
+              ><span class="icon icon-sm pe-2"
+                ><img src="../../img/social/google.svg" alt="..." /> </span
+              >Google</a
+            >
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
-import { reactive, ref } from 'vue';
+import { ref, computed } from 'vue';
+import axios from 'axios';
 import { useRouter } from 'vue-router';
-import authApi from '@/api/authApi';
 
-const router = useRouter();
-const avatar = ref(null);
-const checkError = ref('');
-  
-//////////////////////////////////////////////////////////
-const member = reactive({
-  id: 'test',
-  name: '홍길동',
-  email: 'hong@gmail.com',
-  password: '1212',
-  password2: '1212',
-  avatar: null,
+const form = ref({
+  id: '',
+  password: '',
+  confirmPassword: '',
+  name: '',
+  email: '',
 });
-  //////////////////////////////////////////////////////////
-const disableSubmit = ref(true);
-const checkId = async () => {
-  if (!member.id) {
-    return alert('사용자 ID를 입력하세요.');
-  }
 
-  disableSubmit.value = await authApi.checkId(member.id);
-  console.log(disableSubmit.value, typeof disableSubmit.value);
-  checkError.value = disableSubmit.value ? '이미 사용중인 ID입니다.' : '사용가능한 ID입니다.';
+const isDuplicate = ref(false);
+const isAvailable = ref(false);
+const router = useRouter();
+
+const isFormValid = computed(() => {
+  return (
+    form.value.id &&
+    form.value.password &&
+    form.value.confirmPassword &&
+    form.value.name &&
+    form.value.email &&
+    form.value.password === form.value.confirmPassword &&
+    !isDuplicate.value // 중복된 경우 제출 비활성화
+  );
+});
+
+const checkDuplicate = async () => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/api/member/checkid/${form.value.id}`
+    );
+    isDuplicate.value = response.data; // 중복 여부 설정
+    isAvailable.value = !isDuplicate.value;
+  } catch (error) {
+    console.error('중복 확인 실패:', error);
+  }
 };
 
-const changeId = () => {
-  disableSubmit.value = true;
-  if (member.id) {
-    checkError.value = 'ID 중복 체크를 하셔야 합니다.';
-  } else {
-    checkError.value = '';
-  }
-};
+const submitForm = async () => {
+  let formData = new FormData();
 
-const join = async () => {
-  if (member.password != member.password2) {
-    return alert('비밀번호가 일치하지 않습니다.');
-  }
-
-  if (avatar.value.files.length > 0) {
-    member.avatar = avatar.value.files[0];
-  }
+  formData.append('id', form.value.id);
+  formData.append('password', form.value.password);
+  formData.append('name', form.value.name);
+  formData.append('email', form.value.email);
 
   try {
-    await authApi.create(member);
-    router.push({ name: 'home' });
-  } catch (e) {
-    console.error(e);
+    const response = await axios.post(
+      'http://localhost:8080/api/member',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    console.log('회원가입 성공:', response.data);
+    router.push('/welcome');
+  } catch (error) {
+    console.error('회원가입 실패:', error);
   }
 };
 </script>
 
-<template>
-  <div class="mt-5 mx-auto" style="width: 500px">
-    <h1 class="my-5">
-      <i class="fa-solid fa-user-plus"></i>
-      회원 가입
-    </h1>
+<style scoped>
+.back-img {
+  background-image: url('@/assets/images/register/register.jpg');
+  background-size: cover; /* 이미지가 div를 채우도록 설정 */
+  background-position: center; /* 이미지를 중앙에 위치시킴 */
+  height: 50vh; /* 왼쪽 이미지 div의 높이 설정 */
+}
 
-    <form @submit.prevent="join">
-      <div class="mb-3 mt-3">
-        <label for="id" class="form-label">
-          <i class="fa-solid fa-user"></i>
-          사용자 ID :
-          <button type="button" class="btn btn-success btn-sm py-0 me-2" @click="checkId">ID 중복 확인</button>
-          <span :class="disableSubmit.value ? 'text-primary' : 'text-danger'">{{ checkError }}</span>
-        </label>
-        <input type="text" class="form-control" placeholder="사용자 ID" id="id" @input="changeId" v-model="member.id" />
-      </div>
+.p-150 {
+  padding: 150px;
+}
 
-      <div>
-        <label for="avatar" class="form-label">
-          <i class="fa-solid fa-user-astronaut"></i>
-          아바타 이미지:
-        </label>
-        <input type="file" class="form-control" ref="avatar" id="avatar" accept="image/png, image/jpeg" />
-      </div>
-
-      <div class="mb-3 mt-3">
-        <label for="email" class="form-label">
-          <i class="fa-solid fa-envelope"></i>
-          email
-        </label>
-        <input type="email" class="form-control" placeholder="Email" id="email" v-model="member.email" />
-      </div>
-
-      <div class="mb-3 mt-3">
-        <label for="name" class="form-label">
-          <i class="fa-solid fa-user"></i>
-          name
-        </label>
-        <input type="text" class="form-control" placeholder="Name" id="name" v-model="member.name" />
-      </div>
-
-      <div class="mb-3">
-        <label for="password" class="form-label">
-          <i class="fa-solid fa-lock"></i>
-          비밀번호:
-        </label>
-        <input type="password" class="form-control" placeholder="비밀번호" id="password" v-model="member.password" />
-      </div>
-
-      <div class="mb-3">
-        <label for="password" class="form-label">
-          <i class="fa-solid fa-lock"></i>
-          비밀번호 확인:
-        </label>
-        <input type="password" class="form-control" placeholder="비밀번호 확인" id="password2" v-model="member.password2" />
-      </div>
-
-      <button type="submit" class="btn btn-primary mt-4" :disabled="disableSubmit">
-        <i class="fa-solid fa-user-plus"></i>
-        확인
-      </button>
-    </form>
-
-</div>
-</template>
+</style>
