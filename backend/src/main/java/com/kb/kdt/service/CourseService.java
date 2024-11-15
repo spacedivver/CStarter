@@ -1,6 +1,5 @@
 package com.kb.kdt.service;
 
-import com.kb.board.mapper.BoardMapper;
 import com.kb.kdt.dto.Course;
 import com.kb.kdt.mapper.CourseMapper;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +13,8 @@ import java.util.List;
 @Service
 public class CourseService {
     private final CourseMapper mapper;
-    private final BoardMapper m;
 
-    public List<Integer> getAllCourse() {
-        return mapper.getAllCourse();
+    public List<Course> getAllKDTCourse() {
+        return mapper.selectAllKDTCourse();
     }
 }
