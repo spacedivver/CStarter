@@ -13,6 +13,15 @@ import Footer from "./Footer.vue";
     <div class="content">
       <slot></slot>
     </div>
+  </div>
+  <div class="gap"></div>
+  <div class="container-xxl">
     <Footer />
   </div>
 </template>
+
+<style>
+.gap {
+  height: 50px;
+}
+</style>
