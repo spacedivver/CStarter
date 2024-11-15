@@ -16,15 +16,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@ApiIgnore
 @RestController
 @RequestMapping("/api/board")
 @RequiredArgsConstructor
 @Slf4j
-@Api(value = "BoardController", tags = "게시판 정보")
+@Api(value = "BoardController", tags = "게시판 정보", hidden = true)
 @PropertySource({"classpath:/application.properties"})
 public class BoardController {
 
