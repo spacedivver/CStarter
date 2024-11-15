@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kb.company.mapper.CompanyMapper">
+    <select id="selectAllNotice" resultType="com.kb.company.dto.Company">
+        select * from company;
+    </select>
+
+    <select id="selectCompany" resultType="com.kb.company.dto.Company">
+        select * from company where cpno = #{cpno};
+    </select>
+
+    <insert id="insertCompany" useGeneratedKeys="true" keyProperty="cpno">
+        insert into company(name, title, notice, is_user_option)
+        values (#{name}, #{title}, #{notice}, #{isUserOption});
+    </insert>
+
+</mapper>

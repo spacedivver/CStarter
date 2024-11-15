@@ -2,6 +2,7 @@ package com.kb.kdt.controller;
 
 import com.kb.kdt.dto.Course;
 import com.kb.kdt.service.CourseService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Api(value = "CourseController", tags = "KDT 강의 정보")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/course")
