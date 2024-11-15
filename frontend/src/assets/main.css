@@ -1,8 +1,6 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;200;300;400;500;600;700;800;900&display=swap'); */
 @import url('//fonts.googleapis.com/earlyaccess/notosanskr.css');
-* {
-  font-family: 'Noto Sans KR';
-}
+
 @media (min-width: 1400px) {
 
   .container-xl,
