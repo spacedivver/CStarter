@@ -23,65 +23,63 @@
     </div>
     <div class="title">기술스택 추가선택</div>
 
-<!-- Frontend 체크박스 -->
-<div class="checkbox-container">
-  <input
-    type="checkbox"
-    id="frontend-checkbox"
-    v-model="showFrontendPills"
-    class="pill-checkbox"
-  />
-  <label for="frontend-checkbox" class="pill-label">Frontend</label>
-</div>
-<div class="pill-container" v-show="showFrontendPills">
-  <ul class="nav nav-pills flex-row flex-wrap">
-    <li class="nav-item" v-for="(link, index) in frontendLinks" :key="index">
+    <!-- Frontend 체크박스 -->
+    <div class="checkbox-container">
       <input
         type="checkbox"
-        :id="'frontend-pill' + index"
-        class="nav-checkbox"
-        v-model="selectedItems"
-        :value="link.name"
+        id="frontend-checkbox"
+        v-model="showFrontendPills"
+        class="pill-checkbox"
       />
-      <label :for="'frontend-pill' + index" class="nav-label">
-        <img :src="link.icon" alt="" class="pill-icon" />
-        {{ link.name }}
-      </label>
-    </li>
-  </ul>
-</div>
-
-<!-- Backend 체크박스 -->
-<div class="checkbox-container">
-  <input
-    type="checkbox"
-    id="backend-checkbox"
-    v-model="showBackendPills"
-    class="pill-checkbox"
-  />
-  <label for="backend-checkbox" class="pill-label">Backend</label>
-</div>
-<div class="pill-container" v-show="showBackendPills">
-  <ul class="nav nav-pills flex-row flex-wrap">
-    <li class="nav-item" v-for="(link, index) in backendLinks" :key="index">
+      <label for="frontend-checkbox" class="pill-label">Frontend</label>
+    </div>
+    <div class="pill-container mb-3" v-show="showFrontendPills">
+      <ul class="nav nav-pills flex-row flex-wrap">
+        <li class="nav-item" v-for="(link, index) in frontendLinks" :key="index">
+          <input
+            type="checkbox"
+            :id="'frontend-pill' + index"
+            class="nav-checkbox"
+            v-model="selectedItems"
+            :value="link.name"
+          />
+          <label :for="'frontend-pill' + index" class="nav-label">
+            <img :src="link.icon" alt="" class="pill-icon" />
+            {{ link.name }}
+          </label>
+        </li>
+      </ul>
+    </div>
+    <!-- Backend 체크박스 -->
+    <div class="checkbox-container">
       <input
         type="checkbox"
-        :id="'backend-pill' + index"
-        class="nav-checkbox"
-        v-model="selectedItems"
-        :value="link.name"
+        id="backend-checkbox"
+        v-model="showBackendPills"
+        class="pill-checkbox"
       />
-      <label :for="'backend-pill' + index" class="nav-label">
-        <img :src="link.icon" alt="" class="pill-icon" />
-        {{ link.name }}
-      </label>
-    </li>
-  </ul>
-</div>
-
+      <label for="backend-checkbox" class="pill-label">Backend</label>
+    </div>
+    <div class="pill-container" v-show="showBackendPills">
+      <ul class="nav nav-pills flex-row flex-wrap">
+        <li class="nav-item" v-for="(link, index) in backendLinks" :key="index">
+          <input
+            type="checkbox"
+            :id="'backend-pill' + index"
+            class="nav-checkbox"
+            v-model="selectedItems"
+            :value="link.name"
+          />
+          <label :for="'backend-pill' + index" class="nav-label">
+            <img :src="link.icon" alt="" class="pill-icon" />
+            {{ link.name }}
+          </label>
+        </li>
+      </ul>
+    </div>
 
     <!-- 선택된 항목 보내기 버튼 -->
-    <div class="row col-2">
+    <div style="width: 150px;" class="mt-3">
       <button class="send-button" @click="handleComplete">선택 완료</button>
     </div>
   </div>
@@ -113,6 +111,23 @@ export default {
   { name: "JavaScript", icon: "/src/assets/images/icons/javascript.png" },
   { name: "React", icon: "/src/assets/images/icons/react.svg" },
   { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
 ]);
 
 const backendLinks = ref([
@@ -120,6 +135,19 @@ const backendLinks = ref([
   { name: "Express", icon: "/src/assets/images/icons/expressjs.png" },
   { name: "Django", icon: "/src/assets/images/icons/django.png" },
   { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+
   // { name: "Laravel", icon: "/src/assets/images/icons/laravel.png" },
   // { name: "ASP.NET", icon: "/src/assets/images/icons/aspnet.png" },
   // { name: "PHP", icon: "/src/assets/images/icons/php.png" },
@@ -176,33 +204,70 @@ const backendLinks = ref([
 
 <style scoped>
 .title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .course-selection {
   margin-bottom: 20px;
 }
-
+/* 체크박스 컨테이너 */
 .checkbox-container {
   margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
+/* 체크박스 숨기기 */
 .pill-checkbox {
-  margin-right: 8px;
+  display: none; /* 기본 체크박스를 숨김 */
 }
 
+/* 커스텀 체크박스 디자인 */
 .pill-label {
+  position: relative;
   font-size: 18px;
   cursor: pointer;
-  color: #007bff;
+  color: #3E66DF;
   font-weight: bold;
+  padding-left: 30px; /* 체크박스 크기만큼 왼쪽 여백 */
+  transition: color 0.3s ease;
 }
 
-.pill-container {
-  margin-top: 10px;
+.pill-label:before {
+  content: '';
+  position: absolute;
+  margin-top: 4px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #aeaeaf;
+  border-radius: 4px;
+  background-color: white;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+.pill-checkbox:checked + .pill-label:before {
+  background-color: #3E66DF;
+  border-color: #3E66DF;
+}
+
+.pill-checkbox:checked + .pill-label:after {
+  content: '✔';
+  position: absolute;
+  bottom: 2px;
+  left: 4px;
+  color: white;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.pill-label:hover {
+  color: #0056b3; /* Hover 시 텍스트 색상 변화 */
+}
+
 
 .nav-pills {
   margin-top: 10px;
@@ -221,16 +286,16 @@ const backendLinks = ref([
 
 .nav-label {
   padding: 8px 16px;
-  border: 1px solid #007bff;
+  border: 1px solid #DCDFE6;
   border-radius: 4px;
-  color: #007bff;
+  color: #3E66DF;
   cursor: pointer;
   background-color: #fff;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .nav-checkbox:checked + .nav-label {
-  background-color: #007bff;
+  background-color: #3E66DF;
   color: white;
 }
 
