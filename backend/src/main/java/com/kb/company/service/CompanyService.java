@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Log4j
@@ -34,8 +35,17 @@ public class CompanyService {
             return null;
         }
 
-        System.out.println(company.getCpno());
-
         return mapper.selectCompany(company.getCpno());
+    }
+
+    public List<Company> getRecommendedCompanyList(int cno) {
+        List<Integer> companyIdList = mapper.selectRecommendedCompany(cno);
+        List<Company> companyList = new ArrayList<>();
+
+        for (int cpno: companyIdList) {
+            companyList.add(findCompany(cpno));
+        }
+
+        return companyList;
     }
 }

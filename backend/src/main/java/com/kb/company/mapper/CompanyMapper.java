@@ -8,4 +8,5 @@ public interface CompanyMapper {
     List<Company> selectAllNotice();
     Company selectCompany(int cpno);
     int insertCompany(Company company);
+    List<Integer> selectRecommendedCompany(int cno);
 }

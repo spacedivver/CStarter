@@ -37,4 +37,14 @@ public class CompanyController {
         }
         return ResponseEntity.ok(company);
     }
+
+    @GetMapping("/notice")
+    public ResponseEntity<List<Company>> getRecommendedCompanyList(@RequestParam("cno") int cno) {
+        List<Company> companyList = service.getRecommendedCompanyList(cno);
+
+        if (companyList == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(companyList);
+    }
 }

@@ -12,9 +12,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class CourseService {
-    private final CourseMapper mapper;
+    private final CourseMapper courseMapper;
 
     public List<Course> getAllKDTCourse() {
-        return mapper.selectAllKDTCourse();
+        return courseMapper.selectAllKDTCourse();
     }
 }

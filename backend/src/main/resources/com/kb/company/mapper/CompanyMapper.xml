@@ -16,5 +16,9 @@
         insert into company(name, title, notice, is_user_option)
         values (#{name}, #{title}, #{notice}, #{isUserOption});
     </insert>
+    
+    <select id="selectRecommendedCompany" resultType="int">
+        select cpno from recommended_company where cno = #{cno};
+    </select>
 
 </mapper>
