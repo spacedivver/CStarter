@@ -1,14 +1,16 @@
 <script setup>
-import Header from './Header.vue';
-import NavBar from './NavBar.vue';
-import Footer from './Footer.vue';
+import Header from "./Header.vue";
+import NavBar from "./NavBar.vue";
+import Footer from "./Footer.vue";
 </script>
 
 <template>
-  <div class="container">
-    <Header />
+  <div class="container-lg">
+    <!-- <Header /> -->
     <NavBar />
-    <div class="content my-5 px-3">
+  </div>
+  <div class="">
+    <div class="content">
       <slot></slot>
     </div>
     <Footer />
