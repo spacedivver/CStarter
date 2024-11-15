@@ -52,14 +52,14 @@ const pageRequest = reactive({
   amount: parseInt(route.query.amount) || 12,
   searchType: "",
   searchValue: "",
-  types: ["all"],
+  selectedType: "all",
 });
 
 const articles = computed(() =>
   page.value.testList.filter(
     (article) =>
-      pageRequest.types.includes("all") ||
-      pageRequest.types.includes(article.type)
+      pageRequest.selectedType === "all" ||
+      pageRequest.selectedType === article.type
   )
 );
 
@@ -71,7 +71,7 @@ const handlePageChange = (pageNum) => {
       amount: pageRequest.amount,
       searchType: pageRequest.searchType,
       searchValue: pageRequest.searchValue,
-      types: pageRequest.types,
+      selectedType: pageRequest.selectedType,
     },
   });
 };
@@ -84,31 +84,14 @@ const searchChange = () => {
       amount: pageRequest.amount,
       searchType: pageRequest.searchType,
       searchValue: pageRequest.searchValue,
-      types: pageRequest.types,
+      selectedType: pageRequest.selectedType,
     },
   });
 };
 
 // 기술스택 필터링
 const toggleType = (type) => {
-  if (type === "all") {
-    if (pageRequest.types.includes("all")) {
-      pageRequest.types = [];
-    } else {
-      pageRequest.types = [
-        "all",
-        ...page.value.category
-          .map((item) => item.type)
-          .filter((t) => t !== "all"),
-      ];
-    }
-  } else {
-    if (pageRequest.types.includes(type)) {
-      pageRequest.types = pageRequest.types.filter((t) => t !== type);
-    } else {
-      pageRequest.types.push(type);
-    }
-  }
+  pageRequest.selectedType = type;
 };
 
 // 쿼리로 데이터 로딩
@@ -117,10 +100,8 @@ const load = async (query) => {
     // 여기에 실제 API 호출을 추가해야 합니다
     // 예시: page.value = await api.getList(query);
     page.value = await api.getList(query); // 이 부분에서 실제 API를 호출해 데이터를 받아옵니다.
-    if (pageRequest.types.length === 0) {
-      page.value.category.forEach((element) => {
-        pageRequest.types.push("all");
-      });
+    if (!pageRequest.selectedType) {
+      pageRequest.selectedType = "all";
     }
   } catch (error) {
     console.error("Failed to load data", error);
@@ -147,11 +128,12 @@ load(pageRequest);
           class="form-check form-check-inline"
         >
           <input
-            v-model="pageRequest.types"
+            v-model="pageRequest.selectedType"
             class="form-check-input"
-            type="checkbox"
+            type="radio"
             :id="item.type"
             :value="item.type"
+            @change="toggleType(item.type)"
           />
           <label class="form-check-label" :for="item.type">{{
             item.name
@@ -253,7 +235,6 @@ load(pageRequest);
 
 <style scoped>
 .title {
-  font-size: 1.5rem;
   font-weight: bold;
   color: #333;
 }
@@ -263,80 +244,33 @@ load(pageRequest);
 }
 
 .total-count {
+  color: #333;
   font-weight: bold;
 }
 
-.pagination-section i {
-  font-size: 1.2rem;
-  color: #007bff;
-}
-
-.btn-icon {
-  background: transparent;
-  border: none;
-  color: #007bff;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.btn-icon:hover {
-  color: #0056b3;
-}
-
-.search-dropdown,
-.search-input,
-.search-button {
-  height: 38px;
-}
-
-.search-button {
-  background-color: #ffffff;
-}
-
-/* 테이블 스타일 */
 .table {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
+  width: 100%;
+  background-color: #fff;
 }
 
-.table tbody tr:hover {
-  background-color: #f9f9f9 !important; /* 마우스 오버 시 배경색 */
-}
-
-.table th,
-.table td {
-  border-bottom: 1px solid #ddd;
-  padding: 8px;
-}
-
-.table thead th {
-  background-color: #f8f9fa;
-  font-weight: bold;
-}
-
-/* 기술 스택 색상 지정 */
 .stack-java {
-  color: #f28a1b; /* Java 색상 */
+  color: #007bff;
 }
 
 .stack-python {
-  color: #1976d2; /* Python 색상 */
+  color: #6f42c1;
 }
 
 .stack-vue {
-  color: #2bc06c;
+  color: #28a745;
 }
+
 .stack-SQL {
-  color: #0056b3;
+  color: #dc3545;
 }
 
-.stack-all {
-  color: #616161; /* 기본 색상 */
-}
-
-/* 제목 링크 스타일 */
 .router-link {
-  color: #333 !important; /* 파란색 링크 제거 */
+  color: inherit;
   text-decoration: none;
 }
 </style>
