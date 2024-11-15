@@ -1,7 +1,10 @@
 package com.kb.company.service;
 
-import com.kb.company.dto.Company;
-import com.kb.company.dto.RequestCompany;
+import com.kb.company.dto.company.Company;
+import com.kb.company.dto.company.RequestCompany;
+import com.kb.company.dto.job.CoverLetterItem;
+import com.kb.company.dto.job.Job;
+import com.kb.company.dto.job.JobResponse;
 import com.kb.company.mapper.CompanyMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -47,5 +50,21 @@ public class CompanyService {
         }
 
         return companyList;
+    }
+
+    public List<JobResponse> getCoverLetterOfJob(int cpno) {
+        List<Job> jobs = mapper.selectJobByCompany(cpno);
+        List<JobResponse> coverLetters = new ArrayList<>();
+
+        for (Job job: jobs) {
+            coverLetters.add(
+                    JobResponse.builder()
+                            .jno(job.getJno())
+                            .type(job.getType())
+                            .coverLetterItems(mapper.selectCoverLetterItem(job.getJno()))
+                            .build());
+        }
+
+        return coverLetters;
     }
 }

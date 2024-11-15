@@ -1,7 +1,9 @@
 package com.kb.company.controller;
 
-import com.kb.company.dto.Company;
-import com.kb.company.dto.RequestCompany;
+import com.kb.company.dto.company.Company;
+import com.kb.company.dto.job.Job;
+import com.kb.company.dto.company.RequestCompany;
+import com.kb.company.dto.job.JobResponse;
 import com.kb.company.service.CompanyService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -46,5 +48,15 @@ public class CompanyController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(companyList);
+    }
+
+    @GetMapping("/{cpno}/job")
+    public ResponseEntity<List<JobResponse>> getJobList(@PathVariable("cpno") int cpno) {
+        List<JobResponse> coverLetterOfJob = service.getCoverLetterOfJob(cpno);
+
+        if (coverLetterOfJob == null) {
+            ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(coverLetterOfJob);
     }
 }

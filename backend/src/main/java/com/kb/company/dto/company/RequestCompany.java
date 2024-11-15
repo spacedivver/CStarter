@@ -1,4 +1,4 @@
-package com.kb.company.dto;
+package com.kb.company.dto.company;
 
 import lombok.*;
 
@@ -7,10 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Company {
-    private int cpno;
+public class RequestCompany {
     private String name;
     private String title;
-    private String notice;
     private int isUserOption;
 }

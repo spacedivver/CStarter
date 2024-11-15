@@ -4,11 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.kb.company.mapper.CompanyMapper">
-    <select id="selectAllNotice" resultType="com.kb.company.dto.Company">
+    <select id="selectAllNotice" resultType="com.kb.company.dto.company.Company">
         select * from company;
     </select>
 
-    <select id="selectCompany" resultType="com.kb.company.dto.Company">
+    <select id="selectCompany" resultType="com.kb.company.dto.company.Company">
         select * from company where cpno = #{cpno};
     </select>
 
@@ -21,4 +21,11 @@
         select cpno from recommended_company where cno = #{cno};
     </select>
 
+    <select id="selectJobByCompany" resultType="com.kb.company.dto.job.Job">
+        select * from job where cpno = #{cpno};
+    </select>
+    
+    <select id="selectCoverLetterItem" resultType="com.kb.company.dto.job.CoverLetterItem">
+        select number, content, text_count from cover_letter_item where jno = #{jno};
+    </select>
 </mapper>
