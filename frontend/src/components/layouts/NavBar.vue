@@ -3,6 +3,7 @@ import { reactive, computed } from "vue";
 import MenuGroup from "./menu/MenuGroup.vue";
 import AccountMenuGroup from "./menu/AccountMenuGroup.vue";
 import config from "@/config";
+import {useRoute} from "vue-router";
 
 let state = reactive({ isNavShow: false });
 
@@ -11,15 +12,16 @@ let navClass = computed(() =>
 );
 
 const toggleNavShow = () => (state.isNavShow = !state.isNavShow);
+const route = useRoute();
 </script>
 
 <template>
-  <nav class="navbar navbar-expand-sm ">
+  <nav class="navbar navbar-expand-sm">
     <div class="container-fluid">
       <router-link class="navbar-brand" to="/">
         <img
           src="@/assets/images/CStarter_logo.png"
-          alt="KB Finance Logo"
+          alt="CStarter Logo"
           style="height: 48px"
         />
       </router-link>
@@ -46,4 +48,12 @@ const toggleNavShow = () => (state.isNavShow = !state.isNavShow);
 .custom-gap {
   width: 20px;
 }
+
+.nav-link.active {
+  background-color: transparent !important; /* 배경 투명 */
+  border-bottom: 2px solid #007bff !important; /* 파란색 밑줄 */
+  border-radius: 0 !important; /* 테두리 둥글게 하지 않음 */
+  border-width: 0;
+}
+
 </style>

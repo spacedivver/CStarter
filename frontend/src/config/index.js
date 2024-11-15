@@ -14,7 +14,7 @@ export default {
     },
     {
       title: '마이페이지',
-      url: '/gallery/list',
+      url: '/mypage',
       // icon: 'fa-regular fa-images',
     },
   ],

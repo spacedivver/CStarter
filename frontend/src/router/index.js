@@ -9,11 +9,11 @@ import SelectStack from '../pages/letter/SelectStack.vue';
 import Result from '../pages/report/Result.vue';
 import Write from '../pages/common/Write.vue';
 import ViewInfo from '../pages/letter/ViewInfo.vue';
+import Mypage from '../pages/mypage/Mypage.vue';
 
 import authRotes from './auth';
 import boardRotes from './board';
 import travelRoutes from './travel';
-import galleryRoutes from './gallery';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,10 +68,14 @@ const router = createRouter({
       name: 'Write',
       component: Write,
     },
+    {
+      path: '/Mypage',
+      name: 'Mypage',
+      component: Mypage,
+    },
     ...authRotes,
     ...boardRotes,
     ...travelRoutes,
-    ...galleryRoutes,
   ],
 });
 

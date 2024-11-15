@@ -9,8 +9,8 @@ import Footer from "./Footer.vue";
     <!-- <Header /> -->
     <NavBar />
   </div>
-  <div class="">
-    <div class="content">
+  <div class="container-xxl">
+    <div class="content my-3 ">
       <slot></slot>
     </div>
     <Footer />
