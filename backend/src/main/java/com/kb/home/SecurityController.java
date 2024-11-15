@@ -1,6 +1,7 @@
 package com.kb.home;
 
 import com.kb.member.dto.Member;
+import io.swagger.annotations.Api;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -9,10 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
+@ApiIgnore
 @Log4j
 @RequestMapping("/api/security")
 @RestController
+@Api(value = "SecurityController", tags = "보안 정보", hidden = true)
 public class SecurityController {
 
     @GetMapping("/all")

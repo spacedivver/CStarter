@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kb.kdt.mapper.CourseMapper">
+    <select id="selectAllKDTCourse" resultType="com.kb.kdt.dto.Course">
+        select * from course;
+    </select>
+
+    <select id="selectTechSkills" resultType="com.kb.kdt.dto.TechSkill">
+        SELECT ts.tsno, ts.name FROM tech_skill ts JOIN tech_list tl
+        ON tl.tsno = ts.tsno
+        WHERE tl.cno = #{cno}
+    </select>
+
+</mapper>
