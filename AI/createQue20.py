@@ -22,8 +22,8 @@ def generate_questions(company, role, intro_questions, tech_stack, intro_text):
     ]
     
     # 생성 요청 중 메시지 내용 출력
-    print("\n=== ChatCompletion 요청 메시지 ===")
-    print(messages)
+    # print("\n=== ChatCompletion 요청 메시지 ===")
+    # print(messages)
 
     # ChatCompletion API를 사용해 질문 생성
     response = client.chat.completions.create(
@@ -38,6 +38,7 @@ def generate_questions(company, role, intro_questions, tech_stack, intro_text):
     print("\n=== ChatCompletion 응답 ===")
     print(content)
     return content.split("\n")
+# def 끝 줄 ==============================================================
 
 # 데이터 로드
 with open('question.json', 'r', encoding='utf-8') as q_file:
