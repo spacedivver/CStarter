@@ -7,4 +7,11 @@
     <select id="selectAllKDTCourse" resultType="com.kb.kdt.dto.Course">
         select * from course;
     </select>
+
+    <select id="selectTechSkills" resultType="com.kb.kdt.dto.TechSkill">
+        SELECT ts.tsno, ts.name FROM tech_skill ts JOIN tech_list tl
+        ON tl.tsno = ts.tsno
+        WHERE tl.cno = #{cno}
+    </select>
+
 </mapper>

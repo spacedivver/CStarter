@@ -1,6 +1,7 @@
 package com.kb.kdt.controller;
 
 import com.kb.kdt.dto.Course;
+import com.kb.kdt.dto.CourseResponse;
 import com.kb.kdt.service.CourseService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ public class CourseController {
     private final CourseService service;
 
     @GetMapping("")
-    public ResponseEntity<List<Course>> getAllCourse() {
-        List<Course> courses = service.getAllKDTCourse();
+    public ResponseEntity<List<CourseResponse>> getAllCourse() {
+        List<CourseResponse> courses = service.getAllKDTCourse();
 
         if (courses.size() == 0) {
             return ResponseEntity.noContent().build();

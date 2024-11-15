@@ -1,7 +1,6 @@
 package com.kb.company.controller;
 
 import com.kb.company.dto.company.Company;
-import com.kb.company.dto.job.Job;
 import com.kb.company.dto.company.RequestCompany;
 import com.kb.company.dto.job.JobResponse;
 import com.kb.company.service.CompanyService;
