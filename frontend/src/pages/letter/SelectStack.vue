@@ -241,8 +241,8 @@ const backendLinks = ref([
   position: absolute;
   margin-top: 4px;
   left: 0;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: 1px solid #aeaeaf;
   border-radius: 4px;
   background-color: white;
@@ -255,10 +255,10 @@ const backendLinks = ref([
 }
 
 .pill-checkbox:checked + .pill-label:after {
-  content: '✔';
+  content: '';
   position: absolute;
-  bottom: 2px;
-  left: 4px;
+  bottom: 0px;
+  left: 2px; 
   color: white;
   font-size: 16px;
   transition: color 0.3s ease;
@@ -288,7 +288,7 @@ const backendLinks = ref([
   padding: 8px 16px;
   border: 1px solid #DCDFE6;
   border-radius: 4px;
-  color: #3E66DF;
+  color: black;
   cursor: pointer;
   background-color: #fff;
   transition: background-color 0.3s, color 0.3s;
