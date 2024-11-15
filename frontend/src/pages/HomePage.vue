@@ -1,5 +1,5 @@
 <template>
-  <div class="container-xxl row-bg">
+  <div class="row-bg">
     <div class="container">
       <div class="row d-flex align-items-center">
         <!-- 왼쪽 이미지 -->
