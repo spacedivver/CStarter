@@ -21,56 +21,64 @@
         />
       </el-select>
     </div>
+    <div class="title">기술스택 추가선택</div>
 
-    <!-- Frontend 체크박스 -->
-    <div class="checkbox-container">
+<!-- Frontend 체크박스 -->
+<div class="checkbox-container">
+  <input
+    type="checkbox"
+    id="frontend-checkbox"
+    v-model="showFrontendPills"
+    class="pill-checkbox"
+  />
+  <label for="frontend-checkbox" class="pill-label">Frontend</label>
+</div>
+<div class="pill-container" v-show="showFrontendPills">
+  <ul class="nav nav-pills flex-row flex-wrap">
+    <li class="nav-item" v-for="(link, index) in frontendLinks" :key="index">
       <input
         type="checkbox"
-        id="frontend-checkbox"
-        v-model="showFrontendPills"
-        class="pill-checkbox"
+        :id="'frontend-pill' + index"
+        class="nav-checkbox"
+        v-model="selectedItems"
+        :value="link.name"
       />
-      <label for="frontend-checkbox" class="pill-label">Frontend</label>
-    </div>
-    <div class="pill-container" v-show="showFrontendPills">
-      <ul class="nav nav-pills flex-row">
-        <li class="nav-item" v-for="(link, index) in frontendLinks" :key="index">
-          <input
-            type="checkbox"
-            :id="'frontend-pill' + index"
-            class="nav-checkbox"
-            v-model="selectedItems"
-            :value="link"
-          />
-          <label :for="'frontend-pill' + index" class="nav-label">{{ link }}</label>
-        </li>
-      </ul>
-    </div>
+      <label :for="'frontend-pill' + index" class="nav-label">
+        <img :src="link.icon" alt="" class="pill-icon" />
+        {{ link.name }}
+      </label>
+    </li>
+  </ul>
+</div>
 
-    <!-- Backend 체크박스 -->
-    <div class="checkbox-container">
+<!-- Backend 체크박스 -->
+<div class="checkbox-container">
+  <input
+    type="checkbox"
+    id="backend-checkbox"
+    v-model="showBackendPills"
+    class="pill-checkbox"
+  />
+  <label for="backend-checkbox" class="pill-label">Backend</label>
+</div>
+<div class="pill-container" v-show="showBackendPills">
+  <ul class="nav nav-pills flex-row flex-wrap">
+    <li class="nav-item" v-for="(link, index) in backendLinks" :key="index">
       <input
         type="checkbox"
-        id="backend-checkbox"
-        v-model="showBackendPills"
-        class="pill-checkbox"
+        :id="'backend-pill' + index"
+        class="nav-checkbox"
+        v-model="selectedItems"
+        :value="link.name"
       />
-      <label for="backend-checkbox" class="pill-label">Backend</label>
-    </div>
-    <div class="pill-container" v-show="showBackendPills">
-      <ul class="nav nav-pills flex-row">
-        <li class="nav-item" v-for="(link, index) in backendLinks" :key="index">
-          <input
-            type="checkbox"
-            :id="'backend-pill' + index"
-            class="nav-checkbox"
-            v-model="selectedItems"
-            :value="link"
-          />
-          <label :for="'backend-pill' + index" class="nav-label">{{ link }}</label>
-        </li>
-      </ul>
-    </div>
+      <label :for="'backend-pill' + index" class="nav-label">
+        <img :src="link.icon" alt="" class="pill-icon" />
+        {{ link.name }}
+      </label>
+    </li>
+  </ul>
+</div>
+
 
     <!-- 선택된 항목 보내기 버튼 -->
     <div class="row col-2">
@@ -99,9 +107,34 @@ export default {
       { value: 'backend', label: 'Backend 과정' },
       { value: 'fullstack', label: 'Fullstack 과정' },
     ]);
+    const frontendLinks = ref([
+  { name: "HTML", icon: "/src/assets/images/icons/html.png" },
+  { name: "CSS", icon: "/src/assets/images/icons/css.png" },
+  { name: "JavaScript", icon: "/src/assets/images/icons/javascript.png" },
+  { name: "React", icon: "/src/assets/images/icons/react.svg" },
+  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+]);
 
-    const frontendLinks = ref(["Frontend Link 1", "Frontend Link 2", "Frontend Link 3"]);
-    const backendLinks = ref(["Backend Link 1", "Backend Link 2", "Backend Link 3"]);
+const backendLinks = ref([
+{ name: "Node.js", icon: "/src/assets/images/icons/nodejs.png" },
+  { name: "Express", icon: "/src/assets/images/icons/expressjs.png" },
+  { name: "Django", icon: "/src/assets/images/icons/django.png" },
+  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+  // { name: "Laravel", icon: "/src/assets/images/icons/laravel.png" },
+  // { name: "ASP.NET", icon: "/src/assets/images/icons/aspnet.png" },
+  // { name: "PHP", icon: "/src/assets/images/icons/php.png" },
+  // { name: "Go", icon: "/src/assets/images/icons/go.png" },
+  // { name: "Java", icon: "/src/assets/images/icons/java.png" },
+  // { name: "C#", icon: "/src/assets/images/icons/csharp.png" },
+  // { name: "MongoDB", icon: "/src/assets/images/icons/mongodb.png" },
+  // { name: "PostgreSQL", icon: "/src/assets/images/icons/postgresql.png" },
+  { name: "MySQL", icon: "/src/assets/images/icons/mysql.png" },
+  // { name: "Redis", icon: "/src/assets/images/icons/redis.png" },
+  // { name: "Firebase", icon: "/src/assets/images/icons/firebase.png" },
+  // { name: "GraphQL", icon: "/src/assets/images/icons/graphql.png" },
+  // { name: "REST API", icon: "/src/assets/images/icons/restapi.png" },
+  // { name: "Docker", icon: "/src/assets/images/icons/docker.png" },
+]);
 
     // 필터링된 과정 배열
     const filteredCourses = computed(() => {
@@ -141,15 +174,10 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .title {
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.search-container {
   margin-bottom: 20px;
 }
 
@@ -184,6 +212,7 @@ export default {
 
 .nav-item {
   margin-right: 10px;
+  margin-bottom: 10px; /* 줄바꿈을 위해 여백 추가 */
 }
 
 .nav-checkbox {
@@ -197,6 +226,7 @@ export default {
   color: #007bff;
   cursor: pointer;
   background-color: #fff;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .nav-checkbox:checked + .nav-label {
@@ -213,6 +243,7 @@ export default {
   cursor: pointer;
   font-size: 16px;
   width: 100%;
+  transition: background-color 0.3s;
 }
 
 .send-button:hover {
@@ -226,4 +257,11 @@ export default {
 .row {
   margin-top: 20px;
 }
+.pill-icon {
+  width: 25px; /* 아이콘 크기 */
+  height: 25px; /* 아이콘 크기 */
+  margin-right: 3px; /* 이름과 아이콘 사이 간격 */
+  object-fit: contain; /* 비율을 유지하며 크기를 조절 */
+}
+
 </style>
