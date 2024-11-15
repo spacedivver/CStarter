@@ -14,7 +14,7 @@ const toggleNavShow = () => (state.isNavShow = !state.isNavShow);
 </script>
 
 <template>
-  <nav class="navbar navbar-expand-sm shadow-sm">
+  <nav class="navbar navbar-expand-sm ">
     <div class="container-fluid">
       <router-link class="navbar-brand" to="/">
         <img

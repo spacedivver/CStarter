@@ -4,7 +4,7 @@
   font-family: 'Noto Sans KR';
 }
 @media (min-width: 1400px) {
-  .container-xxl,
+
   .container-xl,
 
   .container-md,
@@ -14,6 +14,9 @@
   }
   .container-lg {
     max-width: 1080px !important;
+  }
+  .container-xxl {
+    max-width: 1920px !important;
   }
 }
 
