@@ -1,14 +1,33 @@
 <script setup>
 const props = defineProps({
-  menu: { Type: Object, required: true },
+  menu: { type: Object, required: true }, // 'Type'을 'type'으로 수정
 });
 </script>
+
 <template>
   <li class="nav-item">
-    <router-link class="nav-link" :to="menu.url">
-      <i :class="menu.icon"></i>
+    <!-- 현재 경로와 menu.url이 일치하면 active 클래스 추가 -->
+    <router-link
+      class="nav-link"
+      :to="menu.url"
+      :class="{ active: $route.path === menu.url }"
+    >
       {{ menu.title }}
     </router-link>
   </li>
 </template>
-<style></style>
+
+<style scoped>
+.nav-link {
+  color: black;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+/* 활성화된 링크 스타일 */
+.nav-link.active {
+  color: #007bff;
+  font-weight: bold;
+  border-bottom: 4px solid #007bff;
+}
+</style>
