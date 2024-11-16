@@ -109,6 +109,16 @@ load(pageRequest);
 </script>
 
 <template>
+    <div class="header-bg">
+    <div class="container d-flex justify-content-center">
+      
+      <img
+      src="@/assets/images/mypage-header.png"
+      alt=""
+      style="width: 50%; height: auto; padding:20px;"
+      />
+    </div>
+  </div>
   <div class="container">
     <h4 class="title mb-4 d-flex justify-content-center"><i class="fa-solid fa-copy"></i> 푼 문제</h4>
 
@@ -270,11 +280,11 @@ load(pageRequest);
 }
 
 .stack-java {
-  color: #007bff;
+  color: #f28a1b;
 }
 
 .stack-python {
-  color: #6f42c1;
+  color: #1976d2;
 }
 
 .stack-vue {
@@ -288,5 +298,70 @@ load(pageRequest);
 .router-link {
   color: inherit;
   text-decoration: none;
+  display: block; /* Ensures the link spans the entire text cell */
+  padding: 5px;  /* Adds a little space around the link */
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1; /* Light background on hover */
+  cursor: default; /* Prevent cursor change on non-clickable areas */
+}
+
+.table tbody tr .router-link:hover {
+  color: #3E66DF; /* Highlight on hover with a soft color */
+  cursor: pointer; /* Ensure pointer cursor is only on the link */
+}
+
+.table tbody tr td {
+  cursor: default; /* Ensure cursor remains default in non-clickable areas */
+}
+/* 각 테이블 열에 고정된 너비를 설정 */
+.table th, .table td {
+  vertical-align: middle; /* 세로 중앙 정렬 */
+  width: 10%;
+}
+
+.table th {
+  text-align: center;
+}
+
+/* 각 기술스택의 열 너비도 고정 */
+.table th:nth-child(2), .table td:nth-child(2) {
+  width: 20%;
+  text-align: center
+}
+
+.table th:nth-child(3), .table td:nth-child(3) {
+  width: 60%;
+}
+
+.table {
+  width: 100%;
+  background-color: #fff;
+  border-collapse: collapse; /* 테두리 겹침 방지 */
+  border: 1px solid #ddd; /* 테이블 전체에 외곽선 추가 */
+}
+
+.table th {
+  vertical-align: middle;
+}
+
+.table th {
+  text-align: center;
+  background-color: #f8f9fa; /* 헤더 배경 색상 */
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1; /* 행 hover 시 배경색 */
+  cursor: default; /* 비클릭 영역에서 커서 변경되지 않게 */
+}
+.header-bg {
+  background-color: #d3f1fd;
+  margin-bottom: 30px;
+}
+.nav-link.active {
+  color: #007bff;
+  font-weight: bold;
+  border-bottom: 2px solid !important;
 }
 </style>

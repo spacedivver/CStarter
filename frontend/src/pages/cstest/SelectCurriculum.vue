@@ -249,7 +249,7 @@ export default {
 }
 
 .header-bg {
-  background-color: #ffe9db;
+  background-color: #d3f1fd;
   margin-bottom: 30px;
 }
 </style>
