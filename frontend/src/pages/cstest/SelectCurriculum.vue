@@ -1,15 +1,6 @@
 <template>
-  <div class="header-bg">
-    <div class="container d-flex justify-content-center">
-      
-      <img
-      src="@/assets/images/cstest-header.png"
-      alt=""
-      style="width: 50%; height: auto; padding:20px;"
-      />
-    </div>
-  </div>
-  <div class="container">
+  <CStestHeader />
+  <div class="container mb-5p">
     <div class="title">커리큘럼</div>
 
     <!-- 키워드 검색 영역 -->
@@ -126,10 +117,14 @@
 </template>
 
 <script>
+import CStestHeader from "./CStestHeader.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 export default {
+  components : {
+    CStestHeader,
+  },
   setup() {
     const router = useRouter();
     const searchValue = ref("");
@@ -248,8 +243,4 @@ export default {
   margin-top: 20px;
 }
 
-.header-bg {
-  background-color: #d3f1fd;
-  margin-bottom: 30px;
-}
 </style>

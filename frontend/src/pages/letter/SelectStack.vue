@@ -1,5 +1,6 @@
 <template>
-  <div class="container">
+  <LetterHeader />
+<div class="container mb-5p">
     <div class="title">커리큘럼</div>
 
     <!-- 과정 선택 -->
@@ -23,17 +24,9 @@
     </div>
     <div class="title">기술스택 추가선택</div>
 
-    <!-- Frontend 체크박스 -->
-    <div class="checkbox-container">
-      <input
-        type="checkbox"
-        id="frontend-checkbox"
-        v-model="showFrontendPills"
-        class="pill-checkbox"
-      />
-      <label for="frontend-checkbox" class="pill-label">Frontend</label>
-    </div>
-    <div class="pill-container mb-3" v-show="showFrontendPills">
+    <!-- Frontend -->
+    <div class="pill-container mb-3">
+      <div class="pill-category">Frontend</div>
       <ul class="nav nav-pills flex-row flex-wrap">
         <li class="nav-item" v-for="(link, index) in frontendLinks" :key="index">
           <input
@@ -50,17 +43,10 @@
         </li>
       </ul>
     </div>
-    <!-- Backend 체크박스 -->
-    <div class="checkbox-container">
-      <input
-        type="checkbox"
-        id="backend-checkbox"
-        v-model="showBackendPills"
-        class="pill-checkbox"
-      />
-      <label for="backend-checkbox" class="pill-label">Backend</label>
-    </div>
-    <div class="pill-container" v-show="showBackendPills">
+
+    <!-- Backend -->
+    <div class="pill-container">
+      <div class="pill-category">Backend</div>
       <ul class="nav nav-pills flex-row flex-wrap">
         <li class="nav-item" v-for="(link, index) in backendLinks" :key="index">
           <input
@@ -78,6 +64,46 @@
       </ul>
     </div>
 
+    <!-- AI -->
+    <div class="pill-container">
+      <div class="pill-category">AI</div>
+      <ul class="nav nav-pills flex-row flex-wrap">
+        <li class="nav-item" v-for="(link, index) in aiLinks" :key="index">
+          <input
+            type="checkbox"
+            :id="'ai-pill' + index"
+            class="nav-checkbox"
+            v-model="selectedItems"
+            :value="link.name"
+          />
+          <label :for="'ai-pill' + index" class="nav-label">
+            <img :src="link.icon" alt="" class="pill-icon" />
+            {{ link.name }}
+          </label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 인프라 -->
+    <div class="pill-container">
+      <div class="pill-category">Infra</div>
+      <ul class="nav nav-pills flex-row flex-wrap">
+        <li class="nav-item" v-for="(link, index) in infraLinks" :key="index">
+          <input
+            type="checkbox"
+            :id="'infra-pill' + index"
+            class="nav-checkbox"
+            v-model="selectedItems"
+            :value="link.name"
+          />
+          <label :for="'infra-pill' + index" class="nav-label">
+            <img :src="link.icon" alt="" class="pill-icon" />
+            {{ link.name }}
+          </label>
+        </li>
+      </ul>
+    </div>
+
     <!-- 선택된 항목 보내기 버튼 -->
     <div style="width: 150px;" class="mt-3">
       <button class="send-button" @click="handleComplete">선택 완료</button>
@@ -88,13 +114,15 @@
 <script>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import LetterHeader from "/src/components/letter/LetterHeader.vue";
 
 export default {
+  components: {
+    LetterHeader
+  },
   setup() {
     const router = useRouter();
     const selectedCourse = ref(null);
-    const showFrontendPills = ref(false);
-    const showBackendPills = ref(false);
     const selectedItems = ref([]);
     const loading = ref(false);
     const searchQuery = ref("");
@@ -106,63 +134,77 @@ export default {
       { value: 'fullstack', label: 'Fullstack 과정' },
     ]);
     const frontendLinks = ref([
-  { name: "HTML", icon: "/src/assets/images/icons/html.png" },
-  { name: "CSS", icon: "/src/assets/images/icons/css.png" },
-  { name: "JavaScript", icon: "/src/assets/images/icons/javascript.png" },
-  { name: "React", icon: "/src/assets/images/icons/react.svg" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-]);
+      { name: "HTML", icon: "/src/assets/images/icons/html.png" },
+      { name: "CSS", icon: "/src/assets/images/icons/css.png" },
+      { name: "JavaScript", icon: "/src/assets/images/icons/javascript.png" },
+      { name: "React", icon: "/src/assets/images/icons/react.svg" },
+      { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
+      { name: "Angular", icon: "/src/assets/images/icons/angular.png" },
+      { name: "Svelte", icon: "/src/assets/images/icons/svelte.png" },
+      { name: "Ember.js", icon: "/src/assets/images/icons/ember.png" },
+      { name: "Bootstrap", icon: "/src/assets/images/icons/bootstrap.png" },
+      { name: "Tailwind CSS", icon: "/src/assets/images/icons/tailwind.png" },
+      { name: "jQuery", icon: "/src/assets/images/icons/jquery.png" },
+      { name: "TypeScript", icon: "/src/assets/images/icons/typescript.png" },
+      { name: "Redux", icon: "/src/assets/images/icons/redux.png" },
+      { name: "Webpack", icon: "/src/assets/images/icons/webpack.png" },
+      { name: "Gulp", icon: "/src/assets/images/icons/gulp.png" },
+    ]);
 
-const backendLinks = ref([
-{ name: "Node.js", icon: "/src/assets/images/icons/nodejs.png" },
-  { name: "Express", icon: "/src/assets/images/icons/expressjs.png" },
-  { name: "Django", icon: "/src/assets/images/icons/django.png" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+    const backendLinks = ref([
+      { name: "Node.js", icon: "/src/assets/images/icons/nodejs.png" },
+      { name: "Express", icon: "/src/assets/images/icons/expressjs.png" },
+      { name: "Django", icon: "/src/assets/images/icons/django.png" },      
+      { name: "Spring", icon: "/src/assets/images/icons/spring.png" },
+      { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.png" },
+      { name: "MySQL", icon: "/src/assets/images/icons/mysql.png" },
+      { name: "Ruby on Rails", icon: "/src/assets/images/icons/rails.png" },
+      { name: "Flask", icon: "/src/assets/images/icons/flask.png" },
+      { name: "Laravel", icon: "/src/assets/images/icons/laravel.png" },
+      { name: "ASP.NET", icon: "/src/assets/images/icons/aspnet.png" },
+      { name: "PHP", icon: "/src/assets/images/icons/php.png" },
+      { name: "PostgreSQL", icon: "/src/assets/images/icons/postgresql.png" },
+      { name: "MongoDB", icon: "/src/assets/images/icons/mongodb.png" },
+      { name: "GraphQL", icon: "/src/assets/images/icons/graphql.png" },
+      { name: "Redis", icon: "/src/assets/images/icons/redis.png" },
+      { name: "Firebase", icon: "/src/assets/images/icons/firebase.png" },
+    ]);
 
-  // { name: "Laravel", icon: "/src/assets/images/icons/laravel.png" },
-  // { name: "ASP.NET", icon: "/src/assets/images/icons/aspnet.png" },
-  // { name: "PHP", icon: "/src/assets/images/icons/php.png" },
-  // { name: "Go", icon: "/src/assets/images/icons/go.png" },
-  // { name: "Java", icon: "/src/assets/images/icons/java.png" },
-  // { name: "C#", icon: "/src/assets/images/icons/csharp.png" },
-  // { name: "MongoDB", icon: "/src/assets/images/icons/mongodb.png" },
-  // { name: "PostgreSQL", icon: "/src/assets/images/icons/postgresql.png" },
-  { name: "MySQL", icon: "/src/assets/images/icons/mysql.png" },
-  // { name: "Redis", icon: "/src/assets/images/icons/redis.png" },
-  // { name: "Firebase", icon: "/src/assets/images/icons/firebase.png" },
-  // { name: "GraphQL", icon: "/src/assets/images/icons/graphql.png" },
-  // { name: "REST API", icon: "/src/assets/images/icons/restapi.png" },
-  // { name: "Docker", icon: "/src/assets/images/icons/docker.png" },
-]);
+    const aiLinks = ref([
+      { name: "TensorFlow", icon: "/src/assets/images/icons/tensorflow.png" },
+      { name: "PyTorch", icon: "/src/assets/images/icons/pytorch.png" },
+      { name: "Keras", icon: "/src/assets/images/icons/keras.png" },
+      { name: "Scikit-learn", icon: "/src/assets/images/icons/scikit-learn.png" },
+      { name: "Pandas", icon: "/src/assets/images/icons/pandas.png" },
+      { name: "OpenCV", icon: "/src/assets/images/icons/opencv.png" },
+      { name: "NLTK", icon: "/src/assets/images/icons/nltk.webp" },
+      { name: "spaCy", icon: "/src/assets/images/icons/spacy.png" },
+      { name: "MXNet", icon: "/src/assets/images/icons/mxnet.png" },
+      { name: "Hugging Face Transformers", icon: "/src/assets/images/icons/huggingface.png" },
+      { name: "ONNX", icon: "/src/assets/images/icons/onnx.png" },
+      { name: "Caffe", icon: "/src/assets/images/icons/caffe.webp" },
+      { name: "Theano", icon: "/src/assets/images/icons/theano.png" },
+      { name: "Matplotlib", icon: "/src/assets/images/icons/matplotlib.png" },
+      { name: "XGBoost", icon: "/src/assets/images/icons/xgboost.png" },
+    ]);
+
+    const infraLinks = ref([
+      { name: "AWS", icon: "/src/assets/images/icons/aws.png" },
+      { name: "Docker", icon: "/src/assets/images/icons/docker.png" },
+      { name: "Kubernetes", icon: "/src/assets/images/icons/kubernetes.png" },
+      { name: "Terraform", icon: "/src/assets/images/icons/terraform.png" },
+      { name: "Ansible", icon: "/src/assets/images/icons/ansible.png" },
+      { name: "Azure", icon: "/src/assets/images/icons/azure.png" },
+      { name: "Google Cloud", icon: "/src/assets/images/icons/gcp.png" },
+      { name: "Jenkins", icon: "/src/assets/images/icons/jenkins.png" },
+      { name: "GitLab", icon: "/src/assets/images/icons/gitlab.svg" },
+      { name: "Prometheus", icon: "/src/assets/images/icons/prometheus.png" },
+      { name: "Grafana", icon: "/src/assets/images/icons/grafana.png" },
+      { name: "ELK Stack", icon: "/src/assets/images/icons/elk.svg" },
+      { name: "Nagios", icon: "/src/assets/images/icons/nagios.png" },
+      { name: "Chef", icon: "/src/assets/images/icons/chef.png" },
+      { name: "Puppet", icon: "/src/assets/images/icons/puppet.png" },
+    ]);
 
     // 필터링된 과정 배열
     const filteredCourses = computed(() => {
@@ -189,11 +231,11 @@ const backendLinks = ref([
     return {
       selectedCourse,
       filteredCourses,
-      showFrontendPills,
-      showBackendPills,
       selectedItems,
       frontendLinks,
       backendLinks,
+      aiLinks,
+      infraLinks,
       handleComplete,
       handleFilterCourses,
       loading,
@@ -212,62 +254,17 @@ const backendLinks = ref([
 .course-selection {
   margin-bottom: 20px;
 }
-/* 체크박스 컨테이너 */
-.checkbox-container {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+
+.pill-container {
+  margin-bottom: 20px;
 }
 
-/* 체크박스 숨기기 */
-.pill-checkbox {
-  display: none; /* 기본 체크박스를 숨김 */
-}
-
-/* 커스텀 체크박스 디자인 */
-.pill-label {
-  position: relative;
+.pill-category {
   font-size: 18px;
-  cursor: pointer;
-  color: #3E66DF;
   font-weight: bold;
-  padding-left: 30px; /* 체크박스 크기만큼 왼쪽 여백 */
-  transition: color 0.3s ease;
+  color: #3E66DF;
+  margin-bottom: 10px;
 }
-
-.pill-label:before {
-  content: '';
-  position: absolute;
-  margin-top: 4px;
-  left: 0;
-  width: 18px;
-  height: 18px;
-  border: 1px solid #aeaeaf;
-  border-radius: 4px;
-  background-color: white;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.pill-checkbox:checked + .pill-label:before {
-  background-color: #3E66DF;
-  border-color: #3E66DF;
-}
-
-.pill-checkbox:checked + .pill-label:after {
-  content: '';
-  position: absolute;
-  bottom: 0px;
-  left: 2px; 
-  color: white;
-  font-size: 16px;
-  transition: color 0.3s ease;
-}
-
-.pill-label:hover {
-  color: #0056b3; /* Hover 시 텍스트 색상 변화 */
-}
-
 
 .nav-pills {
   margin-top: 10px;
@@ -319,14 +316,12 @@ const backendLinks = ref([
   background-color: #1e7e34;
 }
 
-.row {
-  margin-top: 20px;
-}
 .pill-icon {
   width: 25px; /* 아이콘 크기 */
   height: 25px; /* 아이콘 크기 */
   margin-right: 3px; /* 이름과 아이콘 사이 간격 */
   object-fit: contain; /* 비율을 유지하며 크기를 조절 */
 }
+
 
 </style>

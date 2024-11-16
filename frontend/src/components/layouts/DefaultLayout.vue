@@ -14,7 +14,6 @@ import Footer from "./Footer.vue";
       <slot></slot>
     </div>
   </div>
-  <div class="gap"></div>
   <div class="">
     <Footer />
   </div>
