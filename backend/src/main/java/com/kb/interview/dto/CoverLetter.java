@@ -11,6 +11,6 @@ import java.util.Date;
 @Builder
 public class CoverLetter {
     private int clno;
-    private int uno;
+    private int mno;
     private Date createdAt;
 }

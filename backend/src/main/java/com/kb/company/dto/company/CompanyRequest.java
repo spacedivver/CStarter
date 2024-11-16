@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RequestCompany {
+public class CompanyRequest {
     private String name;
     private String title;
     private int isUserOption;

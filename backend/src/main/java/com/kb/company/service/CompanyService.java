@@ -1,7 +1,7 @@
 package com.kb.company.service;
 
 import com.kb.company.dto.company.Company;
-import com.kb.company.dto.company.RequestCompany;
+import com.kb.company.dto.company.CompanyRequest;
 import com.kb.company.dto.job.Job;
 import com.kb.company.dto.job.JobResponse;
 import com.kb.company.mapper.CompanyMapper;
@@ -26,11 +26,11 @@ public class CompanyService {
         return mapper.selectCompany(cpno);
     }
 
-    public Company createCompany(RequestCompany requestCompany) {
+    public Company createCompany(CompanyRequest companyRequest) {
         Company company = Company.builder()
-                .name(requestCompany.getName())
-                .title(requestCompany.getTitle())
-                .isUserOption(requestCompany.getIsUserOption())
+                .name(companyRequest.getName())
+                .title(companyRequest.getTitle())
+                .isUserOption(companyRequest.getIsUserOption())
                 .build();
 
         if (mapper.insertCompany(company) == 0) {
