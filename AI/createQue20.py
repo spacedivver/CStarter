@@ -1,13 +1,21 @@
+import pymysql
 import json
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
-# .env 파일에서 API 키 로드
+# .env 파일에서 API 키와 DB 정보 로드
 load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')
+db_host = os.getenv('DB_HOST')
+db_port = int(os.getenv('DB_PORT'))
+db_user = os.getenv('DB_USER')
+db_password = os.getenv('DB_PASSWORD')
+db_name = os.getenv('DB_NAME')
+
 client = OpenAI(api_key=api_key)
 print(f"API 키가 로드되었습니다: {api_key is not None}")
+
 
 # GPT-4o 모델 사용 함수 설정
 def generate_questions(company, role, intro_questions, tech_stack, intro_text):
@@ -21,10 +29,6 @@ def generate_questions(company, role, intro_questions, tech_stack, intro_text):
                                     "면접 질문 20개:"}
     ]
     
-    # 생성 요청 중 메시지 내용 출력
-    # print("\n=== ChatCompletion 요청 메시지 ===")
-    # print(messages)
-
     # ChatCompletion API를 사용해 질문 생성
     response = client.chat.completions.create(
         model="gpt-4o",
@@ -35,10 +39,8 @@ def generate_questions(company, role, intro_questions, tech_stack, intro_text):
 
     # 모델 응답에서 질문 목록을 추출
     content = response.choices[0].message.content.strip()
-    print("\n=== ChatCompletion 응답 ===")
-    print(content)
-    return content.split("\n")
-# def 끝 줄 ==============================================================
+    # 공백 질문 제거
+    return [q for q in content.split("\n") if q.strip()]
 
 # 데이터 로드
 with open('question.json', 'r', encoding='utf-8') as q_file:
@@ -61,6 +63,41 @@ intro_text = answer_text  # 전체 텍스트를 사용하거나 필요한 부분
 
 # 질문 생성
 questions = generate_questions(company_name, role_name, intro_questions, tech_stack, intro_text)
+
+# MySQL에 질문 삽입 함수 정의
+def insert_questions_to_db(questions, db_host, db_port, db_user, db_password, db_name):
+    try:
+        # MySQL 연결
+        connection = pymysql.connect(
+            host=db_host,
+            port=db_port,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            charset='utf8mb4'
+        )
+        
+        cursor = connection.cursor()
+        
+        # 질문 삽입
+        insert_query = "INSERT INTO cover_letter_question (number, question) VALUES (%s, %s)"
+        for idx, question in enumerate(questions, start=1):
+            cursor.execute(insert_query, (idx, question))
+        
+        # 변경 사항 커밋
+        connection.commit()
+        print("질문이 데이터베이스에 성공적으로 삽입되었습니다.")
+        
+    except Exception as e:
+        print(f"데이터베이스 삽입 중 오류 발생: {e}")
+    finally:
+        connection.close()
+
+# 질문 삽입 실행
+if questions:
+    insert_questions_to_db(questions, db_host, db_port, db_user, db_password, db_name)
+else:
+    print("유효한 질문이 없어 데이터베이스에 삽입되지 않았습니다.")
 
 # 결과 생성 및 저장
 output_data = {
