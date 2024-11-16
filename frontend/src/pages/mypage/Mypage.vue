@@ -1,6 +1,9 @@
 <script setup>
+import MypageHeader from "./MypageHeader.vue";
 import { ref, reactive, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
+
 
 // `api`와 관련된 부분이 정의되어 있어야 합니다.
 // import api from "@/api";  // 예시로 추가
@@ -106,19 +109,11 @@ watch(route, async () => {
 });
 
 load(pageRequest);
+
 </script>
 
 <template>
-    <div class="header-bg">
-    <div class="container d-flex justify-content-center">
-      
-      <img
-      src="@/assets/images/mypage-header.png"
-      alt=""
-      style="width: 50%; height: auto; padding:20px;"
-      />
-    </div>
-  </div>
+    <MypageHeader/>
   <div class="container">
     <h4 class="title mb-4 d-flex justify-content-center"><i class="fa-solid fa-copy"></i> 푼 문제</h4>
 
