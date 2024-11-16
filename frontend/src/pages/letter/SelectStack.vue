@@ -1,5 +1,5 @@
 <template>
-  <CStestHeader />
+  <LetterHeader />
 <div class="container mb-5p">
     <div class="title">커리큘럼</div>
 
@@ -114,11 +114,11 @@
 <script>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
-import CStestHeader from "/src/pages/cstest/CStestHeader.vue";
+import LetterHeader from "/src/components/letter/LetterHeader.vue";
 
 export default {
   components: {
-    CStestHeader
+    LetterHeader
   },
   setup() {
     const router = useRouter();

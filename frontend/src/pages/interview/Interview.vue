@@ -1,5 +1,6 @@
 <template>
-  <div class="container mt-5">
+  <LetterHeader />
+  <div class="container mt-5 mb-5">
     <!-- 진행 시간 -->
     <div class="row justify-content-center">
       <div class="col-6 d-flex justify-content-center align-items-center">
@@ -68,6 +69,7 @@
 </template>
 
 <script setup>
+import LetterHeader from '@/components/letter/LetterHeader.vue';
 import { ref, onMounted, nextTick } from 'vue';
 
 const questions = ref([

@@ -1,5 +1,6 @@
 <template>
-  <div class="container">
+  <LetterHeader />
+  <div class="container mb-5">
     <div class="form-group mb-3 ">
       <h5 class="mb-3">기업명</h5>
       <input
@@ -75,6 +76,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { ElSelect, ElOption } from 'element-plus';
 import 'element-plus/dist/index.css';
+import LetterHeader from '@/components/letter/LetterHeader.vue';
 
 const router = useRouter();
 const route = useRoute();
