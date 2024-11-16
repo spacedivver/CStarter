@@ -5,7 +5,7 @@
         <!-- 왼쪽 이미지 -->
         <div class="col-6 d-flex justify-content-center">
           <img
-            src="@/assets/images/header2.png"
+            src="@/assets/images/header.png"
             alt=""
             style="width: 100%; height: auto"
           />

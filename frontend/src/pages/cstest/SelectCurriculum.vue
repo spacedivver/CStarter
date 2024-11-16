@@ -1,4 +1,14 @@
 <template>
+  <div class="header-bg">
+    <div class="container d-flex justify-content-center">
+      
+      <img
+      src="@/assets/images/cstest-header.png"
+      alt=""
+      style="width: 50%; height: auto; padding:20px;"
+      />
+    </div>
+  </div>
   <div class="container">
     <div class="title">커리큘럼</div>
 
@@ -236,5 +246,10 @@ export default {
 
 .row {
   margin-top: 20px;
+}
+
+.header-bg {
+  background-color: #ffe9db;
+  margin-bottom: 30px;
 }
 </style>

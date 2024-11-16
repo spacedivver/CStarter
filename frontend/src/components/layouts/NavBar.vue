@@ -3,7 +3,7 @@ import { reactive, computed } from "vue";
 import MenuGroup from "./menu/MenuGroup.vue";
 import AccountMenuGroup from "./menu/AccountMenuGroup.vue";
 import config from "@/config";
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 
 let state = reactive({ isNavShow: false });
 
@@ -50,10 +50,8 @@ const route = useRoute();
 }
 
 .nav-link.active {
-  background-color: transparent !important; /* 배경 투명 */
-  border-bottom: 2px solid #007bff !important; /* 파란색 밑줄 */
-  border-radius: 0 !important; /* 테두리 둥글게 하지 않음 */
-  border-width: 0;
+  background-color: #007bff !important; /* 파란색 배경 */
+  color: white !important; /* 텍스트 색상 */
+  border-radius: 50px !important; /* 모서리를 둥글게 설정 */
 }
-
 </style>
