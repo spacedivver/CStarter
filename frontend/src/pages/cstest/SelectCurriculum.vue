@@ -9,7 +9,7 @@
       />
     </div>
   </div>
-  <div class="container">
+  <div class="container mb-5p">
     <div class="title">커리큘럼</div>
 
     <!-- 키워드 검색 영역 -->

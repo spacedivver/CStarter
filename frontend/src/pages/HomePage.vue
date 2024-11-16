@@ -45,7 +45,7 @@
       </div>
     </div>
   </div>
-  <div class="container">
+  <div class="container mb-5p">
     <img
       src="@/assets/images/intro.png"
       alt=""
