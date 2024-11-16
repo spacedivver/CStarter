@@ -1,4 +1,14 @@
 <template>
+  <div class="header-bg">
+    <div class="container d-flex justify-content-center">
+      
+      <img
+      src="@/assets/images/cstest-header.png"
+      alt=""
+      style="width: 50%; height: auto; padding:20px;"
+      />
+    </div>
+  </div>
   <div class="container mb-5p">
     <div class="title">커리큘럼</div>
 
@@ -128,14 +138,22 @@ export default {
       { value: 'backend', label: 'Backend 과정' },
       { value: 'fullstack', label: 'Fullstack 과정' },
     ]);
-
     const frontendLinks = ref([
       { name: "HTML", icon: "/src/assets/images/icons/html.png" },
       { name: "CSS", icon: "/src/assets/images/icons/css.png" },
       { name: "JavaScript", icon: "/src/assets/images/icons/javascript.png" },
       { name: "React", icon: "/src/assets/images/icons/react.svg" },
       { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-      // 중복된 항목 제거
+      { name: "Angular", icon: "/src/assets/images/icons/angular.png" },
+      { name: "Svelte", icon: "/src/assets/images/icons/svelte.png" },
+      { name: "Ember.js", icon: "/src/assets/images/icons/ember.png" },
+      { name: "Bootstrap", icon: "/src/assets/images/icons/bootstrap.png" },
+      { name: "Tailwind CSS", icon: "/src/assets/images/icons/tailwind.png" },
+      { name: "jQuery", icon: "/src/assets/images/icons/jquery.png" },
+      { name: "TypeScript", icon: "/src/assets/images/icons/typescript.png" },
+      { name: "Redux", icon: "/src/assets/images/icons/redux.png" },
+      { name: "Webpack", icon: "/src/assets/images/icons/webpack.png" },
+      { name: "Gulp", icon: "/src/assets/images/icons/gulp.png" },
     ]);
 
     const backendLinks = ref([
@@ -144,7 +162,16 @@ export default {
       { name: "Django", icon: "/src/assets/images/icons/django.png" },
       { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
       { name: "MySQL", icon: "/src/assets/images/icons/mysql.png" },
-      // 중복된 항목 제거
+      { name: "Ruby on Rails", icon: "/src/assets/images/icons/rails.png" },
+      { name: "Flask", icon: "/src/assets/images/icons/flask.png" },
+      { name: "Laravel", icon: "/src/assets/images/icons/laravel.png" },
+      { name: "ASP.NET", icon: "/src/assets/images/icons/aspnet.png" },
+      { name: "PHP", icon: "/src/assets/images/icons/php.png" },
+      { name: "PostgreSQL", icon: "/src/assets/images/icons/postgresql.png" },
+      { name: "MongoDB", icon: "/src/assets/images/icons/mongodb.png" },
+      { name: "GraphQL", icon: "/src/assets/images/icons/graphql.png" },
+      { name: "Redis", icon: "/src/assets/images/icons/redis.png" },
+      { name: "Firebase", icon: "/src/assets/images/icons/firebase.png" },
     ]);
 
     const aiLinks = ref([
@@ -153,6 +180,16 @@ export default {
       { name: "Keras", icon: "/src/assets/images/icons/keras.png" },
       { name: "Scikit-learn", icon: "/src/assets/images/icons/scikit-learn.png" },
       { name: "Pandas", icon: "/src/assets/images/icons/pandas.png" },
+      { name: "OpenCV", icon: "/src/assets/images/icons/opencv.png" },
+      { name: "NLTK", icon: "/src/assets/images/icons/nltk.png" },
+      { name: "spaCy", icon: "/src/assets/images/icons/spacy.png" },
+      { name: "MXNet", icon: "/src/assets/images/icons/mxnet.png" },
+      { name: "Hugging Face Transformers", icon: "/src/assets/images/icons/huggingface.png" },
+      { name: "ONNX", icon: "/src/assets/images/icons/onnx.png" },
+      { name: "Caffe", icon: "/src/assets/images/icons/caffe.png" },
+      { name: "Theano", icon: "/src/assets/images/icons/theano.png" },
+      { name: "Matplotlib", icon: "/src/assets/images/icons/matplotlib.png" },
+      { name: "XGBoost", icon: "/src/assets/images/icons/xgboost.png" },
     ]);
 
     const infraLinks = ref([
@@ -161,6 +198,16 @@ export default {
       { name: "Kubernetes", icon: "/src/assets/images/icons/kubernetes.png" },
       { name: "Terraform", icon: "/src/assets/images/icons/terraform.png" },
       { name: "Ansible", icon: "/src/assets/images/icons/ansible.png" },
+      { name: "Azure", icon: "/src/assets/images/icons/azure.png" },
+      { name: "Google Cloud", icon: "/src/assets/images/icons/gcp.png" },
+      { name: "Jenkins", icon: "/src/assets/images/icons/jenkins.png" },
+      { name: "GitLab", icon: "/src/assets/images/icons/gitlab.png" },
+      { name: "Prometheus", icon: "/src/assets/images/icons/prometheus.png" },
+      { name: "Grafana", icon: "/src/assets/images/icons/grafana.png" },
+      { name: "ELK Stack", icon: "/src/assets/images/icons/elk.png" },
+      { name: "Nagios", icon: "/src/assets/images/icons/nagios.png" },
+      { name: "Chef", icon: "/src/assets/images/icons/chef.png" },
+      { name: "Puppet", icon: "/src/assets/images/icons/puppet.png" },
     ]);
 
     // 필터링된 과정 배열
@@ -278,5 +325,11 @@ export default {
   height: 25px; /* 아이콘 크기 */
   margin-right: 3px; /* 이름과 아이콘 사이 간격 */
   object-fit: contain; /* 비율을 유지하며 크기를 조절 */
+}
+
+
+.header-bg {
+  background-color: #d3f1fd;
+  margin-bottom: 30px;
 }
 </style>
