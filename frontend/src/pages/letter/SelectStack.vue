@@ -1,15 +1,6 @@
 <template>
-  <div class="header-bg">
-    <div class="container d-flex justify-content-center">
-      
-      <img
-      src="@/assets/images/cstest-header.png"
-      alt=""
-      style="width: 50%; height: auto; padding:20px;"
-      />
-    </div>
-  </div>
-  <div class="container mb-5p">
+  <CStestHeader />
+<div class="container mb-5p">
     <div class="title">커리큘럼</div>
 
     <!-- 과정 선택 -->
@@ -123,8 +114,12 @@
 <script>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import CStestHeader from "/src/pages/cstest/CStestHeader.vue";
 
 export default {
+  components: {
+    CStestHeader
+  },
   setup() {
     const router = useRouter();
     const selectedCourse = ref(null);
@@ -329,8 +324,4 @@ export default {
 }
 
 
-.header-bg {
-  background-color: #d3f1fd;
-  margin-bottom: 30px;
-}
 </style>
