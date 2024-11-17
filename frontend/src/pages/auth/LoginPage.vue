@@ -8,12 +8,13 @@
       <div class="p-150">
         <div class="mt-20">
           <h1 class="ls-tight fw-bolder display-6 text-white mb-5">
-            로그인 페이지입니다.
-          </h1>
+            환영합니다!
+            <br />CStarter 입니다.
+                    </h1>
           <p class="text-white text-opacity-75 pe-xl-24">
-            오늘도 자영업자 키우기에 접속하시고,
-            <BR /> 가게관리 및 시뮬레이션을 완료해보세요. <br />
-            또한, 커뮤니티 활동을 통해 다른 사장님과 소통해보세요.
+            오늘도 CStarter에 접속하시고,
+            면접을 연습해 보세요. <br />
+            또한, 결과 리포트를 통해 약점을 보완해 보세요.
           </p>
         </div>
       </div>
@@ -109,15 +110,74 @@ const login = async () => {
 };
 </script>
 
-<style>
+<style scoped>
 .back-img {
   background-image: url('@/assets/images/register/register.jpg');
-  background-size: cover;
-  background-position: center;
+  background-size: cover; /* 이미지가 div를 채우도록 설정 */
+  background-position: center; /* 이미지를 중앙에 위치시킴 */
 }
 
-
 .p-150 {
-  padding: 150px;
+  padding: 100px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.ls-tight {
+  letter-spacing: -0.02em;
+}
+
+.fw-bolder {
+  font-weight: bolder;
+}
+
+.display-6 {
+  font-size: 2.5rem;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-opacity-75 {
+  opacity: 0.75;
+}
+
+.pe-xl-24 {
+  padding-right: 1.5rem;
+}
+
+.shadow-soft-5 {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.w-md-50 {
+  width: 50%;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.px-10 {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.px-md-0 {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.py-10 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.mb-5 {
+  margin-bottom: 5px;
 }
 </style>

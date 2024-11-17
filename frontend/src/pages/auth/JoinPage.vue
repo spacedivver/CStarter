@@ -12,9 +12,8 @@
             <br />CStarter 입니다.
           </h1>
           <p class="text-white text-opacity-75 pe-xl-24">
-            회원가입을 완료하시면 시뮬레이션 리포트를 저장하고,
-            <BR /> 내 가게를 연동할 수 있어요. <br />
-            또한, 커뮤니티 활동을 통해 다른 사장님과 소통해보세요.
+            회원가입을 완료하시면 기술면접을 연습하고,
+            <BR /> 모의면접 리포트를 저장할 수 있어요. <br />
           </p>
         </div>
       </div>
@@ -38,6 +37,16 @@
         </div>
         <form @submit.prevent="submitForm">
           <div class="row g-5">
+            <div class="col-sm-12">
+              <label for="name" class="form-label">이름</label>
+              <input
+                type="text"
+                v-model="form.name"
+                class="form-control"
+                id="name"
+                required
+              />
+            </div>
             <div class="col-sm-12">
               <label for="id" class="form-label">사용자 아이디</label>
               <div class="input-group">
@@ -94,17 +103,8 @@
                 비밀번호가 일치하지 않습니다.
               </p>
             </div>
-            <div class="col-sm-12">
-              <label for="name" class="form-label">닉네임</label>
-              <input
-                type="text"
-                v-model="form.name"
-                class="form-control"
-                id="name"
-                required
-              />
-            </div>
-            <div class="col-sm-12">
+            
+            <!-- <div class="col-sm-12">
               <label for="email" class="form-label">사용자 이메일</label>
               <input
                 type="email"
@@ -113,7 +113,7 @@
                 id="email"
                 required
               />
-            </div>
+            </div> -->
             <div class="col-sm-12">
               <button
                 type="submit"
@@ -219,11 +219,69 @@ const submitForm = async () => {
   background-image: url('@/assets/images/register/register.jpg');
   background-size: cover; /* 이미지가 div를 채우도록 설정 */
   background-position: center; /* 이미지를 중앙에 위치시킴 */
-  height: 50vh; /* 왼쪽 이미지 div의 높이 설정 */
 }
 
 .p-150 {
-  padding: 150px;
+  padding: 100px;
 }
 
+.mt-20 {
+  margin-top: 20px;
+}
+
+.ls-tight {
+  letter-spacing: -0.02em;
+}
+
+.fw-bolder {
+  font-weight: bolder;
+}
+
+.display-6 {
+  font-size: 2.5rem;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-opacity-75 {
+  opacity: 0.75;
+}
+
+.pe-xl-24 {
+  padding-right: 1.5rem;
+}
+
+.shadow-soft-5 {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.w-md-50 {
+  width: 50%;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.px-10 {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.px-md-0 {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.py-10 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.mb-5 {
+  margin-bottom: 5px;
+}
 </style>
