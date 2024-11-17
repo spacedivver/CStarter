@@ -153,10 +153,11 @@ export default {
 
     const backendLinks = ref([
       { name: "Node.js", icon: "/src/assets/images/icons/nodejs.png" },
-      { name: "Express", icon: "/src/assets/images/icons/expressjs.png" },
       { name: "Django", icon: "/src/assets/images/icons/django.png" },      
       { name: "Spring", icon: "/src/assets/images/icons/spring.png" },
       { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.png" },
+      { name: "Oracle", icon: "/src/assets/images/icons/oracle.png" },
+      { name: "MS-SQL", icon: "/src/assets/images/icons/mssql.png" },
       { name: "MySQL", icon: "/src/assets/images/icons/mysql.png" },
       { name: "Ruby on Rails", icon: "/src/assets/images/icons/rails.png" },
       { name: "Flask", icon: "/src/assets/images/icons/flask.png" },
@@ -165,9 +166,7 @@ export default {
       { name: "PHP", icon: "/src/assets/images/icons/php.png" },
       { name: "PostgreSQL", icon: "/src/assets/images/icons/postgresql.png" },
       { name: "MongoDB", icon: "/src/assets/images/icons/mongodb.png" },
-      { name: "GraphQL", icon: "/src/assets/images/icons/graphql.png" },
       { name: "Redis", icon: "/src/assets/images/icons/redis.png" },
-      { name: "Firebase", icon: "/src/assets/images/icons/firebase.png" },
     ]);
 
     const aiLinks = ref([
