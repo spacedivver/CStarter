@@ -1,5 +1,5 @@
 <script setup>
-import MypageHeader from "./MypageHeader.vue";
+import MypageHeader from "@/components/mypage/MypageHeader.vue";
 import { ref, reactive, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
