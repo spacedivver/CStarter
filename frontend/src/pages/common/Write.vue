@@ -1,7 +1,7 @@
 <template>
   <LetterHeader />
   <div class="container mb-5">
-    <div class="form-group mb-3 ">
+    <div class="form-group mb-3">
       <h5 class="mb-3">기업명</h5>
       <input
         type="text"
@@ -15,14 +15,19 @@
     <div>
       <h5 class="mb-3">직무선택</h5>
       <el-select v-model="selectedJob" placeholder="직무를 선택하세요" class="mb-3">
-        <el-option label="백엔드" value="백엔드"></el-option>
-        <el-option label="프론트엔드" value="프론트엔드"></el-option>
-        <el-option label="인프라" value="인프라"></el-option>
+        <el-option label="백엔드 개발" value="백엔드 개발"></el-option>
+        <el-option label="프론트엔드 개발" value="프론트엔드 개발"></el-option>
+        <el-option label="풀스택 개발" value="풀스택 개발"></el-option>
+        <el-option label="정보보안" value="정보보안"></el-option>
         <el-option label="DBA" value="DBA"></el-option>
-        <el-option label="기획" value="기획"></el-option>
+        <el-option label="Infra" value="Infra"></el-option>
+        <el-option label="IT기획" value="IT기획"></el-option>
+        <el-option label="IT구매" value="IT구매"></el-option>
+        <el-option label="직접 입력" value="직접 입력"></el-option>
       </el-select>
+      <input v-if="selectedJob === '직접 입력'" type="text" class="form-control mb-3" v-model="customJob" placeholder="직무를 입력하세요">
     </div>
-    
+
     <h5 class="mb-3">자기소개서 입력</h5>
     <!-- 수동 입력일 때 제목과 내용 동적으로 추가 -->
     <div v-if="isManual">
@@ -72,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { ElSelect, ElOption } from 'element-plus';
 import 'element-plus/dist/index.css';
@@ -80,9 +85,10 @@ import LetterHeader from '@/components/letter/LetterHeader.vue';
 
 const router = useRouter();
 const route = useRoute();
-const selectedJob = ref('프론트엔드');
 const isManual = ref(route.state?.manual ?? JSON.parse(localStorage.getItem('manual') || 'false'));
 const companyName = ref(isManual.value ? '' : '자동기업명');
+const selectedJob = ref(isManual.value ? '' : '프론트엔드');
+const customJob = ref('');
 const inputItems = ref([{ title: '', content: '' }]);
 const autoInputItems = ref([
   { title: '자동 제목 1', content: '' },
@@ -106,7 +112,15 @@ const resizeTextarea = (event) => {
   textarea.style.height = 'auto'; // 우선 높이를 auto로 설정하여 기존의 높이를 초기화
   textarea.style.height = `${textarea.scrollHeight}px`; // scrollHeight에 맞게 높이 조정
 };
+
+// customJob이 변경될 때 selectedJob을 업데이트
+watch(customJob, (newVal) => {
+  if (selectedJob.value === '직접 입력') {
+    selectedJob.value = newVal;
+  }
+});
 </script>
+
 
 <style scoped>
 .form-group {
