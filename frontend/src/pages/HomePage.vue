@@ -15,7 +15,7 @@
           <div class="btn-container">
             <!-- 첫 번째 버튼 -->
             <a
-              href="/CSTest/SelectCurriculum"
+              href="/CSTest/selectTests"
               class="btn btn-primary d-flex flex-column align-items-center"
             >
               <div

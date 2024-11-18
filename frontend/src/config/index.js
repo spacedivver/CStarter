@@ -4,7 +4,7 @@ export default {
   menus: [
     {
       title: 'CS테스트',
-      url: '/CSTest/SelectCurriculum',
+      url: '/CSTest/selectTests',
       // icon: 'fa-solid fa-paste',
     },
     {
