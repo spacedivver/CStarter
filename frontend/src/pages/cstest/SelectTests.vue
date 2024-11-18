@@ -319,5 +319,19 @@ load(pageRequest);
   background-color: #f1f1f1; /* 행 hover 시 배경색 */
   cursor: default; /* 비클릭 영역에서 커서 변경되지 않게 */
 }
+.btn-icon {
+  border: none; /* 기본 테두리 제거 */
+  background: none; /* 배경 제거 */
+  padding: 0; /* 패딩 제거 */
+  cursor: pointer; /* 포인터 커서 설정 */
+}
+
+.btn-icon:focus {
+  outline: none; /* 포커스 시 아웃라인 제거 */
+}
+
+.btn-icon i {
+  color: inherit; /* 아이콘 색상 상속 */
+}
 
 </style>
