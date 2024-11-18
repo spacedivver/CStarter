@@ -28,6 +28,6 @@ const props = defineProps({
 .nav-link.active {
   color: #007bff;
   font-weight: bold;
-  border-bottom: 4px solid #007bff;
+  padding: 0.5rem !important;
 }
 </style>

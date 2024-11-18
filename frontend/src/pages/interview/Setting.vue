@@ -1,5 +1,7 @@
+<!-- 모의면접 세팅 -->
 <template>
-  <div class="container mt-5">
+  <LetterHeader />
+  <div class="container mt-5 mb-5p">
     <h3 class="text-center mb-4">환경설정</h3>
 
     <!-- 마이크 설정 (토글 버튼) -->
@@ -42,6 +44,7 @@
 </template>
 
 <script setup>
+import LetterHeader from '@/components/letter/LetterHeader.vue';
 import { ref } from 'vue';
 
 // 마이크 및 카메라 상태

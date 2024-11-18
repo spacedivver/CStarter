@@ -1,5 +1,6 @@
 <template>
-  <div class="container">
+  <LetterHeader />
+  <div class="container mb-5p">
     <div class="title">커리큘럼</div>
 
     <!-- 과정 선택 -->
@@ -12,6 +13,7 @@
         :remote="true"
         :remote-method="handleFilterCourses"
         :loading="loading"
+        @change="updateSelectedTechSkills"
       >
         <el-option
           v-for="course in filteredCourses"
@@ -23,17 +25,9 @@
     </div>
     <div class="title">기술스택 추가선택</div>
 
-    <!-- Frontend 체크박스 -->
-    <div class="checkbox-container">
-      <input
-        type="checkbox"
-        id="frontend-checkbox"
-        v-model="showFrontendPills"
-        class="pill-checkbox"
-      />
-      <label for="frontend-checkbox" class="pill-label">Frontend</label>
-    </div>
-    <div class="pill-container mb-3" v-show="showFrontendPills">
+    <!-- Frontend -->
+    <div class="pill-container mb-3">
+      <div class="pill-category">Frontend</div>
       <ul class="nav nav-pills flex-row flex-wrap">
         <li class="nav-item" v-for="(link, index) in frontendLinks" :key="index">
           <input
@@ -50,17 +44,10 @@
         </li>
       </ul>
     </div>
-    <!-- Backend 체크박스 -->
-    <div class="checkbox-container">
-      <input
-        type="checkbox"
-        id="backend-checkbox"
-        v-model="showBackendPills"
-        class="pill-checkbox"
-      />
-      <label for="backend-checkbox" class="pill-label">Backend</label>
-    </div>
-    <div class="pill-container" v-show="showBackendPills">
+
+    <!-- Backend -->
+    <div class="pill-container">
+      <div class="pill-category">Backend</div>
       <ul class="nav nav-pills flex-row flex-wrap">
         <li class="nav-item" v-for="(link, index) in backendLinks" :key="index">
           <input
@@ -78,93 +65,142 @@
       </ul>
     </div>
 
+    <!-- AI -->
+    <div class="pill-container">
+      <div class="pill-category">AI</div>
+      <ul class="nav nav-pills flex-row flex-wrap">
+        <li class="nav-item" v-for="(link, index) in aiLinks" :key="index">
+          <input
+            type="checkbox"
+            :id="'ai-pill' + index"
+            class="nav-checkbox"
+            v-model="selectedItems"
+            :value="link.name"
+          />
+          <label :for="'ai-pill' + index" class="nav-label">
+            <img :src="link.icon" alt="" class="pill-icon" />
+            {{ link.name }}
+          </label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 인프라 -->
+    <div class="pill-container">
+      <div class="pill-category">Infra</div>
+      <ul class="nav nav-pills flex-row flex-wrap">
+        <li class="nav-item" v-for="(link, index) in infraLinks" :key="index">
+          <input
+            type="checkbox"
+            :id="'infra-pill' + index"
+            class="nav-checkbox"
+            v-model="selectedItems"
+            :value="link.name"
+          />
+          <label :for="'infra-pill' + index" class="nav-label">
+            <img :src="link.icon" alt="" class="pill-icon" />
+            {{ link.name }}
+          </label>
+        </li>
+      </ul>
+    </div>
+
     <!-- 선택된 항목 보내기 버튼 -->
     <div style="width: 150px;" class="mt-3">
       <button class="send-button" @click="handleComplete">선택 완료</button>
     </div>
   </div>
 </template>
-
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
+import LetterHeader from "/src/components/letter/LetterHeader.vue";
 
 export default {
+  components: {
+    LetterHeader
+  },
   setup() {
     const router = useRouter();
     const selectedCourse = ref(null);
-    const showFrontendPills = ref(false);
-    const showBackendPills = ref(false);
     const selectedItems = ref([]);
     const loading = ref(false);
     const searchQuery = ref("");
 
     // 부트캠프 과정 데이터
-    const courses = ref([
-      { value: 'frontend', label: 'Frontend 과정' },
-      { value: 'backend', label: 'Backend 과정' },
-      { value: 'fullstack', label: 'Fullstack 과정' },
-    ]);
-    const frontendLinks = ref([
-  { name: "HTML", icon: "/src/assets/images/icons/html.png" },
-  { name: "CSS", icon: "/src/assets/images/icons/css.png" },
-  { name: "JavaScript", icon: "/src/assets/images/icons/javascript.png" },
-  { name: "React", icon: "/src/assets/images/icons/react.svg" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-  { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-]);
+    const courses = ref([]);
+    const techSkills = ref([]);
 
-const backendLinks = ref([
-{ name: "Node.js", icon: "/src/assets/images/icons/nodejs.png" },
-  { name: "Express", icon: "/src/assets/images/icons/expressjs.png" },
-  { name: "Django", icon: "/src/assets/images/icons/django.png" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
-  { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.jpg" },
+    // 기술 스택 카테고리 별 링크
+    const frontendLinks = ref([]);
+    const backendLinks = ref([]);
+    const aiLinks = ref([]);
+    const infraLinks = ref([]);
 
-  // { name: "Laravel", icon: "/src/assets/images/icons/laravel.png" },
-  // { name: "ASP.NET", icon: "/src/assets/images/icons/aspnet.png" },
-  // { name: "PHP", icon: "/src/assets/images/icons/php.png" },
-  // { name: "Go", icon: "/src/assets/images/icons/go.png" },
-  // { name: "Java", icon: "/src/assets/images/icons/java.png" },
-  // { name: "C#", icon: "/src/assets/images/icons/csharp.png" },
-  // { name: "MongoDB", icon: "/src/assets/images/icons/mongodb.png" },
-  // { name: "PostgreSQL", icon: "/src/assets/images/icons/postgresql.png" },
-  { name: "MySQL", icon: "/src/assets/images/icons/mysql.png" },
-  // { name: "Redis", icon: "/src/assets/images/icons/redis.png" },
-  // { name: "Firebase", icon: "/src/assets/images/icons/firebase.png" },
-  // { name: "GraphQL", icon: "/src/assets/images/icons/graphql.png" },
-  // { name: "REST API", icon: "/src/assets/images/icons/restapi.png" },
-  // { name: "Docker", icon: "/src/assets/images/icons/docker.png" },
-]);
+    // API로부터 과정 데이터를 가져오는 함수
+    const fetchCourses = async () => {
+      loading.value = true;
+      try {
+        const response = await axios.get("http://localhost:8080/api/course");
+        courses.value = response.data.map(course => ({
+          value: course.cno, // cno를 value로 사용
+          label: course.courseName, // courseName을 label로 사용
+          techSkills: course.techSkills // techSkills 추가
+        }));
+      } catch (error) {
+        console.error("과정 데이터를 가져오는 데 실패했습니다:", error);
+      } finally {
+        loading.value = false;
+      }
+    };
 
-    // 필터링된 과정 배열
+    // API로부터 기술 스택 데이터를 가져오는 함수
+    const fetchTechSkills = async () => {
+      loading.value = true;
+      try {
+        const response = await axios.get("http://localhost:8080/api/tech-skill");
+        techSkills.value = response.data;
+
+        // 기술 스택을 카테고리별로 나누기
+        frontendLinks.value = techSkills.value.filter(skill =>
+          ["HTML", "CSS", "JavaScript", "React", "Vue.js", "Angular", "Svelte", "Ember.js", "Bootstrap", "Tailwind CSS", "jQuery", "TypeScript", "Redux", "Webpack", "Gulp"].includes(skill.name)
+        );
+
+        backendLinks.value = techSkills.value.filter(skill =>
+          ["Java", "Node.js", "MyBatis", "Django", "ServletJSP", "Spring", "Spring Boot", "Oracle", "MS-SQL", "MySQL", "Ruby on Rails", "Flask", "Laravel", "ASP.NET", "PHP", "PostgreSQL", "MongoDB", "Redis"].includes(skill.name)
+        );
+
+        aiLinks.value = techSkills.value.filter(skill =>
+          ["TensorFlow", "PyTorch", "Keras", "Scikit-learn", "Pandas", "OpenCV", "NLTK", "spaCy", "MXNet", "Hugging Face Transformers", "ONNX", "Caffe", "Theano", "Matplotlib", "XGBoost"].includes(skill.name)
+        );
+
+        infraLinks.value = techSkills.value.filter(skill =>
+          ["AWS", "Docker", "Kubernetes", "Terraform", "Ansible", "Azure", "Google Cloud", "Jenkins", "GitLab", "Prometheus", "Grafana", "ELK Stack", "Nagios", "Chef", "Puppet"].includes(skill.name)
+        );
+      } catch (error) {
+        console.error("기술 스택 데이터를 가져오는 데 실패했습니다:", error);
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    // 선택된 과정에 맞춰 기술 스택을 자동으로 선택
+    const updateSelectedTechSkills = () => {
+      const selectedCourseData = courses.value.find(course => course.value === selectedCourse.value);
+      if (selectedCourseData) {
+        selectedItems.value = selectedCourseData.techSkills.map(skill => skill.name); // 기술 스택의 이름만 뽑아서 selectedItems에 추가
+      } else {
+        selectedItems.value = []; // 과정이 없으면 초기화
+      }
+    };
+
+    // 컴포넌트가 마운트될 때 데이터 가져오기
+    onMounted(() => {
+      fetchCourses();
+      fetchTechSkills();
+    });
+
     const filteredCourses = computed(() => {
       if (!searchQuery.value) {
         return courses.value; // 검색어가 없으면 전체 과정 반환
@@ -189,18 +225,20 @@ const backendLinks = ref([
     return {
       selectedCourse,
       filteredCourses,
-      showFrontendPills,
-      showBackendPills,
       selectedItems,
       frontendLinks,
       backendLinks,
+      aiLinks,
+      infraLinks,
       handleComplete,
       handleFilterCourses,
       loading,
+      updateSelectedTechSkills // 추가된 메서드
     };
   },
 };
 </script>
+
 
 <style scoped>
 .title {
@@ -212,62 +250,17 @@ const backendLinks = ref([
 .course-selection {
   margin-bottom: 20px;
 }
-/* 체크박스 컨테이너 */
-.checkbox-container {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+
+.pill-container {
+  margin-bottom: 20px;
 }
 
-/* 체크박스 숨기기 */
-.pill-checkbox {
-  display: none; /* 기본 체크박스를 숨김 */
-}
-
-/* 커스텀 체크박스 디자인 */
-.pill-label {
-  position: relative;
+.pill-category {
   font-size: 18px;
-  cursor: pointer;
-  color: #3E66DF;
   font-weight: bold;
-  padding-left: 30px; /* 체크박스 크기만큼 왼쪽 여백 */
-  transition: color 0.3s ease;
+  color: #3E66DF;
+  margin-bottom: 10px;
 }
-
-.pill-label:before {
-  content: '';
-  position: absolute;
-  margin-top: 4px;
-  left: 0;
-  width: 18px;
-  height: 18px;
-  border: 1px solid #aeaeaf;
-  border-radius: 4px;
-  background-color: white;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.pill-checkbox:checked + .pill-label:before {
-  background-color: #3E66DF;
-  border-color: #3E66DF;
-}
-
-.pill-checkbox:checked + .pill-label:after {
-  content: '';
-  position: absolute;
-  bottom: 0px;
-  left: 2px; 
-  color: white;
-  font-size: 16px;
-  transition: color 0.3s ease;
-}
-
-.pill-label:hover {
-  color: #0056b3; /* Hover 시 텍스트 색상 변화 */
-}
-
 
 .nav-pills {
   margin-top: 10px;
@@ -319,14 +312,12 @@ const backendLinks = ref([
   background-color: #1e7e34;
 }
 
-.row {
-  margin-top: 20px;
-}
 .pill-icon {
   width: 25px; /* 아이콘 크기 */
   height: 25px; /* 아이콘 크기 */
   margin-right: 3px; /* 이름과 아이콘 사이 간격 */
   object-fit: contain; /* 비율을 유지하며 크기를 조절 */
 }
+
 
 </style>

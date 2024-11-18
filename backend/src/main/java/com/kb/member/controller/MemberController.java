@@ -13,15 +13,17 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 
+@ApiIgnore
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
-@Api(value = "MemberController", tags = "멤버 정보")
+@Api(value = "MemberController", tags = "멤버 정보", hidden = true)
 @PropertySource({"classpath:/application.properties"})
 public class MemberController {
 

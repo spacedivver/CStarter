@@ -11,7 +11,7 @@
     <p>
       면접 답변은 매우 체계적이고 핵심을 잘 전달하셨습니다. 긍정적인 부분으로는 핵심 요점을 간결하게 잘 전달했고, 기술 간 비교 설명이 명확하며, 구체적인 예시로 실무 적용성을 강조한 점이 돋보였습니다. 개선할 점은 일부 기술의 보안적 측면이나 세부사항을 보강할 필요가 있고, 자신의 경험과 연결하면 실무 능력 어필에 도움이 될 수 있으며, 답변의 결론을 명확히 해주면 더 좋습니다. 전반적으로 잘 준비된 답변이었고, 약간의 세부 보강으로 훌륭한 면접 답변을 완성하도록 하십시오.
     </p>
-    <h5 class="mt-4">나의 답변</h5>
+
     <div v-for="(item, index) in qna" :key="index">
       <div class="form-group">
         <!-- 제목 앞에 인덱스 추가 -->
@@ -21,7 +21,16 @@
         <!-- 구분선 -->
         <div class="divider"></div>
         <!-- 내용 -->
-        <p class="content">{{ item.content }}</p>
+         <div class="row d-flex">
+<div class="col-6">
+<h5 class="fw-bold">나의 답변</h5 >
+  <p class="content">{{ item.content }}</p>
+</div>
+<div class="col-6">
+  <h5 class="fw-bold">모범 답변</h5 >
+<p class="content">{{ item.content }}</p>
+</div>
+          </div>
       </div>
     </div>
   </div>

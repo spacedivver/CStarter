@@ -1,5 +1,6 @@
 <template>
-  <div class="container d-flex flex-column align-items-center">
+  <LetterHeader />
+  <div class="container d-flex flex-column align-items-center mb-5">
     <div class="text-center">
       <h3>100대기업 자기소개서</h3>
       <h3>기존 항목 자동으로 불러오기</h3>
@@ -56,6 +57,7 @@
   </div>
 </template>
 <script setup>
+import LetterHeader from "@/components/letter/LetterHeader.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
