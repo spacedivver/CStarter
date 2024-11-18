@@ -25,12 +25,13 @@
             >
               공고보기
             </button>
-            <button
-              class="btn btn-primary"
-              @click="navigateToPersonalStatement(company.cpno)"
-            >
-              작성
-            </button>
+          <button
+            class="btn btn-primary"
+            @click="navigateToPersonalStatement(company.cpno, company.name)" 
+          >
+            작성
+          </button>
+
           </div>
         </div>
       </div>
@@ -42,62 +43,65 @@
 </template>
 
 <script setup>
-import LetterHeader from "@/components/letter/LetterHeader.vue";
-import { ref, onMounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import axios from "axios";
+  import LetterHeader from "@/components/letter/LetterHeader.vue";
+  import { ref, onMounted } from "vue";
+  import { useRouter, useRoute } from "vue-router";
+  import axios from "axios";
 
-const router = useRouter();
+  const router = useRouter();
 
-const companies = ref([]); // 기업 목록을 저장할 ref
-const route = useRoute();
-const isManual = ref(false);
+  const companies = ref([]); // 기업 목록을 저장할 ref
+  const route = useRoute();
+  const isManual = ref(false);
 
-const fetchCompanies = async () => {
-  try {
-    const response = await axios.get(`http://localhost:8080/api/company/notice`, {
-      params: { cno: route.query.cno } // cno를 쿼리 파라미터로 추가
-    });    
-    companies.value = response.data.map(company => ({
-      cpno: company.cpno,
-      image: company.logo ? company.logo : 'default-image.jpg',
-      name: company.name,
-      title: company.title,
-      notice: company.notice // notice 필드를 추가
-    }));
-    console.log(companies.value); // 응답 확인
-  } catch (error) {
-    console.error("기업 목록을 가져오는 데 실패했습니다:", error);
+  const fetchCompanies = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/company/notice`, {
+        params: { cno: route.query.cno } // cno를 쿼리 파라미터로 추가
+      });    
+      companies.value = response.data.map(company => ({
+        cpno: company.cpno,
+        image: company.logo ? company.logo : 'default-image.jpg',
+        name: company.name,
+        title: company.title,
+        notice: company.notice // notice 필드를 추가
+      }));
+    } catch (error) {
+      console.error("기업 목록을 가져오는 데 실패했습니다:", error);
+    }
+  };
+
+  // 새 탭에서 공고보기
+  function navigateToViewInfo(noticeUrl) {
+    if (noticeUrl) {
+      window.open(noticeUrl, '_blank'); // 새 탭에서 열기
+    } else {
+      alert("공고 링크가 없습니다.");
+    }
   }
-};
 
-// 새 탭에서 공고보기
-function navigateToViewInfo(noticeUrl) {
-  console.log("공고 URL:", noticeUrl); // URL 확인
-  if (noticeUrl) {
-    window.open(noticeUrl, '_blank'); // 새 탭에서 열기
-  } else {
-    alert("공고 링크가 없습니다.");
+  // 자동
+  function navigateToPersonalStatement(companyId, companyName, isManual = false) {
+    localStorage.setItem('manual', JSON.stringify(isManual));
+    localStorage.setItem('cname', JSON.stringify(companyName));
+
+    router.push({ 
+      name: "Write", 
+      params: { id: companyId }, 
+      state: { manual: isManual, cname:companyName } // 기업명을 상태에 추가
+    });
   }
-}
 
-//자동
-function navigateToPersonalStatement(companyId, isManual = false) {
-  localStorage.setItem('manual', JSON.stringify(isManual));
-  router.push({ name: "Write", params: { id: companyId }, state: { manual: isManual } });
-}
+  // 수동 입력 페이지로 이동
+  function navigateToManualInput() {
+    localStorage.setItem('manual', 'true');
+    router.push({ name: "Write", state: { manual: true } });
+  }
 
-
-// 수동 입력 페이지로 이동
-function navigateToManualInput() {
-  localStorage.setItem('manual', 'true');
-  router.push({ name: "Write", state: { manual: true } });
-}
-
-// 컴포넌트가 마운트될 때 데이터 가져오기
-onMounted(() => {
-  fetchCompanies();
-});
+  // 컴포넌트가 마운트될 때 데이터 가져오기
+  onMounted(() => {
+    fetchCompanies();
+  });
 </script>
 
 <style scoped>
