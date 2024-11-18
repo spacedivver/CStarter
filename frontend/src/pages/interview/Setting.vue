@@ -1,12 +1,11 @@
-<!-- 모의면접 세팅 -->
 <template>
   <LetterHeader />
-  <div class="container mt-5 mb-5p">
-    <h3 class="text-center mb-4">환경설정</h3>
+  <div class="container mt-5 mb-5 p-4 text-center"> <!-- container에 text-center 추가 -->
+    <h3 class="mb-4">환경설정</h3>
 
     <!-- 마이크 설정 (토글 버튼) -->
     <div class="row mb-3 justify-content-center">
-      <div class="col-md-6 text-center">
+      <div class="col-md-6">
         <button class="btn" :class="isMicOn ? 'btn-success' : 'btn-secondary'" @click="toggleMic">
           <i class="bi bi-mic-fill me-2"></i> 
           {{ isMicOn ? '마이크가 켜졌습니다' : '마이크가 꺼졌습니다' }}
@@ -16,7 +15,7 @@
 
     <!-- 카메라 설정 (토글 버튼) -->
     <div class="row mb-3 justify-content-center">
-      <div class="col-md-6 text-center">
+      <div class="col-md-6">
         <button class="btn" :class="isCameraOn ? 'btn-danger' : 'btn-secondary'" @click="toggleCamera">
           <i class="bi bi-camera-video-fill me-2"></i> 
           {{ isCameraOn ? '카메라가 켜졌습니다' : '카메라가 꺼졌습니다' }}
@@ -26,18 +25,18 @@
 
     <!-- 질문 개수 선택 -->
     <div class="row mb-3 mt-5">
-      <div class="col-md-12 mx-auto text-center">
+      <div class="col-md-12 mx-auto">
         <h5 for="questionCount" class="form-label mb-3">질문 개수를 선택하세요</h5>
-        <select id="questionCount" class="form-select" v-model="questionCount">
+        <select id="questionCount" class="form-select mx-auto" v-model="questionCount" style="width: 380px;">
           <option v-for="i in 20" :key="i" :value="i">{{ i }} 개</option>
         </select>
       </div>
     </div>
 
     <!-- '다음 단계' 버튼 추가 -->
-    <div class="text-center mt-4">
+    <div class="mt-4">
       <router-link to="/Interview">
-        <button class="btn btn-primary">다음 단계</button>
+        <button class="btn btn-primary" style="width: 150px;">다음 단계</button>
       </router-link>
     </div>
   </div>
@@ -66,9 +65,7 @@ const questionCount = ref(1);
 </script>
 
 <style scoped>
-.container {
-  max-width: 800px;
-}
+
 
 .btn {
   width: 100%;
@@ -92,11 +89,5 @@ select.form-select {
 .row.justify-content-center {
   display: flex;
   justify-content: center;
-}
-
-.col-md-6 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>
