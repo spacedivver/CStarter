@@ -16,4 +16,13 @@
     <select id="selectByMemberId" resultType="com.kb.interview.dto.coverletter.CoverLetter">
         select * from cover_letter where mno = #{mno}
     </select>
+
+    <insert id="insertAnswer" useGeneratedKeys="true" keyProperty="clno">
+        insert into cover_letter_answer (clno, cino, answer)
+        values (#{clno}, #{cino}, #{answer});
+    </insert>
+
+    <update id="updateAnswer" parameterType="com.kb.interview.dto.coverletter.CoverLetterAnswerSaveRequest">
+        update cover_letter_answer set answer = #{answer} where cano = #{cano}
+    </update>
 </mapper>
