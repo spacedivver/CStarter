@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.kb.interview.mapper.CoverLetterMapper">
-    <insert id="insert" useGeneratedKeys="true" keyProperty="clno">
+    <insert id="insertCoverLetter" useGeneratedKeys="true" keyProperty="clno">
         insert into cover_letter (mno, cpno, jno, created_at)
         values (#{mno}, #{cpno}, #{jno}, default);
     </insert>
@@ -21,8 +21,4 @@
         insert into cover_letter_answer (clno, cino, answer)
         values (#{clno}, #{cino}, #{answer});
     </insert>
-
-    <update id="updateAnswer" parameterType="com.kb.interview.dto.coverletter.CoverLetterAnswerSaveRequest">
-        update cover_letter_answer set answer = #{answer} where cano = #{cano}
-    </update>
 </mapper>

@@ -18,14 +18,13 @@ public class CoverLetterController {
     private final CoverLetterService service;
 
     @PostMapping("")
-    public ResponseEntity<CoverLetter> createCoverLetter(@RequestBody CoverLetterRequest coverLetterRequest) {
-        CoverLetter coverLetter = service.create(coverLetterRequest);          // 자기소개서 생성
-        List<CoverLetterAnswer> answers = service.createAnswers(coverLetter);   // 항목별 답변란 생성
+    public ResponseEntity<CoverLetterResponse> createCoverLetter(@RequestBody CoverLetterRequest request) {
+        CoverLetterResponse response = service.createCoverLetterAndAnswer(request);
 
-        if (coverLetter == null) {
+        if (response == null) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(coverLetter);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{clno}")
@@ -46,11 +45,5 @@ public class CoverLetterController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(coverLetters);
-    }
-
-    @PutMapping("")
-    public ResponseEntity<List<CoverLetterAnswerSaveRequest>> updateCoverLetterAnswer(@RequestBody List<CoverLetterAnswerSaveRequest> answers) {
-        service.updateAnswers(answers);
-        return ResponseEntity.ok(answers);
     }
 }
