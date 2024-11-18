@@ -1,15 +1,16 @@
 <template>
-  <div class="container">
+    <LetterHeader />
+  <div class="container mb-5p">
     <h5>결과</h5>
     <h1 class="mb-4">
       <div>
-        <span class="fw-bold">92</span>
+        <span class="fw-bold">{{score}}</span>
         <span class="fw-light">점 <br /></span>
       </div>
     </h1>
     <h5>총평</h5>
     <p>
-      면접 답변은 매우 체계적이고 핵심을 잘 전달하셨습니다. 긍정적인 부분으로는 핵심 요점을 간결하게 잘 전달했고, 기술 간 비교 설명이 명확하며, 구체적인 예시로 실무 적용성을 강조한 점이 돋보였습니다. 개선할 점은 일부 기술의 보안적 측면이나 세부사항을 보강할 필요가 있고, 자신의 경험과 연결하면 실무 능력 어필에 도움이 될 수 있으며, 답변의 결론을 명확히 해주면 더 좋습니다. 전반적으로 잘 준비된 답변이었고, 약간의 세부 보강으로 훌륭한 면접 답변을 완성하도록 하십시오.
+{{content}}
     </p>
 
     <div v-for="(item, index) in qna" :key="index">
@@ -21,23 +22,38 @@
         <!-- 구분선 -->
         <div class="divider"></div>
         <!-- 내용 -->
-         <div class="row d-flex">
-<div class="col-6">
-<h5 class="fw-bold">나의 답변</h5 >
-  <p class="content">{{ item.content }}</p>
-</div>
-<div class="col-6">
-  <h5 class="fw-bold">모범 답변</h5 >
-<p class="content">{{ item.content }}</p>
-</div>
+        <div class="row d-flex">
+          <div class="col-6">
+            <h5 class="fw-bold">나의 답변</h5>
+            <p class="content">{{ item.content }}</p>
           </div>
+          <div class="col-6">
+            <h5 class="fw-bold">모범 답변</h5>
+            <p class="content">{{ item.content }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import axios from "axios";
+import LetterHeader from "@/components/letter/LetterHeader.vue";
+
+const score = ref(0);
+const content = ref("");
+const rno = 1;
+
+
+const fetchReports = async () => {
+  const response = await axios.get(`http://localhost:8080/api/report/${rno}`);
+      const report = response.data;
+      score.value = report.score;
+      content.value = report.content;
+
+}
 
 const qna = ref([
   {
@@ -51,6 +67,8 @@ const qna = ref([
       "React는 컴포넌트 기반의 UI 라이브러리로, 함수형 프로그래밍 개념을 바탕으로 하고 있어 자유도가 높습니다. 사용자는 필요한 라이브러리와 도구를 선택하여 구성할 수 있습니다. Vue.js는 프레임워크로, React에 비해 진입 장벽이 낮고, 양방향 데이터 바인딩을 지원하여 데이터와 UI의 동기화가 쉽습니다. Vue는 보일러플레이트 코드가 적고, 소규모 프로젝트부터 대규모 프로젝트까지 사용 가능합니다.",
   },
 ]);
+
+onMounted(fetchReports);
 </script>
 
 <style scoped>
@@ -96,4 +114,8 @@ const qna = ref([
   margin-top: 8px;
   line-height: 1.6;
 }
+.mb-5p {
+  margin-bottom: 5%;
+}
+
 </style>
