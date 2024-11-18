@@ -19,7 +19,7 @@ print(f"API 키가 로드되었습니다: {api_key is not None}")
 
 
 # 데이터베이스에서 가장 최근의 답변 가져오기
-def get_latest_answer():
+def get_answer(mno, clno, number):
     try:
         # MySQL 연결
         connection = mysql.connector.connect(
@@ -31,15 +31,21 @@ def get_latest_answer():
         )
         cursor = connection.cursor()
         
-        # 가장 최근의 답변 가져오기 (asno 기반)
-        query = "SELECT answer FROM answer ORDER BY asno DESC LIMIT 1"
-        cursor.execute(query)
+        # 조건에 맞는 답변 가져오기
+        query = """
+        SELECT cq.answer
+        FROM cover_letter_question cq
+        INNER JOIN cover_letter cl ON cq.clno = cl.clno
+        INNER JOIN user u ON cl.mno = u.mno
+        WHERE u.mno = %s AND cl.clno = %s AND cq.number = %s
+        """
+        cursor.execute(query, (mno, clno, number))
         result = cursor.fetchone()
         
         if result:
-            return result[0]
+            return result[0]  # 답변 텍스트 반환
         else:
-            print("데이터베이스에 저장된 답변이 없습니다.")
+            print("조건에 맞는 답변이 없습니다.")
             return None
         
     except mysql.connector.Error as err:
@@ -91,7 +97,12 @@ def generate_follow_up_question(answer_text):
 
 
 # 실행
-latest_answer = get_latest_answer()
+mno = 9999  # 사용자 mno
+clno = 9999  # cover_letter clno
+number = 1  # cover_letter_question number
+
+# 조건에 맞는 답변 가져오기
+latest_answer = get_answer(mno, clno, number)
 if latest_answer:
     generate_follow_up_question(latest_answer)
 else:
