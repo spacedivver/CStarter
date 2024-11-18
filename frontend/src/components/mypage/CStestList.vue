@@ -337,4 +337,21 @@ load(pageRequest);
   font-weight: bold;
   border-bottom: 2px solid !important;
 }
+
+
+
+.btn-icon {
+  border: none; /* 기본 테두리 제거 */
+  background: none; /* 배경 제거 */
+  padding: 0; /* 패딩 제거 */
+  cursor: pointer; /* 포인터 커서 설정 */
+}
+
+.btn-icon:focus {
+  outline: none; /* 포커스 시 아웃라인 제거 */
+}
+
+.btn-icon i {
+  color: inherit; /* 아이콘 색상 상속 */
+}
 </style>
