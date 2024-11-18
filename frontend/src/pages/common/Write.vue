@@ -38,7 +38,8 @@
       </el-select>
       <input v-if="selectedJob === '직접 입력'" type="text" class="form-control mb-3" v-model="customJob" placeholder="직무를 입력하세요">
     </div>
-    
+
+    <!-- 수동 -->
     <h5 class="mb-3">자기소개서 입력</h5>
     <div v-if="isManual">
       <div v-for="(item, index) in inputItems" :key="index" class="input-item mb-3">
@@ -59,10 +60,11 @@
       <button class="btn btn-secondary mt-3" @click="addInputItem">항목 추가하기</button>
     </div>
 
+    <!-- 자동 -->
     <div v-else>
       <div v-for="(item, index) in autoInputItems" :key="index" class="input-item mb-3">
         <div class="form-group">
-          <input type="text" class="form-control" v-model="item.title" :id="'auto-title-' + index" placeholder="자동으로 제목이 입력됩니다" readonly>
+          <div v-html="item.title" :id="'auto-title-' + index" class="ps-3 pe-4 content"></div>
         </div>
         <div class="divider"></div>
         <div class="form-group">
@@ -109,25 +111,25 @@ localStorage.setItem('cname', JSON.stringify(companyNameState.value));
 onMounted(async () => {
       if (!isManual.value) {
 
-      // API 요청하여 직무 타입 및 자기소개서 제목 가져오기
-      
-      try {
-        const response = await axios.get(`http://localhost:8080/api/company/${companyId}/job`);
-        const jobDataArray = response.data; // 배열 형태로 응답 받음
+        // API 요청하여 직무 타입 및 자기소개서 제목 가져오기
+        
+        try {
+          const response = await axios.get(`http://localhost:8080/api/company/${companyId}/job`);
+          const jobDataArray = response.data; // 배열 형태로 응답 받음
 
-        companyName.value = isManual.value ? '' : companyNameState.value; // 기업명 설정
+          companyName.value = isManual.value ? '' : companyNameState.value; // 기업명 설정
 
-        // 직무 타입을 jobTypes에 저장
-        jobTypes.value = jobDataArray;
+          // 직무 타입을 jobTypes에 저장
+          jobTypes.value = jobDataArray;
 
-        // 첫 번째 직무를 자동으로 선택
-        if (jobDataArray.length > 0) {
-          selectedJob.value = jobDataArray[0].jno; // 0번째 직무 선택
-          onJobChange(); // 직무 변경 함수 호출
+          // 첫 번째 직무를 자동으로 선택
+          if (jobDataArray.length > 0) {
+            selectedJob.value = jobDataArray[0].jno; // 0번째 직무 선택
+            onJobChange(); // 직무 변경 함수 호출
+          }
+        } catch (error) {
+          console.error("직무 데이터를 가져오는 데 실패했습니다:", error);
         }
-      } catch (error) {
-        console.error("직무 데이터를 가져오는 데 실패했습니다:", error);
-      }
     }
 
 });
@@ -190,6 +192,8 @@ const resizeTextarea = (event) => {
   box-shadow: none;
   outline: none;
   padding: 10px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .input-item .form-group textarea {
@@ -198,8 +202,9 @@ const resizeTextarea = (event) => {
   background-color: white;
   box-shadow: none;
   outline: none;
-  padding: 10px;
-  resize: none; /* 사용자가 크기 조정 불가 */
+  padding: 10px;  
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .divider {
