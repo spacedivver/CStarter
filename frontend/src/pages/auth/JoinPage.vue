@@ -1,12 +1,12 @@
 <template>
-  <div class="row">
+  <div class="row" style="height: 720px">
     <div
       class="col-md-6 d-lg-flex flex-lg-column back back-img align-items-center justify-content-center"
     >
       <img
         src="@/assets/images/header.png"
         alt="Welcome Image"
-        style="width: 500px; margin-left: 200px; margin-top: -70px;"
+        style="width: 500px; margin-left: 200px; margin-top: -70px"
         class="img-fluid"
       />
       <!-- You can uncomment the below code to add a text block inside the left image container -->
@@ -22,7 +22,7 @@
         </div>
         -->
     </div>
-    <div class="col-4  d-flex justify-content-center align-items-center">
+    <div class="col-4 d-flex justify-content-center align-items-center">
       <div class="container ms-5">
         <div class="mb-3">
           <h1 class="fw-bolder h3 mt-5">회원가입</h1>
@@ -110,17 +110,18 @@
                 required
               />
             </div> -->
-            <div class="d-flex align-items-center justify-content-center mt-5 mb-4">
-
-              <div class="col-sm-6 ">
+            <div
+              class="d-flex align-items-center justify-content-center mt-5 mb-4"
+            >
+              <div class="col-sm-6">
                 <button
-                type="submit"
-                class="btn btn-dark w-100 mb-5"
-                :disabled="!isFormValid || isDuplicate"
+                  type="submit"
+                  class="btn btn-dark w-100 mb-5"
+                  :disabled="!isFormValid || isDuplicate"
                 >
-                회원가입
-              </button>
-            </div>
+                  회원가입
+                </button>
+              </div>
             </div>
           </div>
         </form>
