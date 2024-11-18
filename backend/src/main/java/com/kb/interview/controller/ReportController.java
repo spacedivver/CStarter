@@ -1,9 +1,6 @@
 package com.kb.interview.controller;
 
-import com.kb.interview.dto.coverletter.CoverLetter;
-import com.kb.interview.dto.coverletter.CoverLetterRequest;
 import com.kb.interview.dto.report.Report;
-import com.kb.interview.service.CoverLetterService;
 import com.kb.interview.service.ReportService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;

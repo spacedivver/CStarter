@@ -2,7 +2,6 @@ package com.kb.interview.mapper;
 
 import com.kb.interview.dto.coverletter.CoverLetter;
 import com.kb.interview.dto.coverletter.CoverLetterAnswer;
-import com.kb.interview.dto.coverletter.CoverLetterAnswerRequest;
 
 import java.util.List;
 

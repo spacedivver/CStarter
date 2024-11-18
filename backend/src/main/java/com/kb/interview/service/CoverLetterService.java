@@ -1,8 +1,9 @@
 package com.kb.interview.service;
 
-import com.kb.company.dto.job.CoverLetterItem;
 import com.kb.company.mapper.CompanyMapper;
 import com.kb.interview.dto.coverletter.*;
+import com.kb.interview.dto.coverletter.CoverLetterRequest;
+import com.kb.interview.dto.coverletter.CoverLetterResponse;
 import com.kb.interview.mapper.CoverLetterMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
