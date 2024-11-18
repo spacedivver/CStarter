@@ -1,6 +1,6 @@
 <template>
   <LetterHeader />
-<div class="container mb-5p">
+  <div class="container mb-5p">
     <div class="title">커리큘럼</div>
 
     <!-- 과정 선택 -->
@@ -13,6 +13,7 @@
         :remote="true"
         :remote-method="handleFilterCourses"
         :loading="loading"
+        @change="updateSelectedTechSkills"
       >
         <el-option
           v-for="course in filteredCourses"
@@ -110,7 +111,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -145,7 +145,8 @@ export default {
         const response = await axios.get("http://localhost:8080/api/course");
         courses.value = response.data.map(course => ({
           value: course.cno, // cno를 value로 사용
-          label: course.courseName // courseName을 label로 사용
+          label: course.courseName, // courseName을 label로 사용
+          techSkills: course.techSkills // techSkills 추가
         }));
       } catch (error) {
         console.error("과정 데이터를 가져오는 데 실패했습니다:", error);
@@ -153,6 +154,7 @@ export default {
         loading.value = false;
       }
     };
+
     // API로부터 기술 스택 데이터를 가져오는 함수
     const fetchTechSkills = async () => {
       loading.value = true;
@@ -161,22 +163,21 @@ export default {
         techSkills.value = response.data;
 
         // 기술 스택을 카테고리별로 나누기
-        frontendLinks.value = techSkills.value.filter(skill => 
+        frontendLinks.value = techSkills.value.filter(skill =>
           ["HTML", "CSS", "JavaScript", "React", "Vue.js", "Angular", "Svelte", "Ember.js", "Bootstrap", "Tailwind CSS", "jQuery", "TypeScript", "Redux", "Webpack", "Gulp"].includes(skill.name)
         );
-        
-        backendLinks.value = techSkills.value.filter(skill => 
+
+        backendLinks.value = techSkills.value.filter(skill =>
           ["Java", "Node.js", "MyBatis", "Django", "ServletJSP", "Spring", "Spring Boot", "Oracle", "MS-SQL", "MySQL", "Ruby on Rails", "Flask", "Laravel", "ASP.NET", "PHP", "PostgreSQL", "MongoDB", "Redis"].includes(skill.name)
         );
 
-        aiLinks.value = techSkills.value.filter(skill => 
+        aiLinks.value = techSkills.value.filter(skill =>
           ["TensorFlow", "PyTorch", "Keras", "Scikit-learn", "Pandas", "OpenCV", "NLTK", "spaCy", "MXNet", "Hugging Face Transformers", "ONNX", "Caffe", "Theano", "Matplotlib", "XGBoost"].includes(skill.name)
         );
 
-        infraLinks.value = techSkills.value.filter(skill => 
+        infraLinks.value = techSkills.value.filter(skill =>
           ["AWS", "Docker", "Kubernetes", "Terraform", "Ansible", "Azure", "Google Cloud", "Jenkins", "GitLab", "Prometheus", "Grafana", "ELK Stack", "Nagios", "Chef", "Puppet"].includes(skill.name)
         );
-
       } catch (error) {
         console.error("기술 스택 데이터를 가져오는 데 실패했습니다:", error);
       } finally {
@@ -184,6 +185,15 @@ export default {
       }
     };
 
+    // 선택된 과정에 맞춰 기술 스택을 자동으로 선택
+    const updateSelectedTechSkills = () => {
+      const selectedCourseData = courses.value.find(course => course.value === selectedCourse.value);
+      if (selectedCourseData) {
+        selectedItems.value = selectedCourseData.techSkills.map(skill => skill.name); // 기술 스택의 이름만 뽑아서 selectedItems에 추가
+      } else {
+        selectedItems.value = []; // 과정이 없으면 초기화
+      }
+    };
 
     // 컴포넌트가 마운트될 때 데이터 가져오기
     onMounted(() => {
@@ -223,10 +233,12 @@ export default {
       handleComplete,
       handleFilterCourses,
       loading,
+      updateSelectedTechSkills // 추가된 메서드
     };
   },
 };
 </script>
+
 
 <style scoped>
 .title {

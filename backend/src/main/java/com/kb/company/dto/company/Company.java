@@ -13,4 +13,5 @@ public class Company {
     private String title;
     private String notice;
     private int isUserOption;
+    private String logo;
 }
