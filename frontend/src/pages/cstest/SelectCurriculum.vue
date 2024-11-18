@@ -1,5 +1,5 @@
 <template>
-  <LetterHeader />
+  <CStestHeader />
   <div class="container mb-5p">
     <div class="title">커리큘럼</div>
 
@@ -115,11 +115,11 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import LetterHeader from "/src/components/letter/LetterHeader.vue";
+import CStestHeader from "@/components/cstest/CStestHeader.vue";
 
 export default {
   components: {
-    LetterHeader
+    CStestHeader
   },
   setup() {
     const router = useRouter();
@@ -221,7 +221,7 @@ export default {
       router.push("/cstest/selectTests");
     };
 
-    
+
     return {
       selectedCourse,
       filteredCourses,
