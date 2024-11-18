@@ -112,8 +112,9 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 import LetterHeader from "/src/components/letter/LetterHeader.vue";
 
 export default {
@@ -128,84 +129,68 @@ export default {
     const searchQuery = ref("");
 
     // 부트캠프 과정 데이터
-    const courses = ref([
-      { value: 'frontend', label: 'Frontend 과정' },
-      { value: 'backend', label: 'Backend 과정' },
-      { value: 'fullstack', label: 'Fullstack 과정' },
-    ]);
-    const frontendLinks = ref([
-      { name: "HTML", icon: "/src/assets/images/icons/html.png" },
-      { name: "CSS", icon: "/src/assets/images/icons/css.png" },
-      { name: "JavaScript", icon: "/src/assets/images/icons/javascript.png" },
-      { name: "React", icon: "/src/assets/images/icons/react.svg" },
-      { name: "Vue.js", icon: "/src/assets/images/icons/vue.png" },
-      { name: "Angular", icon: "/src/assets/images/icons/angular.png" },
-      { name: "Svelte", icon: "/src/assets/images/icons/svelte.png" },
-      { name: "Ember.js", icon: "/src/assets/images/icons/ember.png" },
-      { name: "Bootstrap", icon: "/src/assets/images/icons/bootstrap.png" },
-      { name: "Tailwind CSS", icon: "/src/assets/images/icons/tailwind.png" },
-      { name: "jQuery", icon: "/src/assets/images/icons/jquery.png" },
-      { name: "TypeScript", icon: "/src/assets/images/icons/typescript.png" },
-      { name: "Redux", icon: "/src/assets/images/icons/redux.png" },
-      { name: "Webpack", icon: "/src/assets/images/icons/webpack.png" },
-      { name: "Gulp", icon: "/src/assets/images/icons/gulp.png" },
-    ]);
+    const courses = ref([]);
+    const techSkills = ref([]);
 
-    const backendLinks = ref([
-      { name: "Node.js", icon: "/src/assets/images/icons/nodejs.png" },
-      { name: "Django", icon: "/src/assets/images/icons/django.png" },      
-      { name: "Spring", icon: "/src/assets/images/icons/spring.png" },
-      { name: "Spring Boot", icon: "/src/assets/images/icons/springboot.png" },
-      { name: "Oracle", icon: "/src/assets/images/icons/oracle.png" },
-      { name: "MS-SQL", icon: "/src/assets/images/icons/mssql.png" },
-      { name: "MySQL", icon: "/src/assets/images/icons/mysql.png" },
-      { name: "Ruby on Rails", icon: "/src/assets/images/icons/rails.png" },
-      { name: "Flask", icon: "/src/assets/images/icons/flask.png" },
-      { name: "Laravel", icon: "/src/assets/images/icons/laravel.png" },
-      { name: "ASP.NET", icon: "/src/assets/images/icons/aspnet.png" },
-      { name: "PHP", icon: "/src/assets/images/icons/php.png" },
-      { name: "PostgreSQL", icon: "/src/assets/images/icons/postgresql.png" },
-      { name: "MongoDB", icon: "/src/assets/images/icons/mongodb.png" },
-      { name: "Redis", icon: "/src/assets/images/icons/redis.png" },
-    ]);
+    // 기술 스택 카테고리 별 링크
+    const frontendLinks = ref([]);
+    const backendLinks = ref([]);
+    const aiLinks = ref([]);
+    const infraLinks = ref([]);
 
-    const aiLinks = ref([
-      { name: "TensorFlow", icon: "/src/assets/images/icons/tensorflow.png" },
-      { name: "PyTorch", icon: "/src/assets/images/icons/pytorch.png" },
-      { name: "Keras", icon: "/src/assets/images/icons/keras.png" },
-      { name: "Scikit-learn", icon: "/src/assets/images/icons/scikit-learn.png" },
-      { name: "Pandas", icon: "/src/assets/images/icons/pandas.png" },
-      { name: "OpenCV", icon: "/src/assets/images/icons/opencv.png" },
-      { name: "NLTK", icon: "/src/assets/images/icons/nltk.webp" },
-      { name: "spaCy", icon: "/src/assets/images/icons/spacy.png" },
-      { name: "MXNet", icon: "/src/assets/images/icons/mxnet.png" },
-      { name: "Hugging Face Transformers", icon: "/src/assets/images/icons/huggingface.png" },
-      { name: "ONNX", icon: "/src/assets/images/icons/onnx.png" },
-      { name: "Caffe", icon: "/src/assets/images/icons/caffe.webp" },
-      { name: "Theano", icon: "/src/assets/images/icons/theano.png" },
-      { name: "Matplotlib", icon: "/src/assets/images/icons/matplotlib.png" },
-      { name: "XGBoost", icon: "/src/assets/images/icons/xgboost.png" },
-    ]);
+    // API로부터 과정 데이터를 가져오는 함수
+    const fetchCourses = async () => {
+      loading.value = true;
+      try {
+        const response = await axios.get("http://localhost:8080/api/course");
+        courses.value = response.data.map(course => ({
+          value: course.cno, // cno를 value로 사용
+          label: course.courseName // courseName을 label로 사용
+        }));
+      } catch (error) {
+        console.error("과정 데이터를 가져오는 데 실패했습니다:", error);
+      } finally {
+        loading.value = false;
+      }
+    };
+    // API로부터 기술 스택 데이터를 가져오는 함수
+    const fetchTechSkills = async () => {
+      loading.value = true;
+      try {
+        const response = await axios.get("http://localhost:8080/api/tech-skill");
+        techSkills.value = response.data;
 
-    const infraLinks = ref([
-      { name: "AWS", icon: "/src/assets/images/icons/aws.png" },
-      { name: "Docker", icon: "/src/assets/images/icons/docker.png" },
-      { name: "Kubernetes", icon: "/src/assets/images/icons/kubernetes.png" },
-      { name: "Terraform", icon: "/src/assets/images/icons/terraform.png" },
-      { name: "Ansible", icon: "/src/assets/images/icons/ansible.png" },
-      { name: "Azure", icon: "/src/assets/images/icons/azure.png" },
-      { name: "Google Cloud", icon: "/src/assets/images/icons/gcp.png" },
-      { name: "Jenkins", icon: "/src/assets/images/icons/jenkins.png" },
-      { name: "GitLab", icon: "/src/assets/images/icons/gitlab.svg" },
-      { name: "Prometheus", icon: "/src/assets/images/icons/prometheus.png" },
-      { name: "Grafana", icon: "/src/assets/images/icons/grafana.png" },
-      { name: "ELK Stack", icon: "/src/assets/images/icons/elk.svg" },
-      { name: "Nagios", icon: "/src/assets/images/icons/nagios.png" },
-      { name: "Chef", icon: "/src/assets/images/icons/chef.png" },
-      { name: "Puppet", icon: "/src/assets/images/icons/puppet.png" },
-    ]);
+        // 기술 스택을 카테고리별로 나누기
+        frontendLinks.value = techSkills.value.filter(skill => 
+          ["HTML", "CSS", "JavaScript", "React", "Vue.js", "Angular", "Svelte", "Ember.js", "Bootstrap", "Tailwind CSS", "jQuery", "TypeScript", "Redux", "Webpack", "Gulp"].includes(skill.name)
+        );
+        
+        backendLinks.value = techSkills.value.filter(skill => 
+          ["Java", "Node.js", "MyBatis", "Django", "ServletJSP", "Spring", "Spring Boot", "Oracle", "MS-SQL", "MySQL", "Ruby on Rails", "Flask", "Laravel", "ASP.NET", "PHP", "PostgreSQL", "MongoDB", "Redis"].includes(skill.name)
+        );
 
-    // 필터링된 과정 배열
+        aiLinks.value = techSkills.value.filter(skill => 
+          ["TensorFlow", "PyTorch", "Keras", "Scikit-learn", "Pandas", "OpenCV", "NLTK", "spaCy", "MXNet", "Hugging Face Transformers", "ONNX", "Caffe", "Theano", "Matplotlib", "XGBoost"].includes(skill.name)
+        );
+
+        infraLinks.value = techSkills.value.filter(skill => 
+          ["AWS", "Docker", "Kubernetes", "Terraform", "Ansible", "Azure", "Google Cloud", "Jenkins", "GitLab", "Prometheus", "Grafana", "ELK Stack", "Nagios", "Chef", "Puppet"].includes(skill.name)
+        );
+
+      } catch (error) {
+        console.error("기술 스택 데이터를 가져오는 데 실패했습니다:", error);
+      } finally {
+        loading.value = false;
+      }
+    };
+
+
+    // 컴포넌트가 마운트될 때 데이터 가져오기
+    onMounted(() => {
+      fetchCourses();
+      fetchTechSkills();
+    });
+
     const filteredCourses = computed(() => {
       if (!searchQuery.value) {
         return courses.value; // 검색어가 없으면 전체 과정 반환
