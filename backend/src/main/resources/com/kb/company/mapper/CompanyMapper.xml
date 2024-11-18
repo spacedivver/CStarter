@@ -26,6 +26,6 @@
     </select>
     
     <select id="selectCoverLetterItem" resultType="com.kb.company.dto.job.CoverLetterItem">
-        select number, content, text_count from cover_letter_item where jno = #{jno};
+        select * from cover_letter_item where jno = #{jno};
     </select>
 </mapper>
