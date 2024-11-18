@@ -9,11 +9,11 @@
         values (#{mno}, #{cpno}, #{jno}, default);
     </insert>
 
-    <select id="selectById" resultType="com.kb.interview.dto.CoverLetter">
+    <select id="selectById" resultType="com.kb.interview.dto.coverletter.CoverLetter">
         select * from cover_letter where clno = #{clono}
     </select>
 
-    <select id="selectByMemberId" resultType="com.kb.interview.dto.CoverLetter">
+    <select id="selectByMemberId" resultType="com.kb.interview.dto.coverletter.CoverLetter">
         select * from cover_letter where mno = #{mno}
     </select>
 </mapper>

@@ -1,7 +1,7 @@
 package com.kb.interview.service;
 
-import com.kb.interview.dto.CoverLetter;
-import com.kb.interview.dto.CoverLetterRequest;
+import com.kb.interview.dto.coverletter.CoverLetter;
+import com.kb.interview.dto.coverletter.CoverLetterRequest;
 import com.kb.interview.mapper.CoverLetterMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;

@@ -1,7 +1,7 @@
 package com.kb.company.controller;
 
 import com.kb.company.dto.company.Company;
-import com.kb.company.dto.company.RequestCompany;
+import com.kb.company.dto.company.CompanyRequest;
 import com.kb.company.dto.job.JobResponse;
 import com.kb.company.service.CompanyService;
 import io.swagger.annotations.Api;
@@ -30,8 +30,8 @@ public class CompanyController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Company> createCompany(@RequestBody RequestCompany requestCompany) {
-        Company company = service.createCompany(requestCompany);
+    public ResponseEntity<Company> createCompany(@RequestBody CompanyRequest companyRequest) {
+        Company company = service.createCompany(companyRequest);
 
         if (company == null) {
             return ResponseEntity.noContent().build();
