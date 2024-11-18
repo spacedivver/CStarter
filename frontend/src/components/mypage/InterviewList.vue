@@ -119,7 +119,7 @@ load(pageRequest);
 
       
 
-      <div class="row align-items-end pt-5 rounded">
+      <div class="row align-items-end  rounded">
         <div class="col-3">
           <h6 class="form-label mb-2 fw-bold">검색어로 찾기</h6>
           <select

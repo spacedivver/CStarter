@@ -31,20 +31,22 @@ def fetch_data_from_db(db_host, db_port, db_user, db_password, db_name):
         
         cursor = connection.cursor(pymysql.cursors.DictCursor)
         
-        # 쿼리 실행
-        cursor.execute("SELECT name FROM company WHERE cpno = 9999")
-        company_name = cursor.fetchone().get("name")
-        
-        cursor.execute("SELECT type FROM job WHERE jno = 9999")
-        role_name = cursor.fetchone().get("type")
-        
-        cursor.execute("SELECT content FROM cover_letter_item WHERE jno = 9999")
+        cursor.execute("""SELECT cli.content AS content
+                        FROM cover_letter_item cli
+                        INNER JOIN cover_letter_answer cla ON cli.cino = cla.cino
+                        INNER JOIN cover_letter cl ON cla.clno = cl.clno
+                        INNER JOIN user u ON cl.mno = u.mno
+                        WHERE u.mno = 9999;""")
         intro_questions = [row["content"] for row in cursor.fetchall()]
         
-        cursor.execute("SELECT answer FROM cover_letter_answer WHERE clno = 9999")
+        cursor.execute("""SELECT cla.answer AS answer
+                        FROM cover_letter_answer cla
+                        INNER JOIN cover_letter cl ON cla.clno = cl.clno
+                        INNER JOIN user u ON cl.mno = u.mno
+                        WHERE u.mno = 9999;""")
         intro_text = [row["answer"] for row in cursor.fetchall()]
         
-        return company_name, role_name, intro_questions, intro_text
+        return intro_questions, intro_text
         
     except Exception as e:
         print(f"데이터베이스 조회 중 오류 발생: {e}")
@@ -77,8 +79,42 @@ def generate_questions(company, role, intro_questions, tech_stack, intro_text):
     # 공백 질문 제거
     return [q for q in content.split("\n") if q.strip()]
 
+def generate_questions(company, role, intro_questions, tech_stack, intro_text):
+    # 질문과 답변의 길이를 제한
+    intro_questions_limited = intro_questions[:5]  # 최대 5개의 질문만 사용
+    intro_text_limited = intro_text[:5]  # 최대 5개의 답변만 사용
+    
+    # 문자열로 병합
+    questions_str = "\n".join(intro_questions_limited)
+    text_str = "\n".join(intro_text_limited)
+    
+    # 메시지 형식으로 프롬프트 작성
+    messages = [
+        {"role": "system", "content": f"너는 지금부터 '{company}'이라는 회사의 '{role}'의 면접관이야."},
+        {"role": "user", "content": f"다음은 자기소개서 문항과 지원자의 기술스택, 자기소개서 내용이야. 이 정보를 바탕으로 20개의 면접 질문을 만들어줘.\n\n"
+                                    f"자기소개서 문항:\n{questions_str}\n\n"
+                                    f"기술스택:\n{tech_stack}\n\n"
+                                    f"자기소개서 내용:\n{text_str}\n\n"
+                                    "면접 질문 20개:"}
+    ]
+    
+    # ChatCompletion API를 사용해 질문 생성
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=messages,
+        max_tokens=1000,  # 출력 길이를 제한
+        temperature=0.7
+    )
+
+    # 모델 응답에서 질문 목록을 추출
+    content = response.choices[0].message.content.strip()
+    return [q for q in content.split("\n") if q.strip()]
+
 # 데이터베이스에서 불러오기
-company_name, role_name, intro_questions, intro_text = fetch_data_from_db(db_host, db_port, db_user, db_password, db_name)
+intro_questions, intro_text = fetch_data_from_db(db_host, db_port, db_user, db_password, db_name)
+
+company_name="test 회사명"
+role_name="test 직무"
 
 if not company_name or not role_name or not intro_questions or not intro_text:
     print("데이터 오류")
@@ -137,6 +173,7 @@ else:
     print("create.json 파일이 성공적으로 생성되었습니다.")
 
 
+# 출력 테스트 부분
 
 # print(f"회사명 (company_name): {company_name}")
 # print(f"직무명 (role_name): {role_name}")
