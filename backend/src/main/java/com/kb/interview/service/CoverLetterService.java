@@ -1,10 +1,13 @@
 package com.kb.interview.service;
 
 import com.kb.interview.dto.CoverLetter;
+import com.kb.interview.dto.CoverLetterRequest;
 import com.kb.interview.mapper.CoverLetterMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Log4j
 @RequiredArgsConstructor
@@ -12,11 +15,25 @@ import org.springframework.stereotype.Service;
 public class CoverLetterService {
     private final CoverLetterMapper mapper;
 
-    public CoverLetter create(int uno) {
-        if (mapper.insert(uno) == 0) {
+    public CoverLetter create(CoverLetterRequest coverLetterRequest) {
+        CoverLetter coverLetter = CoverLetter.builder()
+                .mno(coverLetterRequest.getMno())
+                .cpno(coverLetterRequest.getCpno())
+                .jno(coverLetterRequest.getJno())
+                .build();
+
+        if (mapper.insert(coverLetter) == 0) {
             return null;
         }
 
-        return CoverLetter.builder().build();
+        return mapper.selectById(coverLetter.getClno());
+    }
+
+    public CoverLetter getCoverLetterById(int clno) {
+        return mapper.selectById(clno);
+    }
+
+    public List<CoverLetter> getCoverLetterByMemberId(int mno) {
+        return mapper.selectByMemberId(mno);
     }
 }
