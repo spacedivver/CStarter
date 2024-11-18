@@ -11,23 +11,23 @@
         <div class="col-12">
           <div
             v-for="(company, index) in companies"
-            :key="company.id"
+            :key="company.cpno" 
             class="company-item d-flex align-items-center"
           >
             <img :src="company.image" alt="기업 사진" class="company-img" />
             <div class="company-info flex-grow-1">
               <h5 class="mb-1">{{ company.name }}</h5>
-              <p class="mb-0">{{ company.recruitment }}</p>
+              <p class="mb-0">{{ company.title }}</p> 
             </div>
             <button
               class="btn btn-secondary me-1"
-              @click="navigateToViewInfo(company.id)"
+              @click="navigateToViewInfo(company.notice)"
             >
               공고보기
             </button>
             <button
               class="btn btn-primary"
-              @click="navigateToPersonalStatement(company.id)"
+              @click="navigateToPersonalStatement(company.cpno)"
             >
               작성
             </button>
@@ -38,95 +38,68 @@
     <button class="btn btn-primary mt-3" @click="navigateToManualInput">
       수동으로 입력하기
     </button>
-   
-    <!-- Custom Modal
-    <div v-if="isModalOpen" class="custom-modal-overlay" @click.self="closeModal">
-      <div class="custom-modal">
-        <div class="custom-modal-header">
-          <h5>{{ selectedCompany.name }}</h5>
-          <button @click="closeModal" class="close-button">&times;</button>
-        </div>
-        <div class="custom-modal-body">
-          <p>{{ selectedCompany.description }}</p>
-        </div>
-        <div class="custom-modal-footer">
-          <button class="btn btn-secondary" @click="closeModal">닫기</button>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
+
 <script setup>
 import LetterHeader from "@/components/letter/LetterHeader.vue";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import axios from "axios";
 
 const router = useRouter();
 
-const companies = ref([
-  {
-    id: 1,
-    image: "company1.jpg",
-    name: "기업 이름 1",
-    recruitment: "2019년 하반기 신입사원 모집",
-    description: "모집모집"
-  },
-  {
-    id: 2,
-    image: "company2.jpg",
-    name: "기업 이름 2",
-    recruitment: "2020년 하반기 신입사원 모집",
-    description: "모집모집2"
-  },
-  {
-    id: 3,
-    image: "company3.jpg",
-    name: "기업 이름 3",
-    recruitment: "2021년 하반기 신입사원 모집",
-    description: "모집모집3"
-  },
-  {
-    id: 4,
-    image: "company4.jpg",
-    name: "기업 이름 4",
-    recruitment: "2022년 하반기 신입사원 모집",
-    description: "모집모집4"
-  },
-  {
-    id: 5,
-    image: "company5.jpg",
-    name: "기업 이름 5",
-    recruitment: "2023년 하반기 신입사원 모집",
-    description: "모집모집5"
-  },
-  {
-    id: 6,
-    image: "company6.jpg",
-    name: "기업 이름 6",
-    recruitment: "2024년 상반기 신입사원 모집",
-    description: "모집모집6"
-  },
-]);
-// const selectedCompany = ref({ name: "", description: "" });
+const companies = ref([]); // 기업 목록을 저장할 ref
+const route = useRoute();
 const isManual = ref(false);
+
+const fetchCompanies = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8080/api/company/notice`, {
+      params: { cno: route.query.cno } // cno를 쿼리 파라미터로 추가
+    });    
+    companies.value = response.data.map(company => ({
+      cpno: company.cpno,
+      image: company.logo ? company.logo : 'default-image.jpg',
+      name: company.name,
+      title: company.title,
+      notice: company.notice // notice 필드를 추가
+    }));
+    console.log(companies.value); // 응답 확인
+  } catch (error) {
+    console.error("기업 목록을 가져오는 데 실패했습니다:", error);
+  }
+};
+
+// 새 탭에서 공고보기
+function navigateToViewInfo(noticeUrl) {
+  console.log("공고 URL:", noticeUrl); // URL 확인
+  if (noticeUrl) {
+    window.open(noticeUrl, '_blank'); // 새 탭에서 열기
+  } else {
+    alert("공고 링크가 없습니다.");
+  }
+}
+
 //자동
 function navigateToPersonalStatement(companyId, isManual = false) {
   localStorage.setItem('manual', JSON.stringify(isManual));
   router.push({ name: "Write", params: { id: companyId }, state: { manual: isManual } });
 }
 
+
+// 수동 입력 페이지로 이동
 function navigateToManualInput() {
   localStorage.setItem('manual', 'true');
   router.push({ name: "Write", state: { manual: true } });
 }
 
-
-// 새 탭에서 공고보기
-function navigateToViewInfo(companyId) {
-  const url = `/Letter/ViewInfo/${companyId}`;
-  window.open(url, '_blank');  // 새 탭에서 열기
-}
+// 컴포넌트가 마운트될 때 데이터 가져오기
+onMounted(() => {
+  fetchCompanies();
+});
 </script>
+
 <style scoped>
 .container {
   max-width: 800px;
@@ -147,65 +120,16 @@ function navigateToViewInfo(companyId) {
   align-items: center;
   padding: 15px 0;
 }
+
 .company-item:not(:last-child) {
   border-bottom: 1px solid #ddd;
 }
+
 .company-img {
   width: 80px;
   height: 80px;
-  object-fit: cover;
+  object-fit: contain; /* 변경된 부분: contain으로 설정 */
   margin-right: 15px;
   border-radius: 8px;
-}
-
-.custom-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.custom-modal {
-  background: white;
-  width: 90%;
-  max-width: 500px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-}
-
-.custom-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
-  background-color: #f8f9fa;
-}
-
-.custom-modal-body {
-  padding: 20px;
-  color: #333;
-}
-
-.custom-modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  padding: 15px;
-  border-top: 1px solid #ddd;
-  background-color: #f8f9fa;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
 }
 </style>

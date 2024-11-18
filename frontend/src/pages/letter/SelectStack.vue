@@ -216,10 +216,15 @@ export default {
       loading.value = false; // 로딩 상태 종료
     };
 
-    const handleComplete = () => {
+        const handleComplete = () => {
       console.log("선택된 과정:", selectedCourse.value);
       console.log("선택된 항목:", selectedItems.value);
-      router.push("/Letter/SelectCompany");
+
+      // 선택된 교육 과정의 cno를 URL 파라미터로 넘기기
+      router.push({
+        name: "SelectCompany", // 이동할 컴포넌트 이름
+        query: { cno: selectedCourse.value } // cno를 쿼리 파라미터로 추가
+      });
     };
 
     return {
