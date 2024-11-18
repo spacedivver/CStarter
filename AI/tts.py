@@ -14,8 +14,8 @@ db_user = os.getenv('DB_USER')
 db_password = os.getenv('DB_PASSWORD')
 db_name = os.getenv('DB_NAME')
 
-client = OpenAI(api_key=api_key)
-print(f"API 키가 로드되었습니다: {api_key is not None}")
+
+
 
 # 데이터베이스에서 특정 조건에 맞는 질문 가져오기
 def get_question(mno, clno, number):
