@@ -217,8 +217,6 @@ export default {
     };
 
         const handleComplete = () => {
-      console.log("선택된 과정:", selectedCourse.value);
-      console.log("선택된 항목:", selectedItems.value);
 
       // 선택된 교육 과정의 cno를 URL 파라미터로 넘기기
       router.push({
