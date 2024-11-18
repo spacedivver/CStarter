@@ -9,8 +9,8 @@
     </select>
 
     <select id="selectTechSkills" resultType="com.kb.kdt.dto.TechSkill">
-        SELECT ts.tsno, ts.name FROM tech_skill ts JOIN tech_list tl
-        ON tl.tsno = ts.tsno
+        SELECT ts.tsno, ts.name, ts.icon FROM tech_skill ts JOIN tech_list tl
+        ON ts.tsno = tl.tsno
         WHERE tl.cno = #{cno}
     </select>
 
