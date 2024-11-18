@@ -3,9 +3,11 @@
     class="mt-2 row g-0 justify-content-center gradient-bottom-right middle-indigo end-pink"
   >
     <div
-      class="col-md-6 col-lg-5 col-xl-5 position-absolute start-0 vh-100 overflow-y-hidden d-none d-lg-flex flex-lg-column back-img"
+    class="col-md-6 col-lg-5 col-xl-5 position-absolute start-0 vh-100 overflow-y-hidden d-none d-lg-flex flex-lg-column back back-img"
     >
-      <div class="p-150">
+    <img src="@/assets/images/header.png" alt="" style="width: 800px;" class="p-150">
+
+      <!-- <div class="p-150">
         <div class="mt-20">
           <h1 class="ls-tight fw-bolder display-6 text-white mb-5">
             환영합니다!
@@ -16,7 +18,7 @@
             <BR /> 모의면접 리포트를 저장할 수 있어요. <br />
           </p>
         </div>
-      </div>
+      </div> -->
     </div>
     <div
       class="col-12 col-md-12 col-lg-7 offset-lg-5 vh-100 d-flex justify-content-center align-items-center border-start-lg shadow-soft-5"
@@ -215,11 +217,17 @@ const submitForm = async () => {
 </script>
 
 <style scoped>
-.back-img {
-  background-image: url('@/assets/images/register/register.jpg');
-  background-size: cover; /* 이미지가 div를 채우도록 설정 */
-  background-position: center; /* 이미지를 중앙에 위치시킴 */
+.back {
+
+background-color: #d9e8f6;
 }
+
+.back-img{
+background-size: contain; /* 이미지가 div를 채우도록 설정 */
+background-position: top; /* 이미지를 중앙에 위치시킴 */
+background-repeat: no-repeat; /* 이미지를 반복하지 않도록 설정 */
+}
+
 
 .p-150 {
   padding: 100px;
