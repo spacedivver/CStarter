@@ -70,3 +70,8 @@
 .active-page:hover {
   background-color: #2988c8;
 }
+
+
+.mb-5p {
+  margin-bottom: 5%;
+}

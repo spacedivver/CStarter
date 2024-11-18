@@ -1,4 +1,5 @@
 <script setup>
+import CStestHeader from "@/components/cstest/CStestHeader.vue";
 import { ref, reactive, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -116,6 +117,7 @@ watch(route, async () => {
 load(pageRequest);
 </script>
 <template>
+  <CStestHeader/>
   <div class="container">
     <h2 class="title mb-4"><i class="fa-solid fa-copy"></i> 문제 목록</h2>
     <div class="filter-section rounded shadow-sm">
@@ -197,7 +199,7 @@ load(pageRequest);
             }}
           </td>
           <td>
-            <router-link :to="{ name: 'Setting', query: route.query }" class="router-link">
+            <router-link :to="{ name: 'CStestSetting', query: route.query }" class="router-link">
               {{ article.title }}
             </router-link>
           </td>

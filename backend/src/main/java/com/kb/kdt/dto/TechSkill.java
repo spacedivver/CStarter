@@ -10,4 +10,5 @@ import lombok.*;
 public class TechSkill {
     private int tsno;
     private String name;
+    private String icon;
 }

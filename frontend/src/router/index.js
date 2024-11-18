@@ -3,7 +3,9 @@ import HomePage from '../pages/HomePage.vue';
 import SelectCurriculum from '../pages/cstest/SelectCurriculum.vue';
 import SelectCompany from '../pages/letter/SelectCompany.vue';
 import Interview from '../pages/interview/Interview.vue';
+import CStestInterview from '@/pages/cstest/CStestInterview.vue';
 import Setting from '../pages/interview/Setting.vue';
+import CStestSetting from '@/pages/cstest/CStestSetting.vue';
 import SelectTests from '../pages/cstest/SelectTests.vue';
 import SelectStack from '../pages/letter/SelectStack.vue';
 import Result from '../pages/report/Result.vue';
@@ -32,6 +34,16 @@ const router = createRouter({
       path:'/CSTest/SelectTests',
       name: 'SelectTests',
       component: SelectTests,
+    },
+    {
+      path:'/CSTest/CStestSetting',
+      name: 'CStestSetting',
+      component: CStestSetting,
+
+    },{
+      path:'/CSTest/CStestInterview',
+      name:'CStestInterview',
+      component: CStestInterview,
     },
     {
       path: '/Letter/SelectCompany',
