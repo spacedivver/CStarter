@@ -1,7 +1,6 @@
 package com.kb.interview.mapper;
 
-import com.kb.interview.dto.CoverLetter;
-import com.kb.kdt.dto.Course;
+import com.kb.interview.dto.coverletter.CoverLetter;
 
 import java.util.List;
 

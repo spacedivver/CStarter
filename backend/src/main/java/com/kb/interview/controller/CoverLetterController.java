@@ -1,9 +1,8 @@
 package com.kb.interview.controller;
 
-import com.kb.interview.dto.CoverLetter;
-import com.kb.interview.dto.CoverLetterRequest;
+import com.kb.interview.dto.coverletter.CoverLetter;
+import com.kb.interview.dto.coverletter.CoverLetterRequest;
 import com.kb.interview.service.CoverLetterService;
-import com.kb.kdt.mapper.CourseMapper;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

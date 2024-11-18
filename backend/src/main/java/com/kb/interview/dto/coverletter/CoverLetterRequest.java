@@ -1,4 +1,4 @@
-package com.kb.interview.dto;
+package com.kb.interview.dto.coverletter;
 
 import lombok.*;
 
