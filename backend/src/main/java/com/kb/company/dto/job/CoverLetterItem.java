@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CoverLetterItem {
+    private int cino;
     private int number;
     private String content;
     private int textCount;
