@@ -1,7 +1,7 @@
 <script></script>
 <template>
   <div class="row-bg p-5">
-    <div class="container text-center"><i class="fa-regular fa-copyright"></i> 
+    <div class="container text-center">
       <h5>CStarter</h5>
       <h6 class="fw-light">제6회 K-디지털 트레이닝 해커톤 Foreigners팀</h6>
       <h6 class="fw-light">https://github.com/KDT-Foreigners</h6>
