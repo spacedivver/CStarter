@@ -1,17 +1,22 @@
 <template>
-    <LetterHeader />
+  <LetterHeader />
   <div class="container mb-5p">
-    <h5>결과</h5>
-    <h1 class="mb-4">
-      <div>
-        <span class="fw-bold">{{score}}</span>
-        <span class="fw-light">점 <br /></span>
-      </div>
-    </h1>
-    <h5>총평</h5>
-    <p>
-{{content}}
-    </p>
+    <div class="form-group">
+      <h5>결과</h5>
+
+      <h1 class="">
+        <div>
+          <span class="fw-bold">{{ score }}</span>
+          <span class="fw-light">점 <br /></span>
+        </div>
+      </h1>
+      <div class="divider"></div>
+      <h5>총평</h5>
+
+      <p>
+        {{ content }}
+      </p>
+    </div>
 
     <div v-for="(item, index) in qna" :key="index">
       <div class="form-group">
@@ -46,14 +51,12 @@ const score = ref(0);
 const content = ref("");
 const rno = 1;
 
-
 const fetchReports = async () => {
   const response = await axios.get(`http://localhost:8080/api/report/${rno}`);
-      const report = response.data;
-      score.value = report.score;
-      content.value = report.content;
-
-}
+  const report = response.data;
+  score.value = report.score;
+  content.value = report.content;
+};
 
 const qna = ref([
   {
@@ -117,5 +120,4 @@ onMounted(fetchReports);
 .mb-5p {
   margin-bottom: 5%;
 }
-
 </style>
