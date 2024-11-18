@@ -79,37 +79,6 @@ def generate_questions(company, role, intro_questions, tech_stack, intro_text):
     # 공백 질문 제거
     return [q for q in content.split("\n") if q.strip()]
 
-def generate_questions(company, role, intro_questions, tech_stack, intro_text):
-    # 질문과 답변의 길이를 제한
-    intro_questions_limited = intro_questions[:5]  # 최대 5개의 질문만 사용
-    intro_text_limited = intro_text[:5]  # 최대 5개의 답변만 사용
-    
-    # 문자열로 병합
-    questions_str = "\n".join(intro_questions_limited)
-    text_str = "\n".join(intro_text_limited)
-    
-    # 메시지 형식으로 프롬프트 작성
-    messages = [
-        {"role": "system", "content": f"너는 지금부터 '{company}'이라는 회사의 '{role}'의 면접관이야."},
-        {"role": "user", "content": f"다음은 자기소개서 문항과 지원자의 기술스택, 자기소개서 내용이야. 이 정보를 바탕으로 20개의 면접 질문을 만들어줘.\n\n"
-                                    f"자기소개서 문항:\n{questions_str}\n\n"
-                                    f"기술스택:\n{tech_stack}\n\n"
-                                    f"자기소개서 내용:\n{text_str}\n\n"
-                                    "면접 질문 20개:"}
-    ]
-    
-    # ChatCompletion API를 사용해 질문 생성
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=messages,
-        max_tokens=1000,  # 출력 길이를 제한
-        temperature=0.7
-    )
-
-    # 모델 응답에서 질문 목록을 추출
-    content = response.choices[0].message.content.strip()
-    return [q for q in content.split("\n") if q.strip()]
-
 # 데이터베이스에서 불러오기
 intro_questions, intro_text = fetch_data_from_db(db_host, db_port, db_user, db_password, db_name)
 

@@ -43,7 +43,7 @@ def transcribe_audio_to_text(file_path):
     return response.text  # Transcription 객체에서 텍스트 추출
 
 # 데이터베이스에 답변 저장
-def save_answer_to_db(answer):
+def save_answer_to_db(answer, mno, clno, number):
     try:
         # MySQL 연결
         connection = mysql.connector.connect(
@@ -55,13 +55,19 @@ def save_answer_to_db(answer):
         )
         cursor = connection.cursor()
         
-        # created_at 필드를 제거한 쿼리
-        query = "INSERT INTO answer (answer) VALUES (%s)"
-        cursor.execute(query, (answer,))
+        # cover_letter_question 테이블의 answer 업데이트
+        query = """
+        UPDATE cover_letter_question
+        SET answer = %s
+        WHERE clno = %s AND number = %s AND EXISTS (
+            SELECT 1 FROM cover_letter WHERE mno = %s AND clno = %s
+        )
+        """
+        cursor.execute(query, (answer, clno, number, mno, clno))
         
         # 변경 사항 커밋
         connection.commit()
-        print("사용자 답변이 데이터베이스에 저장되었습니다.")
+        print(f"사용자 답변이 number={number}에 저장 완료.")
         
     except mysql.connector.Error as err:
         print(f"데이터베이스 오류: {err}")
@@ -84,8 +90,13 @@ output_data = {"user_input": user_input}
 with open("interview_answer.json", "w", encoding="utf-8") as json_file:
     json.dump(output_data, json_file, ensure_ascii=False, indent=4)
 
+# 테스트 목적으로 9999와 number=1 사용, number는 자기소개서 문항 번호
+mno = 9999
+clno = 9999
+number = 1
+
 # 답변을 데이터베이스에 저장
-save_answer_to_db(user_input)
+save_answer_to_db(user_input, mno, clno, number)
 
 # 임시 파일 삭제
 os.remove(file_path)
