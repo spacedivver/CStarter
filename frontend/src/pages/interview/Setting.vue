@@ -27,9 +27,9 @@
     <div class="row mb-3 mt-5">
       <div class="col-md-12 mx-auto">
         <h5 for="questionCount" class="form-label mb-3">질문 개수를 선택하세요</h5>
-        <select id="questionCount" class="form-select mx-auto" v-model="questionCount" style="width: 380px;">
-          <option v-for="i in 20" :key="i" :value="i">{{ i }} 개</option>
-        </select>
+        <el-select id="questionCount" class="mx-auto" v-model="questionCount" style="width: 380px;">
+          <el-option v-for="i in 20" :key="i" :value="i">{{ i }} 개</el-option>
+        </el-select>
       </div>
     </div>
 
