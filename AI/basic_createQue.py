@@ -1,4 +1,5 @@
 import sys
+import json
 import pymysql
 from openai import OpenAI
 import os
@@ -58,34 +59,77 @@ def fetch_data_from_db(db_host, db_port, db_user, db_password, db_name, clno):
     finally:
         connection.close()
 
+def generate_questions(company, role, intro_questions, intro_text, QueNum):
+    messages = [
+        {"role": "system", "content": f"너는 지금부터 '{company}'이라는 회사의 '{role}'의 면접관이야."},
+        {"role": "user", "content": f"다음은 자기소개서 문항과 지원자의 기술스택, 자기소개서 내용이야. 이 정보를 바탕으로 {QueNum}개의 면접 질문을 만들어줘.\n\n"
+                                    f"자기소개서 문항:\n{intro_questions}\n\n"
+                                    f"자기소개서 내용:\n{intro_text}\n\n"
+                                    "면접 질문 {QueNum}개:"}
+    ]
+    
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=messages,
+        max_tokens=1000,
+        temperature=0.7
+    )
+
+    content = response.choices[0].message.content.strip()
+    return [q for q in content.split("\n") if q.strip()]
+
+def insert_questions_to_db(questions, db_host, db_port, db_user, db_password, db_name):
+        try:
+            # MySQL 연결
+            connection = pymysql.connect(
+                host=db_host,
+                port=db_port,
+                user=db_user,
+                password=db_password,
+                database=db_name,
+                charset='utf8mb4'
+            )
+            
+            cursor = connection.cursor()
+            
+            # 질문 삽입
+            insert_query = "INSERT INTO cover_letter_question (clno, number, question) VALUES (%s, %s, %s)"
+            for number, question in enumerate(questions, start=1):
+                cursor.execute(insert_query, (clno, number, question))
+            
+            # 변경 사항 커밋
+            connection.commit()
+            print("질문이 데이터베이스에 성공적으로 삽입되었습니다.")
+            
+        except Exception as e:
+            print(f"데이터베이스 삽입 중 오류 발생: {e}")
+        finally:
+            connection.close()
+
+
 # 데이터베이스에서 데이터 가져오기
 intro_questions, intro_text = fetch_data_from_db(db_host, db_port, db_user, db_password, db_name, clno)
+
 
 if not company_name or not role_name or not intro_questions or not intro_text:
     print("데이터 오류")
 else:
-    # GPT 질문 생성 함수
-    def generate_questions(company, role, intro_questions, intro_text, que_num):
-        messages = [
-            {"role": "system", "content": f"너는 지금부터 '{company}'이라는 회사의 '{role}'의 면접관이야."},
-            {"role": "user", "content": f"다음은 자기소개서 문항과 지원자의 기술스택, 자기소개서 내용이야. 이 정보를 바탕으로 {que_num}개의 면접 질문을 만들어줘.\n\n"
-                                        f"자기소개서 문항:\n{intro_questions}\n\n"
-                                        f"자기소개서 내용:\n{intro_text}\n\n"
-                                        "면접 질문 {que_num}개:"}
-        ]
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=messages,
-            max_tokens=1000,
-            temperature=0.7
-        )
-        content = response.choices[0].message.content.strip()
-        return [q for q in content.split("\n") if q.strip()]
+    questions = generate_questions(company_name, role_name, intro_questions, intro_text)
 
-    # 질문 생성
-    questions = generate_questions(company_name, role_name, intro_questions, intro_text, que_num)
+    # 질문 삽입 실행
+    if questions:
+        insert_questions_to_db(questions, db_host, db_port, db_user, db_password, db_name)
+    else:
+        print("유효한 질문이 없어 데이터베이스에 삽입되지 않았습니다.")
 
-    # 질문 출력
-    print({"questions": questions})
+    # 결과 생성 및 저장
+    output_data = {
+        "회사명": company_name,
+        "직무": role_name,
+        "질문 리스트": questions
+    }
 
-    
+    with open('create.json', 'w', encoding='utf-8') as c_file:
+        json.dump(output_data, c_file, ensure_ascii=False, indent=4)
+
+    print("create.json 파일이 성공적으로 생성되었습니다.")
