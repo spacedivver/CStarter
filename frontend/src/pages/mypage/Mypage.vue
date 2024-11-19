@@ -1,8 +1,9 @@
 <script setup>
 import MypageHeader from "@/components/mypage/MypageHeader.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import CStestList from "@/components/mypage/CStestList.vue";
 import InterviewList from "@/components/mypage/InterviewList.vue";
+const props = defineProps({ id: String });
 
 const currentView = ref("CStest"); // 초기값: CS테스트 리스트
 const changeView = (view) => {
@@ -22,6 +23,14 @@ const memberEdit = ref({
   phone: "",
   message: "",
 });
+
+onMounted(() => {
+  const storedId = localStorage.getItem("id");
+  if (storedId) {
+    member.value.name = storedId;
+    console.log(storedId);
+  }
+})
 </script>
 
 <template>
