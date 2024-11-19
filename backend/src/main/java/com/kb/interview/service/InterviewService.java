@@ -87,7 +87,7 @@ public class InterviewService {
             e.printStackTrace();
         }
 
-        return interviewMapper.selectCoverLetterQuestion(request.getClno(), request.getNumber(), request.getQuestionType());
+        return interviewMapper.selectCoverLetterQuestion(request.getClno(), request.getNumber(), 0);
     }
 
     public List<TechQuestionResponse> getTechQuestions() {

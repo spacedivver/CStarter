@@ -22,7 +22,7 @@ print(f"API 키가 로드되었습니다: {api_key is not None}")
 try:
     clno = int(sys.argv[1])     # 자기소개서 번호
     number = int(sys.argv[2])   # 문항 번호
-    rno = int(sys.argv[5])      # 보고서 번호
+    rno = int(sys.argv[3])      # 보고서 번호
 except IndexError:
     print("input 에러")
     sys.exit(1)
