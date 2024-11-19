@@ -22,6 +22,7 @@ print(f"API 키가 로드되었습니다: {api_key is not None}")
 try:
     clno = int(sys.argv[1])     # 자기소개서 번호
     number = int(sys.argv[2])   # 문항 번호
+    rno = int(sys.argv[5])      # 보고서 번호
 except IndexError:
     print("input 에러")
     sys.exit(1)
@@ -82,8 +83,8 @@ def insert_questions_to_db(question, clno, number, db_host, db_port, db_user, db
         cursor = connection.cursor()
         
         # 질문 삽입
-        insert_query = "INSERT INTO cover_letter_question (clno, number, question_type, question) VALUES (%s, %s, 1, %s)"
-        cursor.execute(insert_query, (clno, number, question))
+        insert_query = "INSERT INTO cover_letter_question (clno, rno, number, question_type, question) VALUES (%s, %s, %s, 1, %s)"
+        cursor.execute(insert_query, (clno, rno, number, question))
         
         # 변경 사항 커밋
         connection.commit()
