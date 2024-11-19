@@ -11,4 +11,9 @@
     <select id="selectCoverLetterQuestion" resultType="com.kb.interview.dto.question.CoverLetterQuestionResponse">
         select * from cover_letter_question where rno = #{rno} and number = #{number} and question_type = #{questionType};
     </select>
+
+    <select id="selectTechQuestion" resultType="com.kb.interview.dto.tech.TechQuestionResponse">
+        select tq.tqno as bno, ts.name as type, tq.question as title
+        from tech_question tq join tech_skill ts on tq.tsno = ts.tsno;
+    </select>
 </mapper>

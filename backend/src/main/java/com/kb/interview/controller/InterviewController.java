@@ -7,6 +7,7 @@ import com.kb.interview.dto.question.CoverLetterQuestionResponse;
 import com.kb.interview.dto.question.CoverLetterSubQuestionRequest;
 import com.kb.interview.dto.report.Report;
 import com.kb.interview.dto.tech.TechQuestion;
+import com.kb.interview.dto.tech.TechQuestionResponse;
 import com.kb.interview.service.InterviewService;
 import com.kb.interview.service.ReportService;
 import io.swagger.annotations.Api;
@@ -47,8 +48,8 @@ public class InterviewController {
         return ResponseEntity.ok(response);
     }
 
-//    @GetMapping("/tech/question")
-//    public ResponseEntity<List<TechQuestion>> getTechQuestions() {
-//
-//    }
+    @GetMapping("/tech/question")
+    public ResponseEntity<List<TechQuestionResponse>> getTechQuestions() {
+        return ResponseEntity.ok(interviewService.getTechQuestions());
+    }
 }
