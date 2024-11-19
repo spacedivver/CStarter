@@ -210,19 +210,24 @@ const articles = computed(() => page.value.displayedList);
   background-color: #fff;
 }
 
-.stack-java {
+.stack-HTML {
+  color: #003cff;
+}
+
+
+.stack-Java {
   color: #f28a1b;
 }
 
-.stack-python {
+.stack-Python {
   color: #1976d2;
 }
 
-.stack-vue {
+.stack-Vue {
   color: #28a745;
 }
 
-.stack-SQL {
+.stack-MySQL {
   color: #dc3545;
 }
 
