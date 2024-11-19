@@ -4,6 +4,7 @@ import com.kb.interview.dto.question.CoverLetterQuestion;
 import com.kb.interview.dto.question.CoverLetterQuestionRequest;
 import com.kb.interview.dto.question.CoverLetterQuestionResponse;
 import com.kb.interview.dto.question.CoverLetterSubQuestionRequest;
+import com.kb.interview.dto.tech.TechQuestion;
 import com.kb.interview.mapper.CoverLetterMapper;
 import com.kb.interview.mapper.InterviewMapper;
 import com.kb.interview.mapper.ReportMapper;
@@ -71,4 +72,8 @@ public class InterviewService {
 
         return interviewMapper.selectCoverLetterQuestion(request.getRno(), request.getNumber(), 1);
     }
+
+//    public List<TechQuestion> getTechQuestions() {
+//
+//    }
 }
