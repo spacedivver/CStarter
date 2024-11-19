@@ -1,4 +1,3 @@
-import sys
 import json
 from openai import OpenAI
 import os
@@ -20,17 +19,6 @@ db_name = os.getenv('DB_NAME')
 
 client = OpenAI(api_key=api_key)
 print(f"API 키가 로드되었습니다: {api_key is not None}")
-
-# 명령줄 인자로 clno와 number 값 받기
-try:
-    clno = int(sys.argv[1])  # cover_letter clno
-    number = int(sys.argv[2])  # cover_letter_question number
-except IndexError:
-    print("명령줄 인자로 clno와 number 값을 전달해야 합니다.")
-    sys.exit(1)
-except ValueError:
-    print("clno와 number 값은 정수여야 합니다.")
-    sys.exit(1)
 
 # STT를 위한 음성 녹음 및 파일 저장
 def record_audio(duration=10, fs=16000):
@@ -55,7 +43,7 @@ def transcribe_audio_to_text(file_path):
     return response.text  # Transcription 객체에서 텍스트 추출
 
 # 데이터베이스에 답변 저장
-def save_answer_to_db(answer, clno, number):
+def save_answer_to_db(answer, mno, tqno):
     try:
         # MySQL 연결
         connection = mysql.connector.connect(
@@ -67,19 +55,20 @@ def save_answer_to_db(answer, clno, number):
         )
         cursor = connection.cursor()
         
-        # cover_letter_question 테이블의 answer 업데이트
+        # tech_answer 테이블의 answer 값 추가
+        # 값이 없으면 추가하고 있으면 업데이트 수행
+        
         query = """
-        UPDATE cover_letter_question
-        SET answer = %s
-        WHERE clno = %s AND number = %s AND EXISTS (
-            SELECT 1 FROM cover_letter WHERE clno = %s
-        )
+        INSERT INTO tech_answer (tqno, mno, answer)
+        VALUES (%s, %s, %s)
+        ON DUPLICATE KEY UPDATE
+        answer = VALUES(answer)
         """
-        cursor.execute(query, (answer, clno, number, clno))
+        cursor.execute(query, (tqno, mno, answer))
         
         # 변경 사항 커밋
         connection.commit()
-        print(f"사용자 답변이 number={number}에 저장 완료.")
+        print(f"사용자 답변 저장 완료.")
         
     except mysql.connector.Error as err:
         print(f"데이터베이스 오류: {err}")
@@ -102,9 +91,12 @@ output_data = {"user_input": user_input}
 with open("interview_answer.json", "w", encoding="utf-8") as json_file:
     json.dump(output_data, json_file, ensure_ascii=False, indent=4)
 
+# 테스트 목적으로 9999와 number=1 사용, number는 자기소개서 문항 번호
+mno = 9999
+tqno = 1
+
 # 답변을 데이터베이스에 저장
-save_answer_to_db(user_input, clno, number)
+save_answer_to_db(user_input, mno, tqno)
 
 # 임시 파일 삭제
 os.remove(file_path)
-

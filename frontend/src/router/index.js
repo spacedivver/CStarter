@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '../pages/HomePage.vue';
-import SelectCurriculum from '../pages/cstest/SelectCurriculum.vue';
 import SelectCompany from '../pages/letter/SelectCompany.vue';
 import Interview from '../pages/interview/Interview.vue';
 import CStestInterview from '@/pages/cstest/CStestInterview.vue';
@@ -24,11 +23,7 @@ const router = createRouter({
       name: 'home',
       component: HomePage,
     },
-    {
-      path: '/CSTest/SelectCurriculum',
-      name: 'SelectCurriculum',
-      component: SelectCurriculum,
-    },
+    
     {
       path:'/CSTest/SelectTests',
       name: 'SelectTests',
