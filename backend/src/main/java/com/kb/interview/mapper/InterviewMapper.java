@@ -14,4 +14,5 @@ public interface InterviewMapper {
                                                           @Param("number") int number,
                                                           @Param("questionType") int questionType);
     List<TechQuestionResponse> selectTechQuestion();
+    TechQuestionResponse selectTechQuestionById(int bno);
 }

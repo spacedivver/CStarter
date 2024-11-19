@@ -16,4 +16,10 @@
         select tq.tqno as bno, ts.name as type, tq.question as title
         from tech_question tq join tech_skill ts on tq.tsno = ts.tsno;
     </select>
+    
+    <select id="selectTechQuestionById" resultType="com.kb.interview.dto.tech.TechQuestionResponse">
+        select tq.tqno as bno, ts.name as type, tq.question as title
+        from tech_question tq join tech_skill ts on tq.tsno = ts.tsno
+        where tq.tqno = #{bno}
+    </select>
 </mapper>
