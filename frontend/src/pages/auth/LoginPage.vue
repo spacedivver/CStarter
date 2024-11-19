@@ -63,6 +63,7 @@
                   href="#"
                   class="btn btn-dark w-100 mb-5"
                   :disabled="disableSubmit"
+                  @click="navigateToMain"
                 >
                   로그인
                 </button>
@@ -92,19 +93,25 @@ const member = reactive({
 const error = ref("");
 const disableSubmit = computed(() => !(member.id && member.password));
 
-const login = async () => {
-  console.log(member);
-  try {
-    await auth.login(member);
-    if (route.query.next) {
-      router.push({ name: route.query.next });
-    } else {
-      router.push("/");
-    }
-  } catch (e) {
-    console.log("error", e);
-    alert(e.response.data);
-    error.value = e.response.data;
+// const login = async () => {
+//   console.log(member);
+//   try {
+//     await auth.login(member);
+//     if (route.query.next) {
+//       router.push({ name: route.query.next });
+//     } else {
+//       router.push("/");
+//     }
+//   } catch (e) {
+//     console.log("error", e);
+//     alert(e.response.data);
+//     error.value = e.response.data;
+//   }
+// };
+
+const navigateToMain = () => {
+  if (disableSubmit) {
+    router.push("/");
   }
 };
 </script>

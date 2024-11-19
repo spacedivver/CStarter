@@ -9,18 +9,6 @@
         style="width: 500px; margin-left: 200px; margin-top: -70px"
         class="img-fluid"
       />
-      <!-- You can uncomment the below code to add a text block inside the left image container -->
-      <!--
-        <div class="text-center text-white">
-          <h1 class="fw-bolder display-6 mb-5">
-            환영합니다! CStarter 입니다.
-          </h1>
-          <p class="text-opacity-75">
-            회원가입을 완료하시면 기술면접을 연습하고,<br />
-            모의면접 리포트를 저장할 수 있어요.
-          </p>
-        </div>
-        -->
     </div>
     <div class="col-4 d-flex justify-content-center align-items-center">
       <div class="container ms-5">
@@ -61,10 +49,7 @@
                   중복 확인
                 </button>
               </div>
-              <p v-if="isDuplicate" class="text-danger small">
-                해당 아이디는 이미 사용 중입니다.
-              </p>
-              <p v-if="isAvailable" class="text-success small">
+              <p v-if="duplicateChecked" class="text-success small">
                 사용 가능한 아이디입니다.
               </p>
             </div>
@@ -99,17 +84,6 @@
                 비밀번호가 일치하지 않습니다.
               </p>
             </div>
-
-            <!-- <div class="col-sm-12">
-              <label for="email" class="form-label">사용자 이메일</label>
-              <input
-                type="email"
-                v-model="form.email"
-                class="form-control"
-                id="email"
-                required
-              />
-            </div> -->
             <div
               class="d-flex align-items-center justify-content-center mt-5 mb-4"
             >
@@ -117,7 +91,8 @@
                 <button
                   type="submit"
                   class="btn btn-dark w-100 mb-5"
-                  :disabled="!isFormValid || isDuplicate"
+                  :disabled="!isFormValid"
+                  @click="navigateToLogin"
                 >
                   회원가입
                 </button>
@@ -125,23 +100,6 @@
             </div>
           </div>
         </form>
-
-        <!-- <div class="row g-2">
-          <div class="col-sm-6">
-            <a href="#" class="btn btn-neutral w-100"
-              ><span class="icon icon-sm pe-2"
-                ><img src="../../img/social/github.svg" alt="..." /> </span
-              >Github</a
-            >
-          </div>
-          <div class="col-sm-6">
-            <a href="#" class="btn btn-neutral w-100"
-              ><span class="icon icon-sm pe-2"
-                ><img src="../../img/social/google.svg" alt="..." /> </span
-              >Google</a
-            >
-          </div>
-        </div> -->
       </div>
     </div>
   </div>
@@ -149,20 +107,19 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import axios from "axios";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
 
 const form = ref({
   id: "",
   password: "",
   confirmPassword: "",
   name: "",
-  email: "",
 });
 
-const isDuplicate = ref(false);
-const isAvailable = ref(false);
-const router = useRouter();
+const duplicateChecked = ref(false);
 
 const isFormValid = computed(() => {
   return (
@@ -170,47 +127,17 @@ const isFormValid = computed(() => {
     form.value.password &&
     form.value.confirmPassword &&
     form.value.name &&
-    form.value.email &&
     form.value.password === form.value.confirmPassword &&
-    !isDuplicate.value // 중복된 경우 제출 비활성화
+    duplicateChecked.value
   );
 });
 
-const checkDuplicate = async () => {
-  try {
-    const response = await axios.get(
-      `http://localhost:8080/api/member/checkid/${form.value.id}`
-    );
-    isDuplicate.value = response.data; // 중복 여부 설정
-    isAvailable.value = !isDuplicate.value;
-  } catch (error) {
-    console.error("중복 확인 실패:", error);
-  }
+const checkDuplicate = () => {
+  duplicateChecked.value = true;
 };
 
-const submitForm = async () => {
-  let formData = new FormData();
-
-  formData.append("id", form.value.id);
-  formData.append("password", form.value.password);
-  formData.append("name", form.value.name);
-  formData.append("email", form.value.email);
-
-  try {
-    const response = await axios.post(
-      "http://localhost:8080/api/member",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    console.log("회원가입 성공:", response.data);
-    router.push("/welcome");
-  } catch (error) {
-    console.error("회원가입 실패:", error);
-  }
+const navigateToLogin = () => {
+  router.push("/auth/login");
 };
 </script>
 
@@ -225,64 +152,16 @@ const submitForm = async () => {
   background-repeat: no-repeat;
 }
 
-.p-150 {
-  padding: 150px;
-}
-
 .mt-7 {
   margin-top: 7rem;
-}
-
-.ls-tight {
-  letter-spacing: -0.02em;
 }
 
 .fw-bolder {
   font-weight: bolder;
 }
 
-.h3 {
-  font-size: 2rem;
-}
-
-.text-white {
-  color: white;
-}
-
-.text-opacity-75 {
-  opacity: 0.75;
-}
-
-.shadow-soft-5 {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.bg-white {
-  background-color: white;
-}
-
-.rounded-right {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-.w-md-50 {
-  width: 50%;
-}
-
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.px-10 {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-.py-10 {
-  padding-top: 10px;
-  padding-bottom: 10px;
+.text-success {
+  color: green;
 }
 
 .mb-5 {
