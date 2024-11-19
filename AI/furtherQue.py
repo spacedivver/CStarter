@@ -56,6 +56,32 @@ def get_answer(mno, clno, number):
             cursor.close()
             connection.close()
 
+# MySQL에 질문 삽입 함수 정의
+def insert_questions_to_db(question, db_host, db_port, db_user, db_password, db_name):
+    try:
+        # MySQL 연결
+        connection = mysql.connector.connect(
+            host=db_host,
+            port=int(db_port),
+            user=db_user,
+            password=db_password,
+            database=db_name
+        )
+        cursor = connection.cursor()
+        
+        # 질문 삽입
+        insert_query = "INSERT INTO cover_letter_question (clno, number, question_type, question) VALUES (%s, %s, 1, %s)"
+        cursor.execute(insert_query, (9999, number, question))
+        
+        # 변경 사항 커밋
+        connection.commit()
+        print("질문이 데이터베이스에 성공적으로 삽입되었습니다.")
+        
+    except Exception as e:
+        print(f"데이터베이스 삽입 중 오류 발생: {e}")
+    finally:
+        connection.close()
+
 
 # TTS
 def text_to_speech(text):
@@ -83,7 +109,13 @@ def generate_follow_up_question(answer_text):
     )
 
     follow_up_question = response.choices[0].message.content.strip()
-    print("추가 질문:", follow_up_question)
+    # print("추가 질문:", follow_up_question)
+
+    # 질문 삽입 실행
+    if follow_up_question:
+        insert_questions_to_db(follow_up_question, db_host, db_port, db_user, db_password, db_name)
+    else:
+        print("유효한 질문이 없어 데이터베이스에 삽입되지 않았습니다.")
 
     # 추가 질문을 JSON 파일로 저장
     with open('furtherQue.json', 'w', encoding='utf-8') as c_file:
@@ -103,7 +135,9 @@ number = 1  # cover_letter_question number
 
 # 조건에 맞는 답변 가져오기
 latest_answer = get_answer(mno, clno, number)
+
 if latest_answer:
     generate_follow_up_question(latest_answer)
 else:
     print("추가 질문을 생성할 답변이 없습니다.")
+
