@@ -19,7 +19,7 @@ print(f"API 키가 로드되었습니다: {api_key is not None}")
 
 company_name = sys.argv[1]  # 회사명
 role_name = sys.argv[2]     # 직무명
-que_num = int(sys.argv[3])  # 생성할 질문 수
+QueNum = int(sys.argv[3])  # 생성할 질문 수
 clno = int(sys.argv[4])     # 자기소개서 번호
 
 # 데이터베이스에서 필요한 정보 가져오는 함수
@@ -62,7 +62,7 @@ def fetch_data_from_db(db_host, db_port, db_user, db_password, db_name, clno):
 def generate_questions(company, role, intro_questions, intro_text, QueNum):
     messages = [
         {"role": "system", "content": f"너는 지금부터 '{company}'이라는 회사의 '{role}'의 면접관이야."},
-        {"role": "user", "content": f"다음은 자기소개서 문항과 지원자의 기술스택, 자기소개서 내용이야. 이 정보를 바탕으로 {QueNum}개의 면접 질문을 만들어줘.\n\n"
+        {"role": "user", "content": f"다음은 자기소개서 문항, 자기소개서 내용이야. 이 정보를 바탕으로 {QueNum}개의 면접 질문을 만들어줘.\n\n"
                                     f"자기소개서 문항:\n{intro_questions}\n\n"
                                     f"자기소개서 내용:\n{intro_text}\n\n"
                                     "면접 질문 {QueNum}개:"}
