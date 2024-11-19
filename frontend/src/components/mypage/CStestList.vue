@@ -15,31 +15,31 @@ const activeTap = ref("page");
 
 const page = ref({
   testList: [
-    { bno: 1, type: "java", title: "Java의 기본 문법과 객체지향 개념", score:"72" },
-    { bno: 7, type: "python", title: "Python의 기본 문법과 데이터 타입",score:"94"  },
-    { bno: 8, type: "python", title: "Python에서의 파일 입출력 및 CSV 처리",score:"99"  },
+    { bno: 1, type: "Java", title: "Java의 기본 문법과 객체지향 개념", score:"72" },
+    { bno: 7, type: "Python", title: "Python의 기본 문법과 데이터 타입",score:"94"  },
+    { bno: 8, type: "Python", title: "Python에서의 파일 입출력 및 CSV 처리",score:"99"  },
     {
       bno: 9,
-      type: "python",
+      type: "Python",
       title: "Python에서의 메모리 관리와 가비지 컬렉션",
       score:"87" 
     },
-    { bno: 10, type: "python", title: "Python의 제너레이터와 이터레이터",score:"72"  },
+    { bno: 10, type: "Python", title: "Python의 제너레이터와 이터레이터",score:"72"  },
 
     {
       bno: 15,
-      type: "vue",
+      type: "Vue",
       title: "Vue에서 컴포넌트 통신 방식 (Props, Emit, Provide/Inject)",score:"82" 
     },
-    { bno: 16, type: "vue", title: "API 통신과 Axios 연동",score:"88"  },
+    { bno: 16, type: "Vue", title: "API 통신과 Axios 연동",score:"88"  },
 
   ],
   category: [
     { type: "all", name: "전체" },
-    { type: "java", name: "java" },
-    { type: "python", name: "python" },
-    { type: "vue", name: "vue" },
-    { type: "SQL", name: "SQL" },
+    { type: "Java", name: "Java" },
+    { type: "Python", name: "Python" },
+    { type: "Vue", name: "Vue.js" },
+    { type: "MySQL", name: "MySQL" },
   ],
   totalCount: 10,
 });
@@ -257,19 +257,19 @@ load(pageRequest);
   background-color: #fff;
 }
 
-.stack-java {
+.stack-Java {
   color: #f28a1b;
 }
 
-.stack-python {
+.stack-Python {
   color: #1976d2;
 }
 
-.stack-vue {
+.stack-Vue {
   color: #28a745;
 }
 
-.stack-SQL {
+.stack-MySQL {
   color: #dc3545;
 }
 
