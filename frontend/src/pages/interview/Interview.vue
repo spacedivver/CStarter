@@ -103,9 +103,20 @@ const startTimer = () => {
   if (timerInterval) {
     clearInterval(timerInterval);
   }
-  timerInterval = setInterval(() => {
+  timerInterval = setInterval(async () => {
     time.value += 1;
+
+    // 15초가 되었을 때 서브 질문 요청
+    if (time.value === 15) {
+      await fetchSubQuestion();
+    }
+
+    // 20초가 되었을 때 TTS 요청
+    if (time.value === 20) {
+     // await sendQuestionToTTS(); // TTS 요청
+    }
   }, 1000);
+
 };
 
 // STT 음성 인식 시작
@@ -134,6 +145,29 @@ const startRecording = async () => {
 
 };
 
+
+
+// TTS 요청 함수
+const sendQuestionToTTS = async () => {
+  const currentQuestion = questions.value[currentQuestionIndex.value];
+
+  const data = {
+    clno: currentQuestion.clno, // 현재 질문의 clno
+    number: currentQuestion.number, // 현재 질문의 number
+    questionType: 1, // 고정된 질문 유형 (서브 질문)
+    rno: currentQuestion.rno // 현재 질문의 rno
+  };
+
+  try {
+    const response = await axios.post('http://localhost:8080/api/interview/cover-letter/question/tts', data);
+    console.log('TTS 요청 성공:', response.data);
+    // 여기서 응답을 처리할 수 있습니다.
+  } catch (error) {
+    console.error('TTS 요청 실패:', error);
+  }
+};
+
+
 // 음성 인식 중지
 const stopRecording = () => {
   if (recognition) {
@@ -161,29 +195,41 @@ const nextQuestion = async () => {
   }
 };
 
-// POST 요청을 보내는 함수
-const sendQuestionToTTS = async () => {
-  const currentQuestion = questions.value[currentQuestionIndex.value];
-  
-  const data = {
-    clno: currentQuestion.clno, // 현재 질문의 clno
-    number: currentQuestion.number, // 현재 질문의 number
-    questionType: 0, // 고정된 질문 유형
-    rno: currentQuestion.rno // 현재 질문의 rno
-  };
-
-  try {
-    const response = await axios.post('http://localhost:8080/api/interview/cover-letter/question/tts', data);
-    console.log('TTS 요청 성공:', response.data);
-  } catch (error) {
-    console.error('TTS 요청 실패:', error);
-  }
-};
 
 // 다시 답변하기
 const resetAnswer = () => {
   sttTexts.value = []; // 이전 답변 초기화
   startRecording(); // 새로운 답변 녹음 시작
+};
+
+
+
+// 꼬리 질문 요청하는 함수
+const fetchSubQuestion = async () => {
+  const currentQuestion = questions.value[currentQuestionIndex.value];
+
+  const data = {
+    clno: currentQuestion.clno, // 현재 질문의 clno
+    number: currentQuestion.number, // 현재 질문의 number
+    questionType: 1, // 고정된 질문 유형
+    rno: currentQuestion.rno // 현재 질문의 rno
+  };
+
+  try {
+    const response = await axios.post('http://localhost:8080/api/interview/cover-letter/sub-question', data);
+    console.log('서브 질문 요청 성공:', response.data);
+    console.log(response.data);
+    // 응답에서 질문을 추가
+    questions.value.push({
+      clno: response.data.clno,
+      cqno: response.data.cqno,
+      number: response.data.number,
+      question: response.data.question,
+      rno: response.data.rno
+    });
+  } catch (error) {
+    console.error('서브 질문 요청 실패:', error);
+  }
 };
 </script>
 
