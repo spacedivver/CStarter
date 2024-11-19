@@ -52,4 +52,9 @@ public class InterviewController {
     public ResponseEntity<List<TechQuestionResponse>> getTechQuestions() {
         return ResponseEntity.ok(interviewService.getTechQuestions());
     }
+
+    @GetMapping("/tech/question/${bno}")
+    public ResponseEntity<TechQuestionResponse> getTechQuestion(@PathVariable("bno") int bno) {
+        return ResponseEntity.ok(interviewService.getTechQuestion(bno));
+    }
 }
