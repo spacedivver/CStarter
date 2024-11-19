@@ -39,7 +39,8 @@ public class InterviewService {
 
             ProcessBuilder processBuilder = new ProcessBuilder("python3", scriptPath,
                     request.getCompanyName(), request.getJob(),
-                    Integer.toString(request.getQuestionCount()), Integer.toString(request.getClno()));
+                    Integer.toString(request.getQuestionCount()), Integer.toString(request.getClno()),
+                    Integer.toString(rno));
             processBuilder.directory(workingDirectory);
             processBuilder.redirectErrorStream(true);
 
