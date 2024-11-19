@@ -1,19 +1,17 @@
 package com.kb.interview.controller;
 
-import com.kb.interview.dto.coverletter.CoverLetterAnswer;
-import com.kb.interview.dto.coverletter.CoverLetterResponse;
+import com.kb.interview.dto.coverletter.CoverLetterAIModelRequest;
 import com.kb.interview.dto.question.CoverLetterQuestionRequest;
 import com.kb.interview.dto.question.CoverLetterQuestionResponse;
 import com.kb.interview.dto.question.CoverLetterSubQuestionRequest;
 import com.kb.interview.dto.report.Report;
-import com.kb.interview.dto.tech.TechQuestion;
 import com.kb.interview.dto.tech.TechQuestionResponse;
 import com.kb.interview.service.InterviewService;
 import com.kb.interview.service.ReportService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,13 +37,27 @@ public class InterviewController {
     }
 
     @PostMapping("/cover-letter/sub-question")
-    public ResponseEntity<CoverLetterQuestionResponse> createSubQuestionOfCoverLetter(@RequestBody CoverLetterSubQuestionRequest request) {
+    public ResponseEntity<CoverLetterQuestionResponse> createSubQuestionOfCoverLetter(@RequestBody CoverLetterAIModelRequest request) {
         CoverLetterQuestionResponse response = interviewService.createSubQuestion(request);
 
         if (response == null) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/cover-letter/question/tts")
+    public ResponseEntity<HttpStatus> executeCoverLetterTTS(@RequestBody CoverLetterAIModelRequest request) {
+        if (request.getQuestionType() == 0){
+            interviewService.executeCoverLetterTTS(request);
+        }
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @PostMapping("/cover-letter/question/stt")
+    public ResponseEntity<HttpStatus> executeCoverLetterSTT(@RequestBody CoverLetterAIModelRequest request) {
+        interviewService.executeCoverLetterSTT(request);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping("/tech/question")

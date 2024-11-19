@@ -1,5 +1,6 @@
 package com.kb.interview.service;
 
+import com.kb.interview.dto.coverletter.CoverLetterAIModelRequest;
 import com.kb.interview.dto.question.CoverLetterQuestion;
 import com.kb.interview.dto.question.CoverLetterQuestionRequest;
 import com.kb.interview.dto.question.CoverLetterQuestionResponse;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
 
-
 @Log4j
 @RequiredArgsConstructor
 @Service
@@ -32,8 +32,6 @@ public class InterviewService {
     private final CoverLetterMapper coverLetterMapper;
 
     public List<CoverLetterQuestionResponse> createQuestions(int rno, CoverLetterQuestionRequest request) {
-        // python 실행해서 질문지 생성하기
-        System.out.println("파이썬 실행");
         List<String> result = new ArrayList<>();
         try {
             File workingDirectory = new File(aiDirectoryPath);
@@ -41,7 +39,8 @@ public class InterviewService {
 
             ProcessBuilder processBuilder = new ProcessBuilder("python3", scriptPath,
                     request.getCompanyName(), request.getJob(),
-                    Integer.toString(request.getQuestionCount()), Integer.toString(request.getClno()));
+                    Integer.toString(request.getQuestionCount()), Integer.toString(request.getClno()),
+                    Integer.toString(rno));
             processBuilder.directory(workingDirectory);
             processBuilder.redirectErrorStream(true);
 
@@ -65,19 +64,29 @@ public class InterviewService {
         return responses;
     }
 
-    public CoverLetterQuestionResponse createSubQuestion(CoverLetterSubQuestionRequest request) {
-        // python 실행해서 꼬리질문 생성하기
-       CoverLetterQuestion subQuestion = CoverLetterQuestion.builder()
-                .clno(request.getClno())
-                .rno(request.getRno())
-                .number(request.getNumber())
-                .questionType(1)
-                .question(request.getNumber() + "번 질문에 대한 꼬리 질문")
-                .build();
-        coverLetterMapper.insertQuestion(subQuestion);
-        // python 실행해서 꼬리질문 생성하기
+    public CoverLetterQuestionResponse createSubQuestion(CoverLetterAIModelRequest request) {
+        List<String> result = new ArrayList<>();
+        try {
+            File workingDirectory = new File(aiDirectoryPath);
+            String scriptPath = "furtherQue.py";
 
-        return interviewMapper.selectCoverLetterQuestion(request.getRno(), request.getNumber(), 1);
+            ProcessBuilder processBuilder = new ProcessBuilder("python3", scriptPath,
+                    Integer.toString(request.getClno()), Integer.toString(request.getNumber()), Integer.toString(request.getRno()));
+            processBuilder.directory(workingDirectory);
+            processBuilder.redirectErrorStream(true);
+
+            Process process = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                result.add(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return interviewMapper.selectCoverLetterQuestion(request.getClno(), request.getNumber(), request.getQuestionType());
     }
 
     public List<TechQuestionResponse> getTechQuestions() {
@@ -86,5 +95,53 @@ public class InterviewService {
 
     public TechQuestionResponse getTechQuestion(int bno) {
         return interviewMapper.selectTechQuestionById(bno);
+    }
+
+    public void executeCoverLetterTTS(CoverLetterAIModelRequest request) {
+        List<String> result = new ArrayList<>();
+        try {
+            File workingDirectory = new File(aiDirectoryPath);
+            String scriptPath = "basic_tts.py";
+
+            ProcessBuilder processBuilder = new ProcessBuilder("python3", scriptPath,
+                    Integer.toString(request.getClno()), Integer.toString(request.getNumber()));
+            processBuilder.directory(workingDirectory);
+            processBuilder.redirectErrorStream(true);
+
+            Process process = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                result.add(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String executeCoverLetterSTT(CoverLetterAIModelRequest request) {
+        List<String> result = new ArrayList<>();
+        try {
+            File workingDirectory = new File(aiDirectoryPath);
+            String scriptPath = "basic_stt.py";
+
+            ProcessBuilder processBuilder = new ProcessBuilder("python3", scriptPath,
+                    Integer.toString(request.getClno()), Integer.toString(request.getNumber()));
+            processBuilder.directory(workingDirectory);
+            processBuilder.redirectErrorStream(true);
+
+            Process process = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                result.add(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return interviewMapper.selectCoverLetterQuestionAnswer(request.getClno(), request.getNumber(), request.getQuestionType());
     }
 }

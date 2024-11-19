@@ -10,9 +10,12 @@ import java.util.List;
 
 public interface InterviewMapper {
     List<CoverLetterQuestionResponse> selectCoverLetterQuestions(int clno);
-    CoverLetterQuestionResponse selectCoverLetterQuestion(@Param("rno") int rno,
+    CoverLetterQuestionResponse selectCoverLetterQuestion(@Param("clno") int clno,
                                                           @Param("number") int number,
                                                           @Param("questionType") int questionType);
     List<TechQuestionResponse> selectTechQuestion();
     TechQuestionResponse selectTechQuestionById(int bno);
+    String selectCoverLetterQuestionAnswer(@Param("clno") int clno,
+                                           @Param("number") int number,
+                                           @Param("questionType") int questionType);
 }
