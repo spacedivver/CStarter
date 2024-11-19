@@ -9,7 +9,11 @@
     </select>
 
     <select id="selectCoverLetterQuestion" resultType="com.kb.interview.dto.question.CoverLetterQuestionResponse">
-        select * from cover_letter_question where rno = #{rno} and number = #{number} and question_type = #{questionType};
+        select * from cover_letter_question where clno = #{clno} and number = #{number} and question_type = #{questionType};
+    </select>
+
+    <select id="selectCoverLetterQuestionAnswer" >
+        select answer from cover_letter_question where clno = #{clno} and number = #{number} and question_type = #{questionType};
     </select>
 
     <select id="selectTechQuestion" resultType="com.kb.interview.dto.tech.TechQuestionResponse">

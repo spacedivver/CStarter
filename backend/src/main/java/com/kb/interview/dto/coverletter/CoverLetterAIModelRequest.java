@@ -7,7 +7,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CoverLetterTTSRequest {
+public class CoverLetterAIModelRequest {
+    private int rno;
     private int clno;
     private int number;
+    private int questionType;
 }
