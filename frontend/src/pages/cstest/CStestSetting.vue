@@ -24,20 +24,10 @@
       </div>
     </div>
 
-    <!-- 질문 개수 선택 -->
-    <div class="row mb-3 mt-5">
-      <div class="col-md-12 mx-auto text-center">
-        <h5 for="questionCount" class="form-label mb-3">질문 개수를 선택하세요</h5>
-        <select id="questionCount" class="form-select" v-model="questionCount">
-          <option v-for="i in 20" :key="i" :value="i">{{ i }} 개</option>
-        </select>
-      </div>
-    </div>
-
     <!-- '다음 단계' 버튼 추가 -->
     <div class="text-center mt-4">
       <router-link to="/CSTest/CStestInterview">
-        <button class="btn btn-primary">다음 단계</button>
+        <button class="btn btn-primary" style="width: 150px;">다음 단계</button>
       </router-link>
     </div>
   </div>
