@@ -93,37 +93,8 @@ let recognition = null;
 onMounted(async () => {
   // 질문 리스트를 Pinia 스토어에서 가져오기
   questions.value = questionStore.questions;
+ 
 
-  // 첫 질문에 대해 TTS 요청 보내기
-  // await sendQuestionToTTS();
-
-  
-
-  // 음성 인식 객체 초기화
-  if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-    recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.continuous = true;
-    recognition.lang = 'ko-KR';
-    recognition.interimResults = true;
-
-    recognition.onstart = () => {
-      isRecording.value = true;
-    };
-
-    recognition.onend = () => {
-      isRecording.value = false;
-    };
-
-    recognition.onresult = (event) => {
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) {
-          sttTexts.value.push(event.results[i][0].transcript);
-        }
-      }
-    };
-  } else {
-    console.log("음성 인식이 지원되지 않습니다.");
-  }
 });
 
 // 타이머 시작 함수
@@ -137,11 +108,30 @@ const startTimer = () => {
   }, 1000);
 };
 
-// 음성 인식 시작
-const startRecording = () => {
-  if (recognition) {
-    recognition.start();
+// STT 음성 인식 시작
+const startRecording = async () => {
+
+  const currentQuestion = questions.value[currentQuestionIndex.value];
+
+  const data = {
+    clno: currentQuestion.clno, // 현재 질문의 clno
+    number: currentQuestion.number, // 현재 질문의 number
+    questionType: 0, // 고정된 질문 유형
+    rno: currentQuestion.rno // 현재 질문의 rno
+  };
+
+  try {
+    isRecording.value = true; 
+    const response = await axios.post('http://localhost:8080/api/interview/cover-letter/question/stt', data);
+    console.log('STT 요청 성공:', response.data);
+    sttTexts.value.push(response.data); // 응답 문자열 추가
+    isRecording.value = false; 
+    
+  } catch (error) {
+    console.error('STT 요청 실패:', error);
   }
+
+
 };
 
 // 음성 인식 중지
