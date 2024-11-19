@@ -1,7 +1,10 @@
 package com.kb.interview.controller;
 
+import com.kb.interview.dto.question.CoverLetterQuestionRequest;
 import com.kb.interview.dto.question.CoverLetterQuestionResponse;
+import com.kb.interview.dto.report.Report;
 import com.kb.interview.service.InterviewService;
+import com.kb.interview.service.ReportService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +17,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/interview")
 public class InterviewController {
-    private final InterviewService service;
+    private final InterviewService interviewService;
+    private final ReportService reportService;
 
-    @GetMapping("/cover-letter/question")
-    public ResponseEntity<List<CoverLetterQuestionResponse>> createQuestionOfCoverLetter(@RequestParam("clno") int clno, @RequestParam("count") int count) {
-        List<CoverLetterQuestionResponse> response = service.createQuestions(clno, count);
+    @PostMapping("/cover-letter/question")
+    public ResponseEntity<List<CoverLetterQuestionResponse>> createQuestionOfCoverLetter(@RequestBody CoverLetterQuestionRequest request) {
+        Report report = reportService.createReport(request.getClno(), request.getCompanyName(), request.getJob());
+
+        List<CoverLetterQuestionResponse> response = interviewService.createQuestions(report.getRno(), request);
 
         if (response == null) {
             return ResponseEntity.noContent().build();

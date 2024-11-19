@@ -1,7 +1,6 @@
 package com.kb.interview.mapper;
 
 import com.kb.interview.dto.report.Report;
-import com.kb.interview.dto.report.ReportRequest;
 
 import java.util.List;
 

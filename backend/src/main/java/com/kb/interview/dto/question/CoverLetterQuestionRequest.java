@@ -8,6 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CoverLetterQuestionRequest {
-    private int questionCount;
     private int clno;
+    private int questionCount;
+    private String companyName;
+    private String job;
 }
