@@ -25,6 +25,8 @@ const fetchReportList = async () => {
     page.value.testList = reportList.map((report) => ({
       content: report.content,
       score: report.score,
+      companyName: report.companyName,
+      job: report.job,
     }));
     page.value.totalCount = reportList.length;
   } catch (error) {
@@ -35,26 +37,34 @@ const fetchReportList = async () => {
 
 const pageRequest = reactive({
   page: parseInt(route.query.page) || 1,
-  amount: parseInt(route.query.amount) || 12,
+  amount: parseInt(route.query.amount) || 8,
   searchType: "",
   searchValue: "",
   selectedType: "all",
 });
 
-const articles = computed(() =>
-  page.value.testList.filter(
+const articles = computed(() => {
+  // 선택된 타입에 따른 필터링
+  const filteredArticles = page.value.testList.filter(
     (article) =>
       pageRequest.selectedType === "all" ||
       pageRequest.selectedType === article.type
-  )
-);
+  );
+
+  // 페이지와 페이지당 항목 수를 고려하여 슬라이싱
+  const startIndex = (pageRequest.page - 1) * pageRequest.amount;
+  const endIndex = startIndex + pageRequest.amount;
+
+  return filteredArticles.slice(startIndex, endIndex);
+});
 console.log("articles.computed", articles.value);
 
 // 페이지가 변경될 때 호출
 const handlePageChange = (pageNum) => {
+  pageRequest.page = pageNum;
   router.push({
     query: {
-      page: pageNum,
+      page: pageRequest.page,
       amount: pageRequest.amount,
       searchType: pageRequest.searchType,
       searchValue: pageRequest.searchValue,
@@ -81,7 +91,8 @@ const toggleType = (type) => {
   pageRequest.selectedType = type;
 };
 onMounted(async () => {
-  console.log("onMounted called");
+  pageRequest.page = parseInt(route.query.page) || 1;
+  pageRequest.amount = parseInt(route.query.amount) || 8;
   await fetchReportList();
 });
 </script>
@@ -131,17 +142,23 @@ onMounted(async () => {
     <table class="table mt-3 m shadow-sm">
       <thead>
         <tr>
-          <th>순서</th>
-          <th>회사</th>
+          <th>기업</th>
+          <th>직무</th>
           <th>총평</th>
           <th>점수</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="article in articles" :key="article.rno">
-          <td><i class="fa fa-check ms-2"></i></td>
           <td>
-            {{ article.rno }}
+            {{ article.companyName }}
+          </td>
+          <td>
+            <span :class="{
+            'front': article.job === '프론트',
+            'back': article.job === '백엔드',
+            'system': article.job ==='SW개발 및 시스템 운영'
+          }">{{ article.job }}</span>
           </td>
           <td>
             <router-link
@@ -151,7 +168,16 @@ onMounted(async () => {
               {{ article.content }}
             </router-link>
           </td>
-          <td>{{ article.score }}</td>
+
+          <td>
+            <span :class="{
+             'back': article.score >= 85, 
+            'red': article.score < 85
+            }">
+
+              {{ article.score }}
+            </span>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -162,7 +188,7 @@ onMounted(async () => {
         :items-per-page="pageRequest.amount"
         :max-pages-shown="5"
         v-model="pageRequest.page"
-        @click="handlePageChange"
+        @page-changed="handlePageChange"
       >
         <template #first-page-button
           ><i class="fa-solid fa-backward-fast"></i
@@ -195,21 +221,6 @@ onMounted(async () => {
   background-color: #fff;
 }
 
-.stack-java {
-  color: #f28a1b;
-}
-
-.stack-python {
-  color: #1976d2;
-}
-
-.stack-vue {
-  color: #28a745;
-}
-
-.stack-SQL {
-  color: #dc3545;
-}
 
 .router-link {
   color: inherit;
@@ -231,27 +242,40 @@ onMounted(async () => {
 .table tbody tr td {
   cursor: default; /* Ensure cursor remains default in non-clickable areas */
 }
-/* 각 테이블 열에 고정된 너비를 설정 */
 .table th,
 .table td {
   vertical-align: middle; /* 세로 중앙 정렬 */
-  width: 10%;
-}
-
-.table th {
   text-align: center;
 }
 
-/* 각 기술스택의 열 너비도 고정 */
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 20%; /* 기업 열의 너비 */
+}
+
 .table th:nth-child(2),
 .table td:nth-child(2) {
-  width: 20%;
-  text-align: center;
+  width: 20%; /* 직무 열의 너비 */
 }
 
 .table th:nth-child(3),
 .table td:nth-child(3) {
-  width: 60%;
+  width: 50%; /* 총평 열의 너비 */
+}
+
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  width: 10%; /* 점수 열의 너비 */
+}
+
+.table th {
+  text-align: center;
+  background-color: #f8f9fa; /* 헤더 배경 색상 */
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1; /* 행 hover 시 배경색 */
+  cursor: default; /* 비클릭 영역에서 커서 변경되지 않게 */
 }
 
 .table {
@@ -298,4 +322,19 @@ onMounted(async () => {
 .btn-icon i {
   color: inherit; /* 아이콘 색상 상속 */
 }
+
+.back {
+  color: #1976d2;
+}
+
+.front {
+  color: #28a745;
+}
+.system {
+  color: #f28a1b;
+}
+.red {
+  color: #dc3545;
+}
+
 </style>

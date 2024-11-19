@@ -182,7 +182,6 @@ load(pageRequest);
     <table class="table mt-3 m shadow-sm">
       <thead>
         <tr>
-          <th>상태</th>
           <th>기술스택</th>
           <th>제목</th>
           <th>점수</th>
@@ -190,7 +189,7 @@ load(pageRequest);
       </thead>
       <tbody>
         <tr v-for="article in articles" :key="article.bno">
-          <td><i class="fa fa-check ms-2"></i></td>
+
           <td :class="`stack-${article.type}`">
             {{
               page.category.find((value) => value.type === article.type)?.name
@@ -204,7 +203,13 @@ load(pageRequest);
               {{ article.title }}
             </router-link>
           </td>
-          <td> {{ article.score }}</td>
+          <td>
+            <span :class="{'stack-python': article.score >= 85,
+            'stack-SQL': article.score < 85
+            }">
+            {{ article.score }}
+          </span> 
+        </td>
         </tr>
       </tbody>
     </table>
@@ -298,14 +303,25 @@ load(pageRequest);
   text-align: center;
 }
 
-/* 각 기술스택의 열 너비도 고정 */
-.table th:nth-child(2), .table td:nth-child(2) {
-  width: 20%;
-  text-align: center
+.table th,
+.table td {
+  vertical-align: middle; /* 세로 중앙 정렬 */
+  text-align: center;
 }
 
-.table th:nth-child(3), .table td:nth-child(3) {
-  width: 60%;
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 15%; /* 기술스택 열의 너비 */
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 70%; /* 제목 열의 너비 */
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 15%; /* 점수 열의 너비 */
 }
 
 .table {
