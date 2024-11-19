@@ -1,6 +1,7 @@
 package com.kb.interview.service;
 
 import com.kb.interview.dto.report.Report;
+import com.kb.interview.dto.report.ReportRequest;
 import com.kb.interview.mapper.ReportMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -14,14 +15,16 @@ import java.util.List;
 public class ReportService {
     private final ReportMapper mapper;
 
-    public Report create(int mno) {
+    public Report createReport(ReportRequest request) {
         Report report = Report.builder()
-                .mno(mno)
+                .mno(request.getMno())
+                .job(request.getJob())
+                .companyName(request.getCompanyName())
                 .build();
-        int rno = mapper.insert(mno);
 
+        int rno = mapper.insertReport(report);
         if (rno == 1) {
-            return report;
+            return mapper.selectById(report.getRno());
         }
         return null;
     }

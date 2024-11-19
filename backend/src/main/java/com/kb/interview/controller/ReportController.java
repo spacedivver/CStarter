@@ -1,6 +1,7 @@
 package com.kb.interview.controller;
 
 import com.kb.interview.dto.report.Report;
+import com.kb.interview.dto.report.ReportRequest;
 import com.kb.interview.service.ReportService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,8 @@ public class ReportController {
     private final ReportService service;
 
     @PostMapping("")
-    public ResponseEntity<Report> create(@RequestParam("mno") int mno) {
-        Report report = service.create(mno);
+    public ResponseEntity<Report> create(@RequestBody ReportRequest request) {
+        Report report = service.createReport(request);
 
         if (report == null) {
             return ResponseEntity.noContent().build();
