@@ -2,6 +2,7 @@ package com.kb.interview.dto.question;
 
 import lombok.*;
 
+@ToString
 @Getter
 @Setter
 @AllArgsConstructor

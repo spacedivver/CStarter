@@ -3,6 +3,7 @@ package com.kb.interview.service;
 import com.kb.interview.dto.question.CoverLetterQuestion;
 import com.kb.interview.dto.question.CoverLetterQuestionRequest;
 import com.kb.interview.dto.question.CoverLetterQuestionResponse;
+import com.kb.interview.dto.question.CoverLetterSubQuestionRequest;
 import com.kb.interview.mapper.CoverLetterMapper;
 import com.kb.interview.mapper.InterviewMapper;
 import com.kb.interview.mapper.ReportMapper;
@@ -47,12 +48,27 @@ public class InterviewService {
                         .build());
         // python 실행해서 질문지 생성하기
 
-        List<CoverLetterQuestionResponse> responses = interviewMapper.selectCoverLetterQuestion(request.getClno());
+        List<CoverLetterQuestionResponse> responses = interviewMapper.selectCoverLetterQuestions(request.getClno());
 
         for (CoverLetterQuestionResponse response: responses) {
             response.setRno(rno);
         }
 
         return responses;
+    }
+
+    public CoverLetterQuestionResponse createSubQuestion(CoverLetterSubQuestionRequest request) {
+        // python 실행해서 꼬리질문 생성하기
+       CoverLetterQuestion subQuestion = CoverLetterQuestion.builder()
+                .clno(request.getClno())
+                .rno(request.getRno())
+                .number(request.getNumber())
+                .questionType(1)
+                .question(request.getNumber() + "번 질문에 대한 꼬리 질문")
+                .build();
+        coverLetterMapper.insertQuestion(subQuestion);
+        // python 실행해서 꼬리질문 생성하기
+
+        return interviewMapper.selectCoverLetterQuestion(request.getRno(), request.getNumber(), 1);
     }
 }

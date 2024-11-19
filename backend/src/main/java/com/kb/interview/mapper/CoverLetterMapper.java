@@ -12,4 +12,5 @@ public interface CoverLetterMapper {
     List<CoverLetter> selectByMemberId(int mno);
     int insertAnswer(CoverLetterAnswer answer);
     int insertQuestion(CoverLetterQuestion question);
+    int updateSubQuestion(CoverLetterQuestion question);
 }
