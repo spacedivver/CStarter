@@ -18,7 +18,7 @@
             </div>
             <div class="ml-3">
               <div class="question-index mb-1">질문 {{ currentQuestionIndex + 1 }}</div>
-              <div class="question-text">{{ questions[currentQuestionIndex] }}</div>
+              <div class="question-text">{{ questions[currentQuestionIndex].question }}</div>
             </div>
           </div>
         </div>
@@ -29,19 +29,19 @@
             <img src="@/assets/images/usericon.png" alt="" style="width: 50px; height: 50px;" class="me-3"></img>
             <div class="user-answer">내 답변</div>
           </div>
-          <div v-if="isRecording" class="mb-2"> <!-- 음성 인식 중일 때만 박스를 보여줌 -->
+          <div v-if="isRecording" class="mb-2">
             <div class="stt-text bubble">
               <img src="@/assets/images/microphone.png" alt="마이크" style="width: 35px; height: 35px;" class="ms-2 me-3"> 
                 답변 중 ...
             </div>
           </div>
-          <div v-if="sttTexts.length" class="answer-box"> <!-- 이전 답변이 있을 때만 박스를 보여줌 -->
+          <div v-if="sttTexts.length" class="answer-box">
             <div v-for="(text, idx) in sttTexts" :key="idx" class="stt-text bubble m-2">{{ text }}</div>
           </div>
         </div>
 
         <div class="d-flex justify-content-between mt-1">
-          <div class="mx-auto mt-2"> <!-- 중앙 정렬을 위해 mx-auto 사용 -->
+          <div class="mx-auto mt-2">
             <button class="btn btn-primary" @click="startRecording" v-if="!isRecording && sttTexts.length === 0">답변하기</button>
             <button class="btn btn-danger ml-3" @click="stopRecording" v-if="isRecording">중지하기</button>
           </div>
@@ -55,8 +55,6 @@
             </button>
           </div>
         </div>
-
-
       </div>
 
       <!-- 다음 질문 버튼 -->
@@ -71,15 +69,10 @@
 <script setup>
 import LetterHeader from '@/components/letter/LetterHeader.vue';
 import { ref, onMounted, nextTick } from 'vue';
+import { useQuestionStore } from '@/stores/questionStore'; // 질문 스토어 가져오기
 
-const questions = ref([
-  "MVC 패턴에 대해 설명해주세요.",
-  "Vue.js의 장점은 무엇인가요?",
-  "JavaScript에서 클로저란 무엇인가요?"
-]); // 여러 질문 배열
-
-// STT 텍스트 저장
-const sttTexts = ref([]);
+const questionStore = useQuestionStore(); // 스토어 인스턴스 생성
+const questions = ref([]); // 질문 리스트를 저장할 ref
 
 // 진행 시간
 const time = ref(0);
@@ -89,10 +82,16 @@ let timerInterval = null;
 const isRecording = ref(false);
 const currentQuestionIndex = ref(0); // 현재 질문 인덱스
 
+// STT 텍스트 저장
+const sttTexts = ref([]);
+
 // 음성 인식 객체
 let recognition = null;
 
 onMounted(() => {
+  // 질문 리스트를 Pinia 스토어에서 가져오기
+  questions.value = questionStore.questions;
+
   startTimer();
 
   // 음성 인식 객체 초기화
@@ -104,9 +103,6 @@ onMounted(() => {
 
     recognition.onstart = () => {
       isRecording.value = true;
-      nextTick(() => {
-        // DOM 업데이트가 완료된 후 호출
-      });
     };
 
     recognition.onend = () => {
@@ -167,7 +163,6 @@ const nextQuestion = () => {
   }
 };
 
-
 // 다시 답변하기
 const resetAnswer = () => {
   sttTexts.value = []; // 이전 답변 초기화
@@ -212,15 +207,6 @@ const resetAnswer = () => {
   transform: translateY(1px);
 }
 
-.btn-danger {
-  background-color: #dc3545; /* 중지 버튼 색상 */
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: #c82333; /* 호버 효과 */
-}
-
 .question-index {
   color: #FF8000;
   font-weight: 700;
@@ -251,5 +237,4 @@ const resetAnswer = () => {
 .icon-button i {
   margin-right: 5px; /* 아이콘과 텍스트 간격 */
 }
-
 </style>

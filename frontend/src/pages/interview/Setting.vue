@@ -36,7 +36,7 @@
     <!-- '다음 단계' 버튼 추가 -->
     <div class="mt-4">
       <router-link to="/Interview">
-        <button class="btn btn-primary" style="width: 150px;">다음 단계</button>
+        <button class="btn btn-primary" style="width: 150px;" @click="submitQuestions">시작하기</button>
       </router-link>
     </div>
   </div>
@@ -44,8 +44,25 @@
 
 <script setup>
 import LetterHeader from '@/components/letter/LetterHeader.vue';
-import { ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { ref,computed } from 'vue';
+import { useCoverLetterStore } from '@/stores/coverLetterStore';
+import { useQuestionStore } from '@/stores/questionStore'; 
+import axios from 'axios';
 
+const router = useRouter(); // router 가져오기
+const route = useRoute();
+
+// Pinia 스토어 사용
+const coverLetterStore = useCoverLetterStore();
+const questionStore = useQuestionStore();
+
+// computed 속성으로 스토어의 상태 가져오기
+const clno = computed(() => coverLetterStore.clno);
+const companyName = computed(() => coverLetterStore.companyName);
+const job = computed(() => coverLetterStore.job);
+
+console.log(clno, companyName, job);
 // 마이크 및 카메라 상태
 const isMicOn = ref(false);
 const isCameraOn = ref(false);
@@ -62,6 +79,31 @@ const toggleCamera = () => {
 
 // 질문 개수 모델
 const questionCount = ref(1);
+
+
+// POST 요청 함수
+const submitQuestions = async () => {
+  const data = {
+    clno: clno.value,
+    companyName: companyName.value,
+    job: job.value,
+    questionCount: questionCount.value,
+    mno: 1
+  };
+
+  try {
+    const response = await axios.post('http://localhost:8080/api/interview/cover-letter/question', data);
+    console.log(data);
+    // 응답 데이터를 새로운 질문 스토어에 저장
+    questionStore.setQuestions(response.data); // 질문 리스트 저장
+
+    // 다음 페이지로 이동 (예: Interview 페이지)
+    router.push('/Interview');
+  } catch (error) {
+    console.error('질문을 제출하는 데 실패했습니다:', error);
+  }
+};
+
 </script>
 
 <style scoped>

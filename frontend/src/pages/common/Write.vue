@@ -81,88 +81,122 @@
 
     <div class="text-center mt-4">
       <router-link to="/Interview/Setting">
-        <button class="btn btn-primary">다음 단계</button>
+        <button class="btn btn-primary" @click="submitCoverLetter">저장</button>
       </router-link>
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import LetterHeader from '@/components/letter/LetterHeader.vue';
 import axios from 'axios';
+import { useCoverLetterStore } from '@/stores/coverLetterStore';
 
 const router = useRouter();
 const route = useRoute();
 const isManual = ref(route.state?.manual ?? JSON.parse(localStorage.getItem('manual') || 'false'));
-const selectedJob = ref(null); // 초기값을 null로 설정
+const selectedJob = ref(null);
 const customJob = ref('');
 const inputItems = ref([{ title: '', content: '' }]);
-const autoInputItems = ref([]); // 초기값을 빈 배열로 설정
-const jobTypes = ref([]); // 직무 타입을 저장할 배열
-const companyName = ref(''); // 기업명 상태 변수 추가
-
-const companyId = route.params.id; // URL에서 companyId 가져오기
+const autoInputItems = ref([]);
+const jobTypes = ref([]);
+const companyName = ref('');
+const companyId = route.params.id;
 const companyNameState = ref(route.state?.cname ?? JSON.parse(localStorage.getItem('cname') || ''));
+const selectedJobName = ref('');
+
+
 localStorage.setItem('manual', JSON.stringify(isManual.value));
 localStorage.setItem('cname', JSON.stringify(companyNameState.value));
-
 onMounted(async () => {
-      if (!isManual.value) {
-
-        // API 요청하여 직무 타입 및 자기소개서 제목 가져오기
-        
+    if (!isManual.value) {
         try {
-          const response = await axios.get(`http://localhost:8080/api/company/${companyId}/job`);
-          const jobDataArray = response.data; // 배열 형태로 응답 받음
+            const response = await axios.get(`http://localhost:8080/api/company/${companyId}/job`);
+            const jobDataArray = response.data;
+            companyName.value = isManual.value ? '' : companyNameState.value;
+            jobTypes.value = jobDataArray;
 
-          companyName.value = isManual.value ? '' : companyNameState.value; // 기업명 설정
-
-          // 직무 타입을 jobTypes에 저장
-          jobTypes.value = jobDataArray;
-
-          // 첫 번째 직무를 자동으로 선택
-          if (jobDataArray.length > 0) {
-            selectedJob.value = jobDataArray[0].jno; // 0번째 직무 선택
-            onJobChange(); // 직무 변경 함수 호출
-          }
+            if (jobDataArray.length > 0) {
+                selectedJob.value = jobDataArray[0].jno;
+                onJobChange();
+            }
         } catch (error) {
-          console.error("직무 데이터를 가져오는 데 실패했습니다:", error);
+            console.error("직무 데이터를 가져오는 데 실패했습니다:", error);
         }
     }
-
 });
 
-// 직무 변경 시 호출되는 함수
 const onJobChange = () => {
-  if (!selectedJob.value) return; // 선택된 직무가 없으면 종료
+    if (!selectedJob.value) return;
 
-  // 선택된 직무에 해당하는 데이터 찾기
-  const selectedJobData = jobTypes.value.find(job => job.jno === selectedJob.value);
+    const selectedJobData = jobTypes.value.find(job => job.jno === selectedJob.value);
+    // 선택된 직무의 이름을 저장
+    if (selectedJobData) {
+            selectedJobName.value = selectedJobData.type; // 직무 이름 저장
+        }
 
-  if (selectedJobData && selectedJobData.coverLetterItems) {
-    // coverLetterItems의 내용을 inputItems에 자동으로 설정
-    autoInputItems.value = selectedJobData.coverLetterItems.map(item => ({
-      title: item.content, // 자기소개서 제목으로 content 사용
-      content: '' // 내용은 빈 문자열로 초기화
-    }));
-    
-  } else {
-    autoInputItems.value = []; // 기본값 설정
-  }
+    if (selectedJobData && selectedJobData.coverLetterItems) {
+        autoInputItems.value = selectedJobData.coverLetterItems.map(item => ({
+          cino: item.cino,
+            title: item.content,
+            content: ''
+        }));
+    } else {
+        autoInputItems.value = [];
+    }
 };
 
 const addInputItem = () => {
-  inputItems.value.push({ title: '', content: '' });
+    inputItems.value.push({ title: '', content: '' });
 };
 
-// 텍스트 영역 자동 높이 조정
 const resizeTextarea = (event) => {
-  const textarea = event.target;
-  textarea.style.height = 'auto'; // 우선 높이를 auto로 설정하여 기존의 높이를 초기화
-  textarea.style.height = `${textarea.scrollHeight}px`; // scrollHeight에 맞게 높이 조정
+    const textarea = event.target;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
 };
+// Cover letter 전송 함수
+const submitCoverLetter = async () => {
+    const answers = []; // 빈 배열 선언
+
+    autoInputItems.value.forEach((item, index) => {        
+
+        answers.push({
+            answer: item.content,
+            cino: item.cino // 자기소개서 제목의 번호
+        });
+    });
+
+    const cpno = companyId; // 회사 ID
+    const jno = selectedJob.value; // 선택된 직무 번호
+    const mno = 1; // 고정값
+
+    const data = {
+        answers,
+        cpno,
+        jno,
+        mno
+    };
+
+    try {
+        const response = await axios.post('http://localhost:8080/api/cover-letter', data);
+
+        // Pinia 스토어에 데이터 저장
+        const coverLetterStore = useCoverLetterStore();
+        coverLetterStore.setCoverLetterData({
+            clno: response.data.clno,
+            companyName: companyName.value,
+            job: selectedJobName.value
+        });
+
+        // 다음 단계로 이동
+        router.push('/Interview/Setting');
+    } catch (error) {
+        console.error('자기소개서 제출에 실패했습니다:', error);
+    }
+};
+
 </script>
 
 <style scoped>
