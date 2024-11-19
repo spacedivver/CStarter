@@ -55,15 +55,14 @@ def fetch_data_from_db(db_host, db_port, db_user, db_password, db_name):
         connection.close()
 
 # GPT-4o 모델 사용 함수 설정
-def generate_questions(company, role, intro_questions, tech_stack, intro_text, QueNum):
+def generate_questions(company, role, intro_questions, intro_text, QueNum):
     # 메시지 형식으로 프롬프트 작성
     messages = [
         {"role": "system", "content": f"너는 지금부터 '{company}'이라는 회사의 '{role}'의 면접관이야."},
         {"role": "user", "content": f"다음은 자기소개서 문항과 지원자의 기술스택, 자기소개서 내용이야. 이 정보를 바탕으로 {QueNum}개의 면접 질문을 만들어줘.\n\n"
                                     f"자기소개서 문항:\n{intro_questions}\n\n"
-                                    f"기술스택:\n{tech_stack}\n\n"
                                     f"자기소개서 내용:\n{intro_text}\n\n"
-                                    "면접 질문 20개:"}
+                                    "면접 질문 {QueNum}개:"}
     ]
     
     # ChatCompletion API를 사용해 질문 생성
@@ -89,11 +88,9 @@ QueNum=20
 if not company_name or not role_name or not intro_questions or not intro_text:
     print("데이터 오류")
 else:
-    # 기술스택 지정
-    tech_stack = "Spring, SQL"
 
     # 질문 생성
-    questions = generate_questions(company_name, role_name, intro_questions, tech_stack, intro_text,QueNum)
+    questions = generate_questions(company_name, role_name, intro_questions, intro_text, QueNum)
 
     # MySQL에 질문 삽입 함수 정의
     def insert_questions_to_db(questions, db_host, db_port, db_user, db_password, db_name):
@@ -111,7 +108,7 @@ else:
             cursor = connection.cursor()
             
             # 질문 삽입
-            insert_query = "INSERT INTO cover_letter_question (clno, number, question) VALUES (%s, %s, %s)"
+            insert_query = "INSERT INTO cover_letter_question (clno, number, question_type, question) VALUES (%s, %s, 0, %s)"
             for idx, question in enumerate(questions, start=1):
                 cursor.execute(insert_query, (9999, idx, question))
             
