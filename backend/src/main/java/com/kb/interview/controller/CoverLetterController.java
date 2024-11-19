@@ -1,13 +1,14 @@
 package com.kb.interview.controller;
 
 import com.kb.interview.dto.coverletter.*;
+import com.kb.interview.dto.coverletter.CoverLetterRequest;
+import com.kb.interview.dto.coverletter.CoverLetterResponse;
 import com.kb.interview.service.CoverLetterService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.*;
 import java.util.List;
 
 @Api(value = "CoverLetterController", tags = "자기소개서")

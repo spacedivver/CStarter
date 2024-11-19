@@ -21,4 +21,14 @@
         insert into cover_letter_answer (clno, cino, answer)
         values (#{clno}, #{cino}, #{answer});
     </insert>
+
+    <insert id="insertQuestion">
+        insert into cover_letter_question (clno, rno, number, question_type, question)
+        values (#{clno}, #{rno}, #{number}, #{questionType}, #{question})
+    </insert>
+
+<!--    <update id="updateAnswer">-->
+<!--        insert into cover_letter_question (clno, rno, number, question_type, question)-->
+<!--        values (#{clno}, #{rno}, #{number}, #{questionType}, #{question})-->
+<!--    </update>-->
 </mapper>
