@@ -59,6 +59,7 @@ public class InterviewService {
 
         for (CoverLetterQuestionResponse response: responses) {
             response.setRno(rno);
+            response.setClno(request.getClno());
         }
 
         return responses;
