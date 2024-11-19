@@ -49,8 +49,8 @@ def fetch_data_from_db(db_host, db_port, db_user, db_password, db_name, clno):
             WHERE cl.clno = %s;
             """, (clno,))
         results = cursor.fetchall()
-        intro_questions = [row["content"] for row in results]
-        intro_text = [row["answer"] for row in results]
+        intro_questions = [row["content"].replace("**", "").strip() for row in results]
+        intro_text = [row["answer"].replace("**", "").strip() for row in results]
        
         return intro_questions, intro_text
         
