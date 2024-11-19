@@ -1,3 +1,4 @@
+import sys
 import json
 from openai import OpenAI
 import os
@@ -20,6 +21,16 @@ db_name = os.getenv('DB_NAME')
 client = OpenAI(api_key=api_key)
 print(f"API 키가 로드되었습니다: {api_key is not None}")
 
+try:
+    mno = int(sys.argv[1])
+    tqno = int(sys.argv[2])
+except IndexError:
+    print("명령줄 인자로 mno와 tqno 값을 전달해야 합니다.")
+    sys.exit(1)
+except ValueError:
+    print("mno와 tqno 값은 정수여야 합니다.")
+    sys.exit(1)
+
 # STT를 위한 음성 녹음 및 파일 저장
 def record_audio(duration=10, fs=16000):
     print("Recording", end="", flush=True)
@@ -40,7 +51,7 @@ def transcribe_audio_to_text(file_path):
             model="whisper-1",
             file=audio_file,
         )
-    return response.text  # Transcription 객체에서 텍스트 추출
+    return response.text
 
 # 데이터베이스에 답변 저장
 def save_answer_to_db(answer, mno, tqno):
@@ -57,7 +68,6 @@ def save_answer_to_db(answer, mno, tqno):
         
         # tech_answer 테이블의 answer 값 추가
         # 값이 없으면 추가하고 있으면 업데이트 수행
-        
         query = """
         INSERT INTO tech_answer (tqno, mno, answer)
         VALUES (%s, %s, %s)
@@ -90,10 +100,6 @@ output_data = {"user_input": user_input}
 
 with open("interview_answer.json", "w", encoding="utf-8") as json_file:
     json.dump(output_data, json_file, ensure_ascii=False, indent=4)
-
-# 테스트 목적으로 9999와 number=1 사용, number는 자기소개서 문항 번호
-mno = 9999
-tqno = 1
 
 # 답변을 데이터베이스에 저장
 save_answer_to_db(user_input, mno, tqno)
