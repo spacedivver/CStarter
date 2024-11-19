@@ -15,31 +15,31 @@ const activeTap = ref("page");
 
 const page = ref({
   testList: [
-    { bno: 1, type: "java", title: "Java의 기본 문법과 객체지향 개념", score:"72" },
-    { bno: 7, type: "python", title: "Python의 기본 문법과 데이터 타입",score:"94"  },
-    { bno: 8, type: "python", title: "Python에서의 파일 입출력 및 CSV 처리",score:"99"  },
+    { bno: 1, type: "Java", title: "Java의 기본 문법과 객체지향 개념", score:"72" },
+    { bno: 7, type: "Python", title: "Python의 기본 문법과 데이터 타입",score:"94"  },
+    { bno: 8, type: "Python", title: "Python에서의 파일 입출력 및 CSV 처리",score:"99"  },
     {
       bno: 9,
-      type: "python",
+      type: "Python",
       title: "Python에서의 메모리 관리와 가비지 컬렉션",
       score:"87" 
     },
-    { bno: 10, type: "python", title: "Python의 제너레이터와 이터레이터",score:"72"  },
+    { bno: 10, type: "Python", title: "Python의 제너레이터와 이터레이터",score:"72"  },
 
     {
       bno: 15,
-      type: "vue",
+      type: "Vue",
       title: "Vue에서 컴포넌트 통신 방식 (Props, Emit, Provide/Inject)",score:"82" 
     },
-    { bno: 16, type: "vue", title: "API 통신과 Axios 연동",score:"88"  },
+    { bno: 16, type: "Vue", title: "API 통신과 Axios 연동",score:"88"  },
 
   ],
   category: [
     { type: "all", name: "전체" },
-    { type: "java", name: "java" },
-    { type: "python", name: "python" },
-    { type: "vue", name: "vue" },
-    { type: "SQL", name: "SQL" },
+    { type: "Java", name: "Java" },
+    { type: "Python", name: "Python" },
+    { type: "Vue", name: "Vue.js" },
+    { type: "MySQL", name: "MySQL" },
   ],
   totalCount: 10,
 });
@@ -182,7 +182,6 @@ load(pageRequest);
     <table class="table mt-3 m shadow-sm">
       <thead>
         <tr>
-          <th>상태</th>
           <th>기술스택</th>
           <th>제목</th>
           <th>점수</th>
@@ -190,7 +189,7 @@ load(pageRequest);
       </thead>
       <tbody>
         <tr v-for="article in articles" :key="article.bno">
-          <td><i class="fa fa-check ms-2"></i></td>
+
           <td :class="`stack-${article.type}`">
             {{
               page.category.find((value) => value.type === article.type)?.name
@@ -204,7 +203,13 @@ load(pageRequest);
               {{ article.title }}
             </router-link>
           </td>
-          <td> {{ article.score }}</td>
+          <td>
+            <span :class="{'stack-python': article.score >= 85,
+            'stack-SQL': article.score < 85
+            }">
+            {{ article.score }}
+          </span> 
+        </td>
         </tr>
       </tbody>
     </table>
@@ -252,19 +257,19 @@ load(pageRequest);
   background-color: #fff;
 }
 
-.stack-java {
+.stack-Java {
   color: #f28a1b;
 }
 
-.stack-python {
+.stack-Python {
   color: #1976d2;
 }
 
-.stack-vue {
+.stack-Vue {
   color: #28a745;
 }
 
-.stack-SQL {
+.stack-MySQL {
   color: #dc3545;
 }
 
@@ -298,14 +303,25 @@ load(pageRequest);
   text-align: center;
 }
 
-/* 각 기술스택의 열 너비도 고정 */
-.table th:nth-child(2), .table td:nth-child(2) {
-  width: 20%;
-  text-align: center
+.table th,
+.table td {
+  vertical-align: middle; /* 세로 중앙 정렬 */
+  text-align: center;
 }
 
-.table th:nth-child(3), .table td:nth-child(3) {
-  width: 60%;
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 15%; /* 기술스택 열의 너비 */
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 70%; /* 제목 열의 너비 */
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 15%; /* 점수 열의 너비 */
 }
 
 .table {
