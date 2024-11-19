@@ -2,6 +2,7 @@ package com.kb.interview.controller;
 
 import com.kb.interview.dto.coverletter.CoverLetterAnswer;
 import com.kb.interview.dto.coverletter.CoverLetterResponse;
+import com.kb.interview.dto.coverletter.CoverLetterTTSRequest;
 import com.kb.interview.dto.question.CoverLetterQuestionRequest;
 import com.kb.interview.dto.question.CoverLetterQuestionResponse;
 import com.kb.interview.dto.question.CoverLetterSubQuestionRequest;
@@ -12,6 +13,7 @@ import com.kb.interview.service.InterviewService;
 import com.kb.interview.service.ReportService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +48,12 @@ public class InterviewController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/cover-letter/question/tts")
+    public ResponseEntity<HttpStatus> executeCoverLetterTTS(@RequestBody CoverLetterTTSRequest request) {
+        interviewService.executeCoverLetterTTS(request);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping("/tech/question")
