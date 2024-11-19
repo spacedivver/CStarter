@@ -34,7 +34,7 @@ def get_question(tsno, number):
         query = """
         SELECT question
         FROM tech_question tq
-        WHERE tp.tsno=%s AND tq.number = %s
+        WHERE tq.tsno=%s AND tq.number = %s
         """
         cursor.execute(query, (tsno, number))
         result = cursor.fetchone()
