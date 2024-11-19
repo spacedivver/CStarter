@@ -5,9 +5,6 @@ import { useRoute, useRouter } from "vue-router";
 
 
 
-// `api`와 관련된 부분이 정의되어 있어야 합니다.
-// import api from "@/api";  // 예시로 추가
-
 const route = useRoute();
 const router = useRouter();
 
@@ -96,7 +93,7 @@ const load = async (query) => {
   try {
     // 여기에 실제 API 호출을 추가해야 합니다
     // 예시: page.value = await api.getList(query);
-    page.value = await api.getList(query); // 이 부분에서 실제 API를 호출해 데이터를 받아옵니다.
+    // page.value = await api.getList(query); // 이 부분에서 실제 API를 호출해 데이터를 받아옵니다.
     if (!pageRequest.selectedType) {
       pageRequest.selectedType = "all";
     }
@@ -105,10 +102,10 @@ const load = async (query) => {
   }
 };
 
-// 페이지가 바뀔 때마다 데이터 로딩
-watch(route, async () => {
-  await load(route.query);
-});
+// // 페이지가 바뀔 때마다 데이터 로딩
+// watch(route, async () => {
+//   await load(route.query);
+// });
 
 load(pageRequest);
 
