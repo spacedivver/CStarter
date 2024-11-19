@@ -42,7 +42,7 @@
 
         <div class="d-flex justify-content-between mt-1">
           <div class="mx-auto mt-2">
-            <button class="btn btn-primary" @click="startRecording" v-if="!isRecording && sttTexts.length === 0">답변하기</button>
+            <button class="btn btn-primary" @click="startTimer(); startRecording();" v-if="!isRecording && sttTexts.length === 0">답변하기</button>
             <button class="btn btn-danger ml-3" @click="stopRecording" v-if="isRecording">중지하기</button>
           </div>
 
@@ -66,10 +66,12 @@
   </div>
 </template>
 
+
 <script setup>
 import LetterHeader from '@/components/letter/LetterHeader.vue';
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useQuestionStore } from '@/stores/questionStore'; // 질문 스토어 가져오기
+import axios from 'axios';
 
 const questionStore = useQuestionStore(); // 스토어 인스턴스 생성
 const questions = ref([]); // 질문 리스트를 저장할 ref
@@ -88,11 +90,14 @@ const sttTexts = ref([]);
 // 음성 인식 객체
 let recognition = null;
 
-onMounted(() => {
+onMounted(async () => {
   // 질문 리스트를 Pinia 스토어에서 가져오기
   questions.value = questionStore.questions;
 
-  startTimer();
+  // 첫 질문에 대해 TTS 요청 보내기
+  // await sendQuestionToTTS();
+
+  
 
   // 음성 인식 객체 초기화
   if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
@@ -153,7 +158,10 @@ const listenToAnswer = () => {
 };
 
 // 다음 질문으로 이동
-const nextQuestion = () => {
+const nextQuestion = async () => {
+  // 현재 질문에 대한 POST 요청 보내기
+  await sendQuestionToTTS();
+
   if (currentQuestionIndex.value < questions.value.length - 1) {
     currentQuestionIndex.value++;
     sttTexts.value = []; // 다음 질문을 위해 답변 초기화
@@ -163,12 +171,32 @@ const nextQuestion = () => {
   }
 };
 
+// POST 요청을 보내는 함수
+const sendQuestionToTTS = async () => {
+  const currentQuestion = questions.value[currentQuestionIndex.value];
+  
+  const data = {
+    clno: currentQuestion.clno, // 현재 질문의 clno
+    number: currentQuestion.number, // 현재 질문의 number
+    questionType: 0, // 고정된 질문 유형
+    rno: currentQuestion.rno // 현재 질문의 rno
+  };
+
+  try {
+    const response = await axios.post('http://localhost:8080/api/interview/cover-letter/question/tts', data);
+    console.log('TTS 요청 성공:', response.data);
+  } catch (error) {
+    console.error('TTS 요청 실패:', error);
+  }
+};
+
 // 다시 답변하기
 const resetAnswer = () => {
   sttTexts.value = []; // 이전 답변 초기화
   startRecording(); // 새로운 답변 녹음 시작
 };
 </script>
+
 
 <style scoped>
 /* 사용자 답변 박스 스타일 */

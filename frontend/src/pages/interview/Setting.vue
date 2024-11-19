@@ -56,31 +56,29 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import LetterHeader from '@/components/letter/LetterHeader.vue';
 import { useRouter } from 'vue-router';
 import { ref, computed } from 'vue';
 import { useCoverLetterStore } from '@/stores/coverLetterStore';
 import { useQuestionStore } from '@/stores/questionStore'; 
+import { useSpeechStore } from '@/stores/speechStore'; // 음성 스토어 가져오기
 import axios from 'axios';
 
 const router = useRouter();
-
-// Pinia 스토어 사용
 const coverLetterStore = useCoverLetterStore();
 const questionStore = useQuestionStore();
+const speechStore = useSpeechStore(); // 음성 스토어 인스턴스 생성
 
-// computed 속성으로 스토어의 상태 가져오기
 const clno = computed(() => coverLetterStore.clno);
 const companyName = computed(() => coverLetterStore.companyName);
 const job = computed(() => coverLetterStore.job);
 
-// 마이크 및 카메라 상태
 const isMicOn = ref(false);
 const isCameraOn = ref(false);
-const loading = ref(false); // 로딩 상태 추가
-const completed = ref(false); // 완료 상태 추가
+const loading = ref(false);
+const completed = ref(false);
+const questionCount = ref(1);
 
 // 마이크 토글
 const toggleMic = () => {
@@ -92,10 +90,6 @@ const toggleCamera = () => {
   isCameraOn.value = !isCameraOn.value;
 };
 
-// 질문 개수 모델
-const questionCount = ref(1);
-
-// POST 요청 함수
 const submitQuestions = async () => {
   const data = {
     clno: clno.value,
@@ -106,29 +100,46 @@ const submitQuestions = async () => {
   };
 
   try {
-    // 로딩 상태 활성화
     loading.value = true;
-    completed.value = false; // 완료 상태 비활성화
+    completed.value = false;
 
     const response = await axios.post('http://localhost:8080/api/interview/cover-letter/question', data);
-    
-    // 응답 데이터를 새로운 질문 스토어에 저장
-    questionStore.setQuestions(response.data); // 질문 리스트 저장
+    questionStore.setQuestions(response.data);
 
-    // 완료 상태 활성화
+    // 첫 번째 질문에 대한 TTS 요청 보내기
+    sendFirstQuestionToTTS(response.data);
+
     completed.value = true;
 
-    // 2초 후 Interview 페이지로 이동
     setTimeout(() => {
       router.push('/Interview'); // Interview 페이지로 이동
-    }, 2000);
+    }, 4000);
   } catch (error) {
     console.error('질문을 제출하는 데 실패했습니다:', error);
   } finally {
-    loading.value = false; // 로딩 상태 비활성화
+    loading.value = false;
   }
 };
 
+const sendFirstQuestionToTTS = async (questions) => {
+  if (questions.length > 0) {
+    const firstQuestion = questions[0];
+    const data = {
+      clno: firstQuestion.clno,
+      number: firstQuestion.number,
+      questionType: 0,
+      rno: firstQuestion.rno
+    };
+
+    try {
+      await axios.post('http://localhost:8080/api/interview/cover-letter/question/tts', data);
+      speechStore.speak(firstQuestion.question); // 음성을 재생합니다.
+      console.log('첫 번째 질문 TTS 요청 성공');
+    } catch (error) {
+      console.error('첫 번째 질문 TTS 요청 실패:', error);
+    }
+  }
+};
 </script>
 
 <style scoped>
