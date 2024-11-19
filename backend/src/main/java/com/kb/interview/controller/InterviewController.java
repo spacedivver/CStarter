@@ -6,6 +6,7 @@ import com.kb.interview.dto.question.CoverLetterQuestionRequest;
 import com.kb.interview.dto.question.CoverLetterQuestionResponse;
 import com.kb.interview.dto.question.CoverLetterSubQuestionRequest;
 import com.kb.interview.dto.report.Report;
+import com.kb.interview.dto.tech.TechQuestion;
 import com.kb.interview.service.InterviewService;
 import com.kb.interview.service.ReportService;
 import io.swagger.annotations.Api;
@@ -26,7 +27,7 @@ public class InterviewController {
 
     @PostMapping("/cover-letter/question")
     public ResponseEntity<List<CoverLetterQuestionResponse>> createQuestionOfCoverLetter(@RequestBody CoverLetterQuestionRequest request) {
-        Report report = reportService.createReport(request.getClno(), request.getCompanyName(), request.getJob());
+        Report report = reportService.createReport(request.getMno(), request.getCompanyName(), request.getJob());
 
         List<CoverLetterQuestionResponse> response = interviewService.createQuestions(report.getRno(), request);
 
@@ -45,4 +46,9 @@ public class InterviewController {
         }
         return ResponseEntity.ok(response);
     }
+
+//    @GetMapping("/tech/question")
+//    public ResponseEntity<List<TechQuestion>> getTechQuestions() {
+//
+//    }
 }
