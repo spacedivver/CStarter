@@ -65,7 +65,7 @@ def generate_questions(company, role, intro_questions, intro_text, QueNum):
         {"role": "user", "content": f"다음은 자기소개서 문항, 자기소개서 내용이야. 이 정보를 바탕으로 {QueNum}개의 면접 질문을 만들어줘.\n\n"
                                     f"자기소개서 문항:\n{intro_questions}\n\n"
                                     f"자기소개서 내용:\n{intro_text}\n\n"
-                                    "면접 질문 {QueNum}개:"}
+                                    f"면접 질문 {QueNum}개:"}
     ]
     
     response = client.chat.completions.create(
