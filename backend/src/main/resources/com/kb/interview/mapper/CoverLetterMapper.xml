@@ -17,6 +17,10 @@
         select * from cover_letter where mno = #{mno}
     </select>
 
+    <select id="selectQuestionByReport" resultType="com.kb.interview.dto.question.CoverLetterQuestion">
+        select * from cover_letter_question where rno = #{rno};
+    </select>
+
     <insert id="insertAnswer" useGeneratedKeys="true" keyProperty="clno">
         insert into cover_letter_answer (clno, cino, answer)
         values (#{clno}, #{cino}, #{answer});
@@ -26,9 +30,4 @@
         insert into cover_letter_question (clno, rno, number, question_type, question)
         values (#{clno}, #{rno}, #{number}, #{questionType}, #{question})
     </insert>
-
-<!--    <update id="updateAnswer">-->
-<!--        insert into cover_letter_question (clno, rno, number, question_type, question)-->
-<!--        values (#{clno}, #{rno}, #{number}, #{questionType}, #{question})-->
-<!--    </update>-->
 </mapper>

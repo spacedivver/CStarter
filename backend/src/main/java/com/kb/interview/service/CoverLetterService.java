@@ -4,12 +4,14 @@ import com.kb.company.mapper.CompanyMapper;
 import com.kb.interview.dto.coverletter.*;
 import com.kb.interview.dto.coverletter.CoverLetterRequest;
 import com.kb.interview.dto.coverletter.CoverLetterResponse;
+import com.kb.interview.dto.question.CoverLetterQuestion;
 import com.kb.interview.mapper.CoverLetterMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Log4j
@@ -64,5 +66,18 @@ public class CoverLetterService {
 
     public List<CoverLetter> getCoverLetterByMemberId(int mno) {
         return coverLetterMapper.selectByMemberId(mno);
+    }
+
+    public List<CoverLetterQuestion> getCoverLetterQuestionByReport(int rno) {
+        List<CoverLetterQuestion> questions = coverLetterMapper.selectQuestionByReport(rno);
+
+        Collections.sort(questions, ((o1, o2) -> {
+            if (o1.getNumber() == o2.getNumber()) {
+                return o1.getQuestionType() - o2.getQuestionType();
+            }
+            return o1.getNumber() - o2.getNumber();
+        }));
+
+        return questions;
     }
 }

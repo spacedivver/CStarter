@@ -9,6 +9,7 @@ import java.util.List;
 public interface CoverLetterMapper {
     int insertCoverLetter(CoverLetter coverLetter);
     CoverLetter selectById(int clno);
+    List<CoverLetterQuestion> selectQuestionByReport(int rno);
     List<CoverLetter> selectByMemberId(int mno);
     int insertAnswer(CoverLetterAnswer answer);
     int insertQuestion(CoverLetterQuestion question);
