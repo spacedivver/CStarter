@@ -111,7 +111,6 @@ const submitQuestions = async () => {
     completed.value = false; // 완료 상태 비활성화
 
     const response = await axios.post('http://localhost:8080/api/interview/cover-letter/question', data);
-    console.log(data);
     
     // 응답 데이터를 새로운 질문 스토어에 저장
     questionStore.setQuestions(response.data); // 질문 리스트 저장
