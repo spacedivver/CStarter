@@ -10,8 +10,7 @@ import com.kb.interview.service.InterviewService;
 import com.kb.interview.service.ReportService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,10 +53,10 @@ public class InterviewController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PostMapping("/cover-letter/question/stt")
-    public ResponseEntity<HttpStatus> executeCoverLetterSTT(@RequestBody CoverLetterAIModelRequest request) {
-        interviewService.executeCoverLetterSTT(request);
-        return ResponseEntity.ok(HttpStatus.OK);
+    @PostMapping(value = "/cover-letter/question/stt", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> executeCoverLetterSTT(@RequestBody CoverLetterAIModelRequest request) {
+        return new ResponseEntity<>(interviewService.executeCoverLetterSTT(request), HttpStatus.OK);
     }
 
     @GetMapping("/tech/question")
