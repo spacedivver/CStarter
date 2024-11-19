@@ -12,7 +12,7 @@
         select * from cover_letter_question where clno = #{clno} and number = #{number} and question_type = #{questionType};
     </select>
 
-    <select id="selectCoverLetterQuestionAnswer" >
+    <select id="selectCoverLetterQuestionAnswer" resultType="String">
         select answer from cover_letter_question where clno = #{clno} and number = #{number} and question_type = #{questionType};
     </select>
 

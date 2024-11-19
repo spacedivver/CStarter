@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CoverLetterQuestionResponse {
+    int clno;
     int rno;
     int cqno;
     int number;
