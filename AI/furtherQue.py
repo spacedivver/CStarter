@@ -22,7 +22,7 @@ print(f"API 키가 로드되었습니다: {api_key is not None}")
 try:
     clno = int(sys.argv[1])     # 자기소개서 번호
     number = int(sys.argv[2])   # 문항 번호
-    rno = int(sys.argv[5])      # 보고서 번호
+    rno = int(sys.argv[3])      # 보고서 번호
 except IndexError:
     print("input 에러")
     sys.exit(1)
@@ -130,14 +130,12 @@ def generate_follow_up_question(answer_text, clno, db_host, db_port, db_user, db
         print("유효한 질문이 없어 데이터베이스에 삽입되지 않았습니다.")
 
     # 추가 질문을 JSON 파일로 저장
-    with open('furtherQue.json', 'w', encoding='utf-8') as c_file:
-        json.dump({"follow_up_question": follow_up_question}, c_file, ensure_ascii=False, indent=4)
-    print("furtherQue.json 파일이 성공적으로 생성되었습니다.")
+    # with open('furtherQue.json', 'w', encoding='utf-8') as c_file:
+    #     json.dump({"follow_up_question": follow_up_question}, c_file, ensure_ascii=False, indent=4)
+    # print("furtherQue.json 파일이 성공적으로 생성되었습니다.")
 
-    # TTS 수행
-    text_to_speech(follow_up_question)
-    playsound.playsound("question.mp3")  # 오디오 재생
-    os.remove("question.mp3")  # 오디오 파일 삭제
+    return follow_up_question
+
 
 
 # 실행
@@ -145,6 +143,12 @@ def generate_follow_up_question(answer_text, clno, db_host, db_port, db_user, db
 latest_answer = get_answer(clno, number)
 
 if latest_answer:
-    generate_follow_up_question(latest_answer, clno, db_host, db_port, db_user, db_password, db_name)
+
+    follow_up_question = generate_follow_up_question(latest_answer, clno, db_host, db_port, db_user, db_password, db_name)
+    
+    # TTS 수행
+    text_to_speech(follow_up_question)
+    playsound.playsound("question.mp3")  # 오디오 재생
+    os.remove("question.mp3")  # 오디오 파일 삭제
 else:
     print("추가 질문을 생성할 답변이 없습니다.")
