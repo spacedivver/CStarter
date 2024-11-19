@@ -114,7 +114,7 @@ intro_questions, intro_text = fetch_data_from_db(db_host, db_port, db_user, db_p
 if not company_name or not role_name or not intro_questions or not intro_text:
     print("데이터 오류")
 else:
-    questions = generate_questions(company_name, role_name, intro_questions, intro_text)
+    questions = generate_questions(company_name, role_name, intro_questions, intro_text, QueNum)
 
     # 질문 삽입 실행
     if questions:
