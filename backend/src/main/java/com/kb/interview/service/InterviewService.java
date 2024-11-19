@@ -13,6 +13,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
 
@@ -30,6 +34,7 @@ public class InterviewService {
     public List<CoverLetterQuestionResponse> createQuestions(int rno, CoverLetterQuestionRequest request) {
         // python 실행해서 질문지 생성하기
         System.out.println("파이썬 실행");
+        List<String> result = new ArrayList<>();
         try {
             File workingDirectory = new File(aiDirectoryPath);
             String scriptPath = "basic_createQue.py";
@@ -41,35 +46,15 @@ public class InterviewService {
             processBuilder.redirectErrorStream(true);
 
             Process process = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                result.add(line);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//        coverLetterMapper.insertQuestion(
-//                CoverLetterQuestion.builder()
-//                        .clno(request.getClno())
-//                        .rno(rno)
-//                        .number(1)
-//                        .questionType(0)
-//                        .question("IBK시스템에서 금융 코어뱅킹 시스템 개발자로 성장하고 싶은 이유를 구체적으로 설명해 주실 수 있나요?")
-//                        .build());
-//        coverLetterMapper.insertQuestion(
-//                CoverLetterQuestion.builder()
-//                        .clno(request.getClno())
-//                        .rno(rno)
-//                        .number(2)
-//                        .questionType(0)
-//                        .question("Spring의 의존성 주입(Dependency Injection)에 대해 설명해 주시겠어요?")
-//                        .build());
-//        coverLetterMapper.insertQuestion(
-//                CoverLetterQuestion.builder()
-//                        .clno(request.getClno())
-//                        .rno(rno)
-//                        .number(3)
-//                        .questionType(0)
-//                        .question("IBK기업은행 인턴십에서 지점별 이수관 문제를 해결하기 위한 회의에 참여했다고 했습니다. 그때 제안했던 아이디어에 대해 자세히 설명해 주실 수 있나요?")
-//                        .build());
-        // python 실행해서 질문지 생성하기
 
         List<CoverLetterQuestionResponse> responses = interviewMapper.selectCoverLetterQuestions(request.getClno());
 
