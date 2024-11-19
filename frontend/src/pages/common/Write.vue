@@ -103,9 +103,17 @@ const autoInputItems = ref([]);
 const jobTypes = ref([]);
 const companyName = ref('');
 const companyId = route.params.id;
-const companyNameState = ref(route.state?.cname ?? JSON.parse(localStorage.getItem('cname') || ''));
 const selectedJobName = ref('');
 
+let companyNameStateValue;
+try {
+    companyNameStateValue = JSON.parse(localStorage.getItem('cname') || '""');
+} catch (error) {
+    console.error("로컬 스토리지에서 cname을 파싱하는 중 오류 발생:", error);
+    companyNameStateValue = ''; // 기본값 설정
+}
+
+const companyNameState = ref(route.state?.cname ?? companyNameStateValue);
 
 localStorage.setItem('manual', JSON.stringify(isManual.value));
 localStorage.setItem('cname', JSON.stringify(companyNameState.value));
