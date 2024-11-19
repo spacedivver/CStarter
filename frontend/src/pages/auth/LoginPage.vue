@@ -9,18 +9,6 @@
         style="width: 500px; margin-left: 200px; margin-top: -70px"
         class="img-fluid"
       />
-      <!-- You can uncomment the below code to add a text block inside the left image container -->
-      <!--
-        <div class="text-center text-white">
-          <h1 class="fw-bolder display-6 mb-5">
-            환영합니다! CStarter 입니다.
-          </h1>
-          <p class="text-opacity-75">
-            회원가입을 완료하시면 기술면접을 연습하고,<br />
-            모의면접 리포트를 저장할 수 있어요.
-          </p>
-        </div>
-        -->
     </div>
     <div class="col-4 d-flex justify-content-center align-items-center">
       <div class="container ms-5">
@@ -63,7 +51,6 @@
                   href="#"
                   class="btn btn-dark w-100 mb-5"
                   :disabled="disableSubmit"
-                  @click="navigateToMain"
                 >
                   로그인
                 </button>
@@ -93,27 +80,22 @@ const member = reactive({
 const error = ref("");
 const disableSubmit = computed(() => !(member.id && member.password));
 
-// const login = async () => {
-//   console.log(member);
-//   try {
-//     await auth.login(member);
-//     if (route.query.next) {
-//       router.push({ name: route.query.next });
-//     } else {
-//       router.push("/");
-//     }
-//   } catch (e) {
-//     console.log("error", e);
-//     alert(e.response.data);
-//     error.value = e.response.data;
-//   }
-// };
-
-const navigateToMain = () => {
-  if (disableSubmit) {
-    router.push("/");
+const login = async () => {
+  console.log("login in loginPage.vue");
+  try {
+    await auth.login(member);
+    if (route.query.next) {
+      router.push({ name: route.query.next });
+    } else {
+      router.push("/");
+    }
+  } catch (e) {
+    console.log("error", e);
+    alert(e.response.data);
+    error.value = e.response.data;
   }
 };
+
 </script>
 
 <style scoped>
