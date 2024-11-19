@@ -17,8 +17,8 @@
               <img src="@/assets/images/aiicon.png" alt="" style="width: 50px; height: 50px;" class="me-3"></img>
             </div>
             <div class="ml-3">
-              <div class="question-index mb-1">질문 {{ currentQuestionIndex + 1 }}</div>
-              <div class="question-text">{{ questions[currentQuestionIndex] }}</div>
+              <div class="question-index mb-1">질문</div>
+              <div class="question-text">{{ questionTitle }}</div> <!-- 제목 표시 -->
             </div>
           </div>
         </div>
@@ -29,19 +29,19 @@
             <img src="@/assets/images/usericon.png" alt="" style="width: 50px; height: 50px;" class="me-3"></img>
             <div class="user-answer">내 답변</div>
           </div>
-          <div v-if="isRecording" class="mb-2"> <!-- 음성 인식 중일 때만 박스를 보여줌 -->
+          <div v-if="isRecording" class="mb-2">
             <div class="stt-text bubble">
               <img src="@/assets/images/microphone.png" alt="마이크" style="width: 35px; height: 35px;" class="ms-2 me-3"> 
-                답변 중 ...
+              답변 중 ...
             </div>
           </div>
-          <div v-if="sttTexts.length" class="answer-box"> <!-- 이전 답변이 있을 때만 박스를 보여줌 -->
+          <div v-if="sttTexts.length" class="answer-box">
             <div v-for="(text, idx) in sttTexts" :key="idx" class="stt-text bubble m-2">{{ text }}</div>
           </div>
         </div>
 
         <div class="d-flex justify-content-between mt-1">
-          <div class="mx-auto mt-2"> <!-- 중앙 정렬을 위해 mx-auto 사용 -->
+          <div class="mx-auto mt-2">
             <button class="btn btn-primary" @click="startRecording" v-if="!isRecording && sttTexts.length === 0">답변하기</button>
             <button class="btn btn-danger ml-3" @click="stopRecording" v-if="isRecording">중지하기</button>
           </div>
@@ -55,47 +55,65 @@
             </button>
           </div>
         </div>
-
-
       </div>
 
       <!-- 다음 질문 버튼 -->
       <div v-if="sttTexts.length && currentQuestionIndex < questions.length && !isRecording" class="d-flex justify-content-center mt-4">
         <button class="btn btn-success" @click="nextQuestion">다음 질문</button>
       </div>
-
     </div>
   </div>
 </template>
 
 <script setup>
 import CStestHeader from '@/components/cstest/CStestHeader.vue';
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import axios from 'axios';
 
-const questions = ref([
-  "MVC 패턴에 대해 설명해주세요.",
-  "Vue.js의 장점은 무엇인가요?",
-  "JavaScript에서 클로저란 무엇인가요?"
-]); // 여러 질문 배열
-
-// STT 텍스트 저장
-const sttTexts = ref([]);
-
-// 진행 시간
-const time = ref(0);
-let timerInterval = null;
-
-// 음성 인식 상태
-const isRecording = ref(false);
+const route = useRoute(); // 현재 라우트를 가져옵니다.
+const questionTitle = ref(''); // 질문 제목을 저장할 상태
+const sttTexts = ref([]); // STT 텍스트 저장
+const time = ref(0); // 진행 시간
+let timerInterval = null; // 타이머 인터벌
+const isRecording = ref(false); // 음성 인식 상태
 const currentQuestionIndex = ref(0); // 현재 질문 인덱스
+const questions = ref([]); // 질문 배열
+let recognition = null; // 음성 인식 객체
 
-// 음성 인식 객체
-let recognition = null;
+// 질문 목록 API 호출
+const loadQuestion = async (bno) => {
+  try {
+    const response = await axios.get(`http://localhost:8080/api/interview/tech/question/${bno}`);
+    questionTitle.value = response.data.title; // 제목을 저장합니다.
+    questions.value = [response.data]; // API 응답을 배열로 저장합니다.
+  } catch (error) {
+    console.error("Failed to load question:", error);
+  }
+};
 
-onMounted(() => {
-  startTimer();
+onMounted(async () => {
+  const bno = route.query.bno; // 쿼리에서 bno를 가져옵니다.
+  if (bno) {
+    await loadQuestion(bno); // bno로 질문을 로드합니다.
+  }
+  startTimer(); // 타이머 시작
+  initSpeechRecognition(); // 음성 인식 초기화
+});
 
-  // 음성 인식 객체 초기화
+// 타이머 시작
+const startTimer = () => {
+  time.value = 0;
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+  timerInterval = setInterval(() => {
+    time.value += 1;
+  }, 1000);
+};
+
+// 음성 인식 초기화
+const initSpeechRecognition = () => {
   if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.continuous = true;
@@ -104,9 +122,6 @@ onMounted(() => {
 
     recognition.onstart = () => {
       isRecording.value = true;
-      nextTick(() => {
-        // DOM 업데이트가 완료된 후 호출
-      });
     };
 
     recognition.onend = () => {
@@ -123,17 +138,6 @@ onMounted(() => {
   } else {
     console.log("음성 인식이 지원되지 않습니다.");
   }
-});
-
-// 타이머 시작 함수
-const startTimer = () => {
-  time.value = 0;
-  if (timerInterval) {
-    clearInterval(timerInterval);
-  }
-  timerInterval = setInterval(() => {
-    time.value += 1;
-  }, 1000);
 };
 
 // 음성 인식 시작
@@ -166,7 +170,6 @@ const nextQuestion = () => {
     window.location.href = '/report/result'; // 결과 페이지로 이동
   }
 };
-
 
 // 다시 답변하기
 const resetAnswer = () => {

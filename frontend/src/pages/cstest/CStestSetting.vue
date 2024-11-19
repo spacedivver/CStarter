@@ -27,7 +27,7 @@
     <!-- '다음 단계' 버튼 추가 -->
     <div class="text-center mt-4">
       <router-link to="/CSTest/CStestInterview">
-        <button class="btn btn-primary" style="width: 150px;">다음 단계</button>
+        <button class="btn btn-primary" style="width: 150px;" @click="goToInterview">시작하기</button>
       </router-link>
     </div>
   </div>
@@ -36,7 +36,10 @@
 <script setup>
 import CStestHeader from '@/components/cstest/CStestHeader.vue';
 import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
+const route = useRoute(); // 현재 라우트를 가져옵니다.
+const router = useRouter(); // 라우터를 가져옵니다.
 // 마이크 및 카메라 상태
 const isMicOn = ref(false);
 const isCameraOn = ref(false);
@@ -53,6 +56,17 @@ const toggleCamera = () => {
 
 // 질문 개수 모델
 const questionCount = ref(1);
+
+const goToInterview = () => {
+  const bno = route.query.bno; // 쿼리에서 bno 가져오기
+  if (bno) {
+    // CStestInterview로 이동할 때 bno를 쿼리로 전달
+    router.push({ name: 'CStestInterview', query: { bno } });
+  } else {
+    console.error('bno is not defined');
+  }
+};
+
 </script>
 
 <style scoped>

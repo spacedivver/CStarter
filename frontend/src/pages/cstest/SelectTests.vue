@@ -78,9 +78,12 @@
             {{ page.category.find((value) => value.type === article.type)?.name }}
           </td>
           <td>
-            <router-link :to="{ name: 'CStestSetting', query: route.query }" class="router-link">
-              {{ article.title }}
-            </router-link>
+            <router-link 
+              :to="{ name: 'CStestSetting', query: { bno: article.bno } }" 
+              class="router-link"
+            >
+            {{ article.title }}
+          </router-link>
           </td>
         </tr>
       </tbody>
