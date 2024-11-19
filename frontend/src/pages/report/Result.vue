@@ -18,11 +18,11 @@
       </p>
     </div>
 
-    <div v-for="(item, index) in qna" :key="index">
+    <div v-for="(item, index) in answerList" :key="index">
       <div class="form-group">
         <!-- 제목 앞에 인덱스 추가 -->
         <h5 class="title">
-          <span class="index">{{ index + 1 }}.</span> {{ item.title }}
+          <span class="index">{{ index + 1 }}.</span> {{ item.question }}
         </h5>
         <!-- 구분선 -->
         <div class="divider"></div>
@@ -30,11 +30,11 @@
         <div class="row d-flex">
           <div class="col-6">
             <h5 class="fw-bold">나의 답변</h5>
-            <p class="content">{{ item.content }}</p>
+            <p class="content">{{ item.answer }}</p>
           </div>
           <div class="col-6">
             <h5 class="fw-bold">모범 답변</h5>
-            <p class="content">{{ item.content }}</p>
+            <p class="content">{{ item.feedback }}</p>
           </div>
         </div>
       </div>
@@ -49,13 +49,33 @@ import LetterHeader from "@/components/letter/LetterHeader.vue";
 
 const score = ref(0);
 const content = ref("");
-const rno = 1;
+const rno = 70;
+
+// answerList 변수 정의 및 초기화
+const answerList = ref([]); // 빈 배열로 초기화
 
 const fetchReports = async () => {
-  const response = await axios.get(`http://localhost:8080/api/report/${rno}`);
-  const report = response.data;
-  score.value = report.score;
-  content.value = report.content;
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/api/report/${rno}/feedback`
+    );
+
+    // score와 content 설정
+    score.value = response.data.score;
+    content.value = response.data.content || "총평이 없습니다.";
+
+    // API 응답에서 feedback 배열 추출
+    const feedbackList = response.data.feedback;
+
+    // 필요한 데이터만 매핑
+    answerList.value = feedbackList.map((item) => ({
+      question: item.question, // 질문
+      answer: item.answer || "답변이 없습니다.", // 답변 (없으면 기본값 설정)
+      feedback: item.feedback || "피드백이 없습니다.", // 피드백 (없으면 기본값 설정)
+    }));
+  } catch (error) {
+    console.error("Error fetching feedback:", error);
+  }
 };
 
 const qna = ref([
@@ -71,7 +91,9 @@ const qna = ref([
   },
 ]);
 
-onMounted(fetchReports);
+onMounted(() => {
+  fetchReports();
+});
 </script>
 
 <style scoped>
