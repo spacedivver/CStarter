@@ -73,7 +73,7 @@ def generate_questions(company, role, intro_questions, intro_text, QueNum):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=messages,
-        max_tokens=1000,
+        max_tokens=700,
         temperature=0.7
     )
 
