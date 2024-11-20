@@ -48,13 +48,13 @@
               />
             </div>
             <div class="col-sm-12">
-              <label for="id" class="form-label">사용자 아이디</label>
+              <label for="email" class="form-label">이메일</label>
               <div class="input-group">
                 <input
-                  type="text"
-                  v-model="form.id"
+                  type="email"
+                  v-model="form.email"
                   class="form-control"
-                  id="id"
+                  id="email"
                   required
                 />
                 <button
@@ -65,15 +65,20 @@
                   중복 확인
                 </button>
               </div>
+<<<<<<< Updated upstream
               <p v-if="isDuplicate" class="text-danger small">
                 해당 아이디는 이미 사용 중입니다.
               </p>
               <p v-if="isAvailable" class="text-success small">
                 사용 가능한 아이디입니다.
+=======
+              <p v-if="duplicateChecked" class="text-success small">
+                사용 가능한 이메일입니다.
+>>>>>>> Stashed changes
               </p>
             </div>
             <div class="col-sm-12">
-              <label for="password" class="form-label">사용자 비밀번호</label>
+              <label for="password" class="form-label">비밀번호</label>
               <input
                 type="password"
                 v-model="form.password"
@@ -103,6 +108,7 @@
                 비밀번호가 일치하지 않습니다.
               </p>
             </div>
+<<<<<<< Updated upstream
             
             <!-- <div class="col-sm-12">
               <label for="email" class="form-label">사용자 이메일</label>
@@ -122,6 +128,20 @@
               >
                 회원가입
               </button>
+=======
+            <div
+              class="d-flex align-items-center justify-content-center mt-5 mb-4"
+            >
+              <div class="col-sm-6">
+                <button
+                  type="submit"
+                  class="btn btn-dark w-100 mb-5"
+                  :disabled="!isFormValid"
+                >
+                  회원가입
+                </button>
+              </div>
+>>>>>>> Stashed changes
             </div>
           </div>
         </form>
@@ -148,6 +168,7 @@
 </template>
 
 <script setup>
+<<<<<<< Updated upstream
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
@@ -158,6 +179,19 @@ const form = ref({
   confirmPassword: '',
   name: '',
   email: '',
+=======
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
+
+const router = useRouter();
+
+const form = ref({
+  email: "",
+  password: "",
+  confirmPassword: "",
+  name: "",
+>>>>>>> Stashed changes
 });
 
 const isDuplicate = ref(false);
@@ -166,7 +200,7 @@ const router = useRouter();
 
 const isFormValid = computed(() => {
   return (
-    form.value.id &&
+    form.value.email &&
     form.value.password &&
     form.value.confirmPassword &&
     form.value.name &&
@@ -178,6 +212,7 @@ const isFormValid = computed(() => {
 
 const checkDuplicate = async () => {
   try {
+<<<<<<< Updated upstream
     const response = await axios.get(
       `http://localhost:8080/api/member/checkid/${form.value.id}`
     );
@@ -185,10 +220,28 @@ const checkDuplicate = async () => {
     isAvailable.value = !isDuplicate.value;
   } catch (error) {
     console.error('중복 확인 실패:', error);
+=======
+    const response = await axios.get("http://localhost:8080/api/users/check-duplicate", {
+      params: {
+        email: form.value.email, // 이메일 기반 중복 확인
+      },
+    });
+    if (response.data) {
+      // duplicateChecked.value = true;
+      alert("사용 가능한 이메일입니다.");
+    } else {
+      // duplicateChecked.value = false;
+      alert("이미 사용 중인 이메일입니다.");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("중복 확인 중 오류가 발생했습니다.");
+>>>>>>> Stashed changes
   }
 };
 
 const submitForm = async () => {
+<<<<<<< Updated upstream
   let formData = new FormData();
 
   formData.append('id', form.value.id);
@@ -210,6 +263,17 @@ const submitForm = async () => {
     router.push('/welcome');
   } catch (error) {
     console.error('회원가입 실패:', error);
+=======
+  try {
+    const response = await axios.post("http://localhost:8080/api/users/signup", {
+      email: form.value.email,
+      password: form.value.password,
+    });
+    alert(response.data); // "회원가입 성공!"
+  } catch (error) {
+    console.error(error);
+    alert("회원가입 중 오류가 발생했습니다.");
+>>>>>>> Stashed changes
   }
 };
 </script>
