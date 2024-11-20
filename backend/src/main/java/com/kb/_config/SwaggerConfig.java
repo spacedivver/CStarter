@@ -30,7 +30,7 @@ public class SwaggerConfig {
                 .globalResponseMessage(RequestMethod.POST, getArrayList()) // 정의한 응답메시지 사용
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.kb"))
+                .apis(RequestHandlerSelectors.any()) // 모든 컨트롤러 스캔
                 .paths(PathSelectors.any())
                 .build();
     }

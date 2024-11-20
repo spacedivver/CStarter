@@ -18,6 +18,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**") // CORS를 적용할 URL 패턴
                 .allowedOrigins("http://localhost:5173") // 허용할 출처
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
+                .allowedHeaders("*") // 모든 헤더 허용
                 .allowCredentials(true); // 인증 정보를 포함한 요청 허용
     }
     @Bean
