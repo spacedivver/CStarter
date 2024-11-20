@@ -146,9 +146,9 @@ if latest_answer:
 
     follow_up_question = generate_follow_up_question(latest_answer, clno, db_host, db_port, db_user, db_password, db_name)
     
-    # TTS 수행
-    text_to_speech(follow_up_question)
-    playsound.playsound("question.mp3")  # 오디오 재생
-    os.remove("question.mp3")  # 오디오 파일 삭제
+    # # TTS 수행
+    # text_to_speech(follow_up_question)
+    # playsound.playsound("question.mp3")  # 오디오 재생
+    # os.remove("question.mp3")  # 오디오 파일 삭제
 else:
     print("추가 질문을 생성할 답변이 없습니다.")
