@@ -77,8 +77,6 @@ def generate_questions(company, role, intro_questions, intro_text, QueNum):
         temperature=0.7
     )
 
-IBK기업은행 인턴십에서의 경험이 어떻게 금융 IT 분야에 대한 당신의 열정을 키우는 데 기여했는지 설명해 주세요. 
-
     content = response.choices[0].message.content.strip()
    
     return [q for q in content.split("\n") if q.strip()]
