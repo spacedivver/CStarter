@@ -67,15 +67,17 @@ def generate_questions(company, role, intro_questions, intro_text, QueNum):
         {"role": "user", "content": f"다음은 자기소개서 문항, 자기소개서 내용이야. 이 정보를 바탕으로 {QueNum}개의 면접 질문을 만들어줘.\n\n"
                                     f"자기소개서 문항:\n{intro_questions}\n\n"
                                     f"자기소개서 내용:\n{intro_text}\n\n"
-                                    f"면접 질문 앞에 번호는 적지마."}
+                                    f"면접 질문 앞에 번호는 적지말고, 한 문장으로 만들어."}
     ]
     
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=messages,
-        max_tokens=700,
+        max_tokens=500,
         temperature=0.7
     )
+
+IBK기업은행 인턴십에서의 경험이 어떻게 금융 IT 분야에 대한 당신의 열정을 키우는 데 기여했는지 설명해 주세요. 
 
     content = response.choices[0].message.content.strip()
    
