@@ -113,7 +113,7 @@ const submitQuestions = async () => {
 
     setTimeout(() => {
       router.push('/Interview'); // Interview 페이지로 이동
-    }, 4000);
+    }, 1000);
   } catch (error) {
     console.error('질문을 제출하는 데 실패했습니다:', error);
   } finally {
@@ -130,7 +130,7 @@ const sendFirstQuestionToTTS = async (questions) => {
       questionType: 0,
       rno: firstQuestion.rno
     };
-
+    
     try {
       await axios.post('http://localhost:8080/api/interview/cover-letter/question/tts', data);
       speechStore.speak(firstQuestion.question); // 음성을 재생합니다.
