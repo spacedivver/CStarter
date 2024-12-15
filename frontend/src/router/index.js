@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '../pages/HomePage.vue';
-import SelectCurriculum from '../pages/cstest/SelectCurriculum.vue';
 import SelectCompany from '../pages/letter/SelectCompany.vue';
 import Interview from '../pages/interview/Interview.vue';
 import CStestInterview from '@/pages/cstest/CStestInterview.vue';
@@ -10,7 +9,6 @@ import SelectTests from '../pages/cstest/SelectTests.vue';
 import SelectStack from '../pages/letter/SelectStack.vue';
 import Result from '../pages/report/Result.vue';
 import Write from '../pages/common/Write.vue';
-import ViewInfo from '../pages/letter/ViewInfo.vue';
 import Mypage from '../pages/mypage/Mypage.vue';
 
 import authRotes from './auth';
@@ -25,11 +23,7 @@ const router = createRouter({
       name: 'home',
       component: HomePage,
     },
-    {
-      path: '/CSTest/SelectCurriculum',
-      name: 'SelectCurriculum',
-      component: SelectCurriculum,
-    },
+    
     {
       path:'/CSTest/SelectTests',
       name: 'SelectTests',
@@ -50,11 +44,7 @@ const router = createRouter({
       name: 'SelectCompany',
       component: SelectCompany,
     },
-    {
-      path: '/Letter/ViewInfo/:id?',
-      name: 'ViewInfo',
-      component: ViewInfo,
-    },
+   
     {
       path: '/Letter/SelectStack',
       name: 'SelectStack',

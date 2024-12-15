@@ -14,26 +14,37 @@
 
     <div>
       <h5 class="mb-3">직무선택</h5>
-      <el-select v-model="selectedJob" placeholder="직무를 선택하세요" class="mb-3">
-        <el-option label="백엔드 개발" value="백엔드 개발"></el-option>
-        <el-option label="프론트엔드 개발" value="프론트엔드 개발"></el-option>
-        <el-option label="풀스택 개발" value="풀스택 개발"></el-option>
-        <el-option label="정보보안" value="정보보안"></el-option>
-        <el-option label="DBA" value="DBA"></el-option>
-        <el-option label="Infra" value="Infra"></el-option>
-        <el-option label="IT기획" value="IT기획"></el-option>
-        <el-option label="IT구매" value="IT구매"></el-option>
-        <el-option label="직접 입력" value="직접 입력"></el-option>
+      <el-select v-model="selectedJob" placeholder="직무를 선택하세요" class="mb-3" @change="onJobChange">
+        <template v-if="isManual"> <!-- isManual이 true일 경우 -->
+          <el-option label="백엔드 개발" value="백엔드 개발"></el-option>
+          <el-option label="프론트엔드 개발" value="프론트엔드 개발"></el-option>
+          <el-option label="풀스택 개발" value="풀스택 개발"></el-option>
+          <el-option label="정보보안" value="정보보안"></el-option>
+          <el-option label="DBA" value="DBA"></el-option>
+          <el-option label="Infra" value="Infra"></el-option>
+          <el-option label="IT기획" value="IT기획"></el-option>
+          <el-option label="IT구매" value="IT구매"></el-option>
+          <el-option label="직접 입력" value="직접 입력"></el-option>
+        </template>
+        
+        <template v-else> <!-- isManual이 false일 경우 -->
+          <el-option
+            v-for="job in jobTypes"
+            :key="job.jno"
+            :label="job.type"
+            :value="job.jno">
+          </el-option>
+        </template>
       </el-select>
       <input v-if="selectedJob === '직접 입력'" type="text" class="form-control mb-3" v-model="customJob" placeholder="직무를 입력하세요">
     </div>
 
+    <!-- 수동 -->
     <h5 class="mb-3">자기소개서 입력</h5>
-    <!-- 수동 입력일 때 제목과 내용 동적으로 추가 -->
     <div v-if="isManual">
       <div v-for="(item, index) in inputItems" :key="index" class="input-item mb-3">
         <div class="form-group">
-          <input type="text" class="form-control" v-model="item.title" :id="'title-' + index" placeholder="자기소개서 문항을 입력하세요">
+          <input type="text" class="form-control" v-model="item.title" :id="'title-' + index" placeholder="자기소개서 문항을 입력하세요" >
         </div>
         <div class="divider"></div>
         <div class="form-group">
@@ -42,18 +53,18 @@
             v-model="item.content"
             :id="'content-' + index"
             placeholder="내용을 입력하세요"
-            @input="resizeTextarea($event)"
-          ></textarea>
+            @input="resizeTextarea($event)">
+          </textarea>
         </div>
       </div>
       <button class="btn btn-secondary mt-3" @click="addInputItem">항목 추가하기</button>
     </div>
 
-    <!-- 자동 입력일 때 제목은 자동으로, 내용은 사용자가 입력 -->
+    <!-- 자동 -->
     <div v-else>
       <div v-for="(item, index) in autoInputItems" :key="index" class="input-item mb-3">
         <div class="form-group">
-          <input type="text" class="form-control" v-model="item.title" :id="'auto-title-' + index" placeholder="자동으로 제목이 입력됩니다" readonly>
+          <div v-html="item.title" :id="'auto-title-' + index" class="ps-3 pe-4 content"></div>
         </div>
         <div class="divider"></div>
         <div class="form-group">
@@ -62,65 +73,139 @@
             v-model="item.content"
             :id="'auto-content-' + index"
             placeholder="내용을 입력하세요"
-            @input="resizeTextarea($event)"
-          ></textarea>
+            @input="resizeTextarea($event)">
+          </textarea>
         </div>
       </div>
     </div>
 
     <div class="text-center mt-4">
       <router-link to="/Interview/Setting">
-        <button class="btn btn-primary">다음 단계</button>
+        <button class="btn btn-primary" @click="submitCoverLetter">저장</button>
       </router-link>
     </div>
   </div>
 </template>
-
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { ElSelect, ElOption } from 'element-plus';
-import 'element-plus/dist/index.css';
 import LetterHeader from '@/components/letter/LetterHeader.vue';
+import axios from 'axios';
+import { useCoverLetterStore } from '@/stores/coverLetterStore';
 
 const router = useRouter();
 const route = useRoute();
 const isManual = ref(route.state?.manual ?? JSON.parse(localStorage.getItem('manual') || 'false'));
-const companyName = ref(isManual.value ? '' : '자동기업명');
-const selectedJob = ref(isManual.value ? '' : '프론트엔드');
+const selectedJob = ref(null);
 const customJob = ref('');
 const inputItems = ref([{ title: '', content: '' }]);
-const autoInputItems = ref([
-  { title: '자동 제목 1', content: '' },
-  { title: '자동 제목 2', content: '' },
-  { title: '자동 제목 3', content: '' },
-  { title: '자동 제목 4', content: '' },
-  { title: '자동 제목 5', content: '' }
-]);
+const autoInputItems = ref([]);
+const jobTypes = ref([]);
+const companyName = ref('');
+const companyId = route.params.id;
+const selectedJobName = ref('');
 
-onMounted(() => {
-  localStorage.setItem('manual', JSON.stringify(isManual.value));
+let companyNameStateValue;
+try {
+    companyNameStateValue = JSON.parse(localStorage.getItem('cname') || '""');
+} catch (error) {
+    console.error("로컬 스토리지에서 cname을 파싱하는 중 오류 발생:", error);
+    companyNameStateValue = ''; // 기본값 설정
+}
+
+const companyNameState = ref(route.state?.cname ?? companyNameStateValue);
+
+localStorage.setItem('manual', JSON.stringify(isManual.value));
+localStorage.setItem('cname', JSON.stringify(companyNameState.value));
+onMounted(async () => {
+    if (!isManual.value) {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/company/${companyId}/job`);
+            const jobDataArray = response.data;
+            companyName.value = isManual.value ? '' : companyNameState.value;
+            jobTypes.value = jobDataArray;
+
+            if (jobDataArray.length > 0) {
+                selectedJob.value = jobDataArray[0].jno;
+                onJobChange();
+            }
+        } catch (error) {
+            console.error("직무 데이터를 가져오는 데 실패했습니다:", error);
+        }
+    }
 });
+
+const onJobChange = () => {
+    if (!selectedJob.value) return;
+
+    const selectedJobData = jobTypes.value.find(job => job.jno === selectedJob.value);
+    // 선택된 직무의 이름을 저장
+    if (selectedJobData) {
+            selectedJobName.value = selectedJobData.type; // 직무 이름 저장
+        }
+
+    if (selectedJobData && selectedJobData.coverLetterItems) {
+        autoInputItems.value = selectedJobData.coverLetterItems.map(item => ({
+          cino: item.cino,
+            title: item.content,
+            content: ''
+        }));
+    } else {
+        autoInputItems.value = [];
+    }
+};
 
 const addInputItem = () => {
-  inputItems.value.push({ title: '', content: '' });
+    inputItems.value.push({ title: '', content: '' });
 };
 
-// 텍스트 영역 자동 높이 조정
 const resizeTextarea = (event) => {
-  const textarea = event.target;
-  textarea.style.height = 'auto'; // 우선 높이를 auto로 설정하여 기존의 높이를 초기화
-  textarea.style.height = `${textarea.scrollHeight}px`; // scrollHeight에 맞게 높이 조정
+    const textarea = event.target;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+};
+// Cover letter 전송 함수
+const submitCoverLetter = async () => {
+    const answers = []; // 빈 배열 선언
+
+    autoInputItems.value.forEach((item, index) => {        
+
+        answers.push({
+            answer: item.content,
+            cino: item.cino // 자기소개서 제목의 번호
+        });
+    });
+
+    const cpno = companyId; // 회사 ID
+    const jno = selectedJob.value; // 선택된 직무 번호
+    const mno = 1; // 고정값
+
+    const data = {
+        answers,
+        cpno,
+        jno,
+        mno
+    };
+
+    try {
+        const response = await axios.post('http://localhost:8080/api/cover-letter', data);
+
+        // Pinia 스토어에 데이터 저장
+        const coverLetterStore = useCoverLetterStore();
+        coverLetterStore.setCoverLetterData({
+            clno: response.data.clno,
+            companyName: companyName.value,
+            job: selectedJobName.value
+        });
+
+        // 다음 단계로 이동
+        router.push('/Interview/Setting');
+    } catch (error) {
+        console.error('자기소개서 제출에 실패했습니다:', error);
+    }
 };
 
-// customJob이 변경될 때 selectedJob을 업데이트
-watch(customJob, (newVal) => {
-  if (selectedJob.value === '직접 입력') {
-    selectedJob.value = newVal;
-  }
-});
 </script>
-
 
 <style scoped>
 .form-group {
@@ -149,6 +234,8 @@ watch(customJob, (newVal) => {
   box-shadow: none;
   outline: none;
   padding: 10px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .input-item .form-group textarea {
@@ -157,8 +244,9 @@ watch(customJob, (newVal) => {
   background-color: white;
   box-shadow: none;
   outline: none;
-  padding: 10px;
-  resize: none; /* 사용자가 크기 조정 불가 */
+  padding: 10px;  
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .divider {

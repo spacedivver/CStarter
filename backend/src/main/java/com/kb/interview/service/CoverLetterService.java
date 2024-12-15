@@ -1,17 +1,17 @@
 package com.kb.interview.service;
 
-import com.kb.company.dto.job.CoverLetterItem;
 import com.kb.company.mapper.CompanyMapper;
-import com.kb.interview.dto.coverletter.CoverLetter;
-import com.kb.interview.dto.coverletter.CoverLetterAnswer;
-import com.kb.interview.dto.coverletter.CoverLetterAnswerSaveRequest;
+import com.kb.interview.dto.coverletter.*;
 import com.kb.interview.dto.coverletter.CoverLetterRequest;
+import com.kb.interview.dto.coverletter.CoverLetterResponse;
+import com.kb.interview.dto.question.CoverLetterQuestion;
 import com.kb.interview.mapper.CoverLetterMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Log4j
@@ -21,18 +21,43 @@ public class CoverLetterService {
     private final CoverLetterMapper coverLetterMapper;
     private final CompanyMapper companyMapper;
 
-    public CoverLetter create(CoverLetterRequest coverLetterRequest) {
-        CoverLetter coverLetter = CoverLetter.builder()
-                .mno(coverLetterRequest.getMno())
-                .cpno(coverLetterRequest.getCpno())
-                .jno(coverLetterRequest.getJno())
-                .build();
+    public CoverLetterResponse createCoverLetterAndAnswer(CoverLetterRequest request) {
+        CoverLetter coverLetter = createCoverLetter(request);
+        List<CoverLetterAnswer> answers = createAnswers(coverLetter.getClno(), request);
 
-        if (coverLetterMapper.insert(coverLetter) == 0) {
-            return null;
+        return CoverLetterResponse.builder()
+                .clno(coverLetter.getClno())
+                .mno(coverLetter.getMno())
+                .cpno(coverLetter.getCpno())
+                .jno(coverLetter.getJno())
+                .answers(answers)
+                .build();
+    }
+
+    public CoverLetter createCoverLetter(CoverLetterRequest request) {
+        CoverLetter coverLetter = CoverLetter.builder()
+                .cpno(request.getCpno())
+                .jno(request.getJno())
+                .mno(request.getMno())
+                .build();
+        coverLetterMapper.insertCoverLetter(coverLetter);
+        return coverLetter;
+    }
+
+    private List<CoverLetterAnswer> createAnswers (int clno, CoverLetterRequest request) {
+        List<CoverLetterAnswer> answers = new ArrayList<>();
+
+        for (CoverLetterAnswerRequest answer: request.getAnswers()) {
+            CoverLetterAnswer coverLetterAnswer = CoverLetterAnswer.builder()
+                    .cino(answer.getCino())
+                    .clno(clno)
+                    .answer(answer.getAnswer())
+                    .build();
+            coverLetterMapper.insertAnswer(coverLetterAnswer);
+            answers.add(coverLetterAnswer);
         }
 
-        return coverLetterMapper.selectById(coverLetter.getClno());
+        return answers;
     }
 
     public CoverLetter getCoverLetterById(int clno) {
@@ -43,29 +68,16 @@ public class CoverLetterService {
         return coverLetterMapper.selectByMemberId(mno);
     }
 
-    public List<CoverLetterAnswer> createAnswers(CoverLetter coverLetter) {
-        List<CoverLetterItem> items = companyMapper.selectCoverLetterItem(coverLetter.getJno());
-        List<CoverLetterAnswer> answers = new ArrayList<>();
+    public List<CoverLetterQuestion> getCoverLetterQuestionByReport(int rno) {
+        List<CoverLetterQuestion> questions = coverLetterMapper.selectQuestionByReport(rno);
 
-        for (CoverLetterItem item: items) {
-            System.out.println("번호>>" + item);
-        }
+        Collections.sort(questions, ((o1, o2) -> {
+            if (o1.getNumber() == o2.getNumber()) {
+                return o1.getQuestionType() - o2.getQuestionType();
+            }
+            return o1.getNumber() - o2.getNumber();
+        }));
 
-        for (CoverLetterItem item: items) {
-            System.out.println("번호>>" + item.getCino());
-            CoverLetterAnswer coverLetterAnswer = CoverLetterAnswer.builder()
-                    .clno(coverLetter.getClno())
-                    .cino(item.getCino())
-                    .build();
-            coverLetterMapper.insertAnswer(coverLetterAnswer);
-        }
-
-        return answers;
-    }
-
-    public void updateAnswers(List<CoverLetterAnswerSaveRequest> answers) {
-        for (CoverLetterAnswerSaveRequest answer: answers) {
-            coverLetterMapper.updateAnswer(answer);
-        }
+        return questions;
     }
 }

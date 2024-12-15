@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kb.interview.mapper.InterviewMapper">
+    <select id="selectCoverLetterQuestions" resultType="com.kb.interview.dto.question.CoverLetterQuestionResponse">
+        select * from cover_letter_question where clno = #{clno} and question_type = 0;
+    </select>
+
+    <select id="selectCoverLetterQuestion" resultType="com.kb.interview.dto.question.CoverLetterQuestionResponse">
+        select * from cover_letter_question where clno = #{clno} and number = #{number} and question_type = #{questionType};
+    </select>
+
+    <select id="selectCoverLetterQuestionAnswer" resultType="String">
+        select answer from cover_letter_question where clno = #{clno} and number = #{number} and question_type = #{questionType};
+    </select>
+
+    <select id="selectTechQuestion" resultType="com.kb.interview.dto.tech.TechQuestionResponse">
+        select tq.tqno as bno, ts.name as type, tq.question as title
+        from tech_question tq join tech_skill ts on tq.tsno = ts.tsno;
+    </select>
+    
+    <select id="selectTechQuestionById" resultType="com.kb.interview.dto.tech.TechQuestionResponse">
+        select tq.tqno as bno, ts.name as type, tq.question as title
+        from tech_question tq join tech_skill ts on tq.tsno = ts.tsno
+        where tq.tqno = #{bno}
+    </select>
+</mapper>

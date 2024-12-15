@@ -42,12 +42,18 @@ export const useAuthStore = defineStore('auth', () => {
 //  state.value = JSON.parse(auth);: auth 문자열을 JSON 객체로 변환한 후 state.value에 할당
 
   const login = async (member) => {
+    console.log("login in auth.js");
     // state.value.token = 'test token';
     // state.value.user = { : member.id, email: member.id + '@test.com' }   ;
 
     // api 호출
-    const { data } = await axios.post('/api/auth/login', member);
-    state.value = { ...data };
+    // const { data } = await axios.post('/api/auth/login', member);
+    // state.value = { ...data };
+    // localStorage.setItem('auth', JSON.stringify(state.value));
+    localStorage.setItem('mno', '1');
+    state.value.id = member.id;
+    state.value.name = "Test User"; // 임시 이름
+    state.value.email = `${member.id}@example.com`; // 임시 이메일
     localStorage.setItem('auth', JSON.stringify(state.value));
   };
 

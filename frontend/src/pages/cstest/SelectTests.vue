@@ -1,121 +1,4 @@
-<script setup>
-import CStestHeader from "@/components/cstest/CStestHeader.vue";
-import { ref, reactive, computed, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
 
-// `api`와 관련된 부분이 정의되어 있어야 합니다.
-// import api from "@/api";  // 예시로 추가
-
-const route = useRoute();
-const router = useRouter();
-
-const page = ref({
-  testList: [
-    { bno: 1, type: "java", title: "Java의 기본 문법과 객체지향 개념" },
-    { bno: 2, type: "java", title: "자바의 데이터 타입과 컬렉션 프레임워크" },
-    { bno: 3, type: "java", title: "java 기초지식" },
-    { bno: 4, type: "java", title: "Java에서의 멀티스레딩과 동기화" },
-    { bno: 5, type: "java", title: "Java의 람다 표현식과 Stream API 사용" },
-    { bno: 6, type: "java", title: "Java에서의 메모리 관리와 최적화 방법" },
-    { bno: 7, type: "python", title: "Python의 기본 문법과 데이터 타입" },
-    { bno: 8, type: "python", title: "Python에서의 파일 입출력 및 CSV 처리" },
-    {
-      bno: 9,
-      type: "python",
-      title: "Python에서의 메모리 관리와 가비지 컬렉션",
-    },
-    { bno: 10, type: "python", title: "Python의 제너레이터와 이터레이터" },
-    { bno: 11, type: "vue", title: "컴포넌트에 대한 이해" },
-    { bno: 12, type: "vue", title: "Vue Router 설정 및 네비게이션 가드 활용" },
-    { bno: 13, type: "vue", title: "Vue의 라이프사이클에 대한 이해" },
-    { bno: 14, type: "vue", title: "Vue의 반응성 시스템 이해하기" },
-    {
-      bno: 15,
-      type: "vue",
-      title: "Vue에서 컴포넌트 통신 방식 (Props, Emit, Provide/Inject)",
-    },
-    { bno: 16, type: "vue", title: "API 통신과 Axios 연동" },
-    { bno: 17, type: "SQL", title: "INSERT문 기초" },
-    { bno: 18, type: "SQL", title: "INSERT문 심화" },
-  ],
-  category: [
-    { type: "all", name: "전체" },
-    { type: "java", name: "JAVA" },
-    { type: "python", name: "Python" },
-    { type: "vue", name: "Vue" },
-    { type: "SQL", name: "SQL" },
-  ],
-  totalCount: 10,
-});
-
-const pageRequest = reactive({
-  page: parseInt(route.query.page) || 1,
-  amount: parseInt(route.query.amount) || 12,
-  searchType: "",
-  searchValue: "",
-  selectedType: "all",
-});
-
-const articles = computed(() =>
-  page.value.testList.filter(
-    (article) =>
-      pageRequest.selectedType === "all" ||
-      pageRequest.selectedType === article.type
-  )
-);
-
-// 페이지가 변경될 때 호출
-const handlePageChange = (pageNum) => {
-  router.push({
-    query: {
-      page: pageNum,
-      amount: pageRequest.amount,
-      searchType: pageRequest.searchType,
-      searchValue: pageRequest.searchValue,
-      selectedType: pageRequest.selectedType,
-    },
-  });
-};
-
-// 검색이 변경될 때 호출
-const searchChange = () => {
-  router.push({
-    query: {
-      page: pageRequest.page,
-      amount: pageRequest.amount,
-      searchType: pageRequest.searchType,
-      searchValue: pageRequest.searchValue,
-      selectedType: pageRequest.selectedType,
-    },
-  });
-};
-
-// 기술스택 필터링
-const toggleType = (type) => {
-  pageRequest.selectedType = type;
-};
-
-// 쿼리로 데이터 로딩
-const load = async (query) => {
-  try {
-    // 여기에 실제 API 호출을 추가해야 합니다
-    // 예시: page.value = await api.getList(query);
-    page.value = await api.getList(query); // 이 부분에서 실제 API를 호출해 데이터를 받아옵니다.
-    if (!pageRequest.selectedType) {
-      pageRequest.selectedType = "all";
-    }
-  } catch (error) {
-    console.error("Failed to load data", error);
-  }
-};
-
-// 페이지가 바뀔 때마다 데이터 로딩
-watch(route, async () => {
-  await load(route.query);
-});
-
-load(pageRequest);
-</script>
 <template>
   <CStestHeader/>
   <div class="container">
@@ -136,9 +19,7 @@ load(pageRequest);
             :value="item.type"
             @change="toggleType(item.type)"
           />
-          <label class="form-check-label" :for="item.type">{{
-            item.name
-          }}</label>
+          <label class="form-check-label" :for="item.type">{{ item.name }}</label>
         </div>
       </div>
 
@@ -194,35 +75,124 @@ load(pageRequest);
         <tr v-for="article in articles" :key="article.bno">
           <td><i class="fa fa-check ms-2"></i></td>
           <td :class="`stack-${article.type}`">
-            {{
-              page.category.find((value) => value.type === article.type)?.name
-            }}
+            {{ page.category.find((value) => value.type === article.type)?.name }}
           </td>
           <td>
-            <router-link :to="{ name: 'CStestSetting', query: route.query }" class="router-link">
-              {{ article.title }}
-            </router-link>
+            <router-link 
+              :to="{ name: 'CStestSetting', query: { bno: article.bno } }" 
+              class="router-link"
+            >
+            {{ article.title }}
+          </router-link>
           </td>
         </tr>
       </tbody>
     </table>
 
     <div class="pagination-section my-5 d-flex justify-content-center">
-      <vue-awesome-paginate
-        :total-items="page.totalCount"
-        :items-per-page="pageRequest.amount"
-        :max-pages-shown="5"
-        v-model="pageRequest.page"
-        @click="handlePageChange"
+      <button 
+        class="pagination-button" 
+        @click="handlePageChange(pageRequest.page - 1)" 
+        :disabled="pageRequest.page <= 1"
       >
-        <template #first-page-button><i class="fa-solid fa-backward-fast"></i></template>
-        <template #prev-button><i class="fa-solid fa-caret-left"></i></template>
-        <template #next-button><i class="fa-solid fa-caret-right"></i></template>
-        <template #last-page-button><i class="fa-solid fa-forward-fast"></i></template>
-      </vue-awesome-paginate>
+        이전
+      </button>
+      <span class="pagination-info">페이지 {{ pageRequest.page }}</span>
+      <button 
+        class="pagination-button" 
+        @click="handlePageChange(pageRequest.page + 1)" 
+        :disabled="pageRequest.page >= Math.ceil(page.totalCount / pageRequest.amount)"
+      >
+        다음
+      </button>
     </div>
   </div>
 </template>
+
+
+<script setup>
+import CStestHeader from "@/components/cstest/CStestHeader.vue";
+import { ref, reactive, computed, onMounted } from "vue";
+import axios from "axios"; // Axios import 추가
+import { useRoute } from "vue-router";
+
+const page = ref({
+  testList: [], // 전체 문제 목록
+  displayedList: [], // 현재 페이지에 표시할 문제 목록
+  category: [],
+  totalCount: 0, // 전체 문제 수
+});
+
+const route = useRoute();
+
+// 페이지 요청을 위한 기본값 설정
+const pageRequest = reactive({
+  page: 1, // 현재 페이지
+  amount: 10, // 페이지당 보여줄 문제 수
+  searchType: "",
+  searchValue: "",
+  selectedType: "all", // 기본 선택 카테고리
+});
+
+// API에서 데이터를 가져오는 함수
+const loadQuestions = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/api/interview/tech/question');
+    const questions = response.data; // API 응답 데이터
+    page.value.testList = questions; // 전체 문제 목록 업데이트
+    page.value.totalCount = questions.length; // 전체 문제 수 업데이트
+    updateDisplayedList(); // 현재 페이지에 표시할 문제 목록 업데이트
+
+    // 카테고리 동적으로 추가 (중복 제거)
+    const uniqueCategories = new Set(questions.map(q => q.type));
+    page.value.category = [
+      { type: "all", name: "전체" },
+      ...Array.from(uniqueCategories).map(type => ({ type, name: type }))
+    ];
+    
+  } catch (error) {
+    console.error("Failed to load questions:", error);
+  }
+};
+
+// 현재 페이지에 표시할 문제 목록 업데이트
+const updateDisplayedList = () => {
+  const filteredList = page.value.testList.filter(article =>
+    pageRequest.selectedType === "all" || article.type === pageRequest.selectedType
+  );
+  
+  // 필터링된 문제 수에 따라 총 개수 업데이트
+  page.value.totalCount = filteredList.length;
+
+  const start = (pageRequest.page - 1) * pageRequest.amount;
+  const end = start + pageRequest.amount;
+  page.value.displayedList = filteredList.slice(start, end);
+};
+
+// 페이지 변경 핸들러
+const handlePageChange = (pageNum) => {
+  pageRequest.page = pageNum; // 페이지 변경
+  updateDisplayedList(); // 현재 페이지에 표시할 문제 목록 업데이트
+};
+
+// 카테고리 변경 핸들러
+const toggleType = (type) => {
+  pageRequest.selectedType = type; // 선택한 카테고리 변경
+  pageRequest.page = 1; // 항상 첫 페이지로 리셋
+  updateDisplayedList(); // 현재 페이지에 표시할 문제 목록 업데이트
+};
+
+// 컴포넌트 마운트 시 데이터 로딩
+onMounted(() => {
+  loadQuestions();
+});
+
+// 필터링된 아티클
+const articles = computed(() => page.value.displayedList);
+
+</script>
+
+
 <style scoped>
 .title {
   font-weight: bold;
@@ -243,19 +213,24 @@ load(pageRequest);
   background-color: #fff;
 }
 
-.stack-java {
+.stack-HTML {
+  color: #003cff;
+}
+
+
+.stack-Java {
   color: #f28a1b;
 }
 
-.stack-python {
+.stack-Python {
   color: #1976d2;
 }
 
-.stack-vue {
+.stack-Vue {
   color: #28a745;
 }
 
-.stack-SQL {
+.stack-MySQL {
   color: #dc3545;
 }
 
@@ -318,6 +293,46 @@ load(pageRequest);
 .table tbody tr:hover {
   background-color: #f1f1f1; /* 행 hover 시 배경색 */
   cursor: default; /* 비클릭 영역에서 커서 변경되지 않게 */
+}
+.btn-icon {
+  border: none; /* 기본 테두리 제거 */
+  background: none; /* 배경 제거 */
+  padding: 0; /* 패딩 제거 */
+  cursor: pointer; /* 포인터 커서 설정 */
+}
+
+.btn-icon:focus {
+  outline: none; /* 포커스 시 아웃라인 제거 */
+}
+
+.btn-icon i {
+  color: inherit; /* 아이콘 색상 상속 */
+}
+
+/* 페이지네이션 버튼 스타일 */
+.pagination-button {
+  background-color: #007bff; /* 버튼 배경색 */
+  color: white; /* 버튼 글자색 */
+  border: none; /* 테두리 제거 */
+  padding: 8px 12px; /* 패딩 */
+  margin: 0 5px; /* 버튼 간격 */
+  border-radius: 5px; /* 모서리 둥글게 */
+  cursor: pointer; /* 포인터 커서 설정 */
+  transition: background-color 0.3s; /* 배경색 전환 효과 */
+}
+
+.pagination-button:hover {
+  background-color: #0056b3; /* hover 시 배경색 */
+}
+
+.pagination-button:disabled {
+  background-color: #ccc; /* 비활성화 상태 색상 */
+  cursor: not-allowed; /* 비활성화 상태에서 커서 */
+}
+
+.pagination-info {
+  align-self: center; /* 가운데 정렬 */
+  margin: 0 10px; /* 간격 조정 */
 }
 
 </style>

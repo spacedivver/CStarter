@@ -1,0 +1,6 @@
+pymysql
+openai
+python-dotenv
+mysql-connector-python
+playsound
+sounddevice

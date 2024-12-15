@@ -1,42 +1,26 @@
 <template>
-  <div
-    class="mt-2 row g-0 justify-content-center gradient-bottom-right middle-indigo end-pink"
-  >
+  <div class="row" style="height: 720px">
     <div
-      class="col-md-6 col-lg-5 col-xl-5 position-absolute start-0 vh-100 overflow-y-hidden d-none d-lg-flex flex-lg-column back-img"
+      class="col-md-6 d-lg-flex flex-lg-column back back-img align-items-center justify-content-center"
     >
-      <div class="p-150">
-        <div class="mt-20">
-          <h1 class="ls-tight fw-bolder display-6 text-white mb-5">
-            환영합니다!
-            <br />CStarter 입니다.
-          </h1>
-          <p class="text-white text-opacity-75 pe-xl-24">
-            회원가입을 완료하시면 기술면접을 연습하고,
-            <BR /> 모의면접 리포트를 저장할 수 있어요. <br />
-          </p>
-        </div>
-      </div>
+      <img
+        src="@/assets/images/header.png"
+        alt="Welcome Image"
+        style="width: 500px; margin-left: 200px; margin-top: -70px"
+        class="img-fluid"
+      />
     </div>
-    <div
-      class="col-12 col-md-12 col-lg-7 offset-lg-5 vh-100 d-flex justify-content-center align-items-center border-start-lg shadow-soft-5"
-    >
-    <div class="w-md-50 mx-auto px-10 px-md-0 py-10 container">
+    <div class="col-4 d-flex justify-content-center align-items-center">
+      <div class="container ms-5">
         <div class="mb-3">
-          <a class="d-inline-block d-lg-none mb-10" href="/pages/dashboard.html"
-            ><img
-              src="../../img/logos/logo-dark.svg"
-              class="h-rem-10"
-              alt="..."
-          /></a>
-          <h1 class="ls-tight fw-bolder h3 mt-7">회원가입</h1>
+          <h1 class="fw-bolder h3 mt-5">회원가입</h1>
           <div class="mt-3 text-sm text-muted">
             <span>이미 회원이라면</span>
             <a href="/auth/login" class="fw-semibold"> 로그인 </a>페이지로 이동
           </div>
         </div>
         <form @submit.prevent="submitForm">
-          <div class="row g-5">
+          <div class="row g-4">
             <div class="col-sm-12">
               <label for="name" class="form-label">이름</label>
               <input
@@ -65,10 +49,7 @@
                   중복 확인
                 </button>
               </div>
-              <p v-if="isDuplicate" class="text-danger small">
-                해당 아이디는 이미 사용 중입니다.
-              </p>
-              <p v-if="isAvailable" class="text-success small">
+              <p v-if="duplicateChecked" class="text-success small">
                 사용 가능한 아이디입니다.
               </p>
             </div>
@@ -103,66 +84,42 @@
                 비밀번호가 일치하지 않습니다.
               </p>
             </div>
-            
-            <!-- <div class="col-sm-12">
-              <label for="email" class="form-label">사용자 이메일</label>
-              <input
-                type="email"
-                v-model="form.email"
-                class="form-control"
-                id="email"
-                required
-              />
-            </div> -->
-            <div class="col-sm-12">
-              <button
-                type="submit"
-                class="btn btn-dark w-100 mb-5"
-                :disabled="!isFormValid || isDuplicate"
-              >
-                회원가입
-              </button>
+            <div
+              class="d-flex align-items-center justify-content-center mt-5 mb-4"
+            >
+              <div class="col-sm-6">
+                <button
+                  type="submit"
+                  class="btn btn-dark w-100 mb-5"
+                  :disabled="!isFormValid"
+                  @click="navigateToLogin"
+                >
+                  회원가입
+                </button>
+              </div>
             </div>
           </div>
         </form>
-
-        <!-- <div class="row g-2">
-          <div class="col-sm-6">
-            <a href="#" class="btn btn-neutral w-100"
-              ><span class="icon icon-sm pe-2"
-                ><img src="../../img/social/github.svg" alt="..." /> </span
-              >Github</a
-            >
-          </div>
-          <div class="col-sm-6">
-            <a href="#" class="btn btn-neutral w-100"
-              ><span class="icon icon-sm pe-2"
-                ><img src="../../img/social/google.svg" alt="..." /> </span
-              >Google</a
-            >
-          </div>
-        </div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import axios from 'axios';
-import { useRouter } from 'vue-router';
+import { ref, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
 
 const form = ref({
-  id: '',
-  password: '',
-  confirmPassword: '',
-  name: '',
-  email: '',
+  id: "",
+  password: "",
+  confirmPassword: "",
+  name: "",
 });
 
-const isDuplicate = ref(false);
-const isAvailable = ref(false);
-const router = useRouter();
+const duplicateChecked = ref(false);
 
 const isFormValid = computed(() => {
   return (
@@ -170,118 +127,44 @@ const isFormValid = computed(() => {
     form.value.password &&
     form.value.confirmPassword &&
     form.value.name &&
-    form.value.email &&
     form.value.password === form.value.confirmPassword &&
-    !isDuplicate.value // 중복된 경우 제출 비활성화
+    duplicateChecked.value
   );
 });
 
-const checkDuplicate = async () => {
-  try {
-    const response = await axios.get(
-      `http://localhost:8080/api/member/checkid/${form.value.id}`
-    );
-    isDuplicate.value = response.data; // 중복 여부 설정
-    isAvailable.value = !isDuplicate.value;
-  } catch (error) {
-    console.error('중복 확인 실패:', error);
-  }
+const checkDuplicate = () => {
+  duplicateChecked.value = true;
 };
 
-const submitForm = async () => {
-  let formData = new FormData();
-
-  formData.append('id', form.value.id);
-  formData.append('password', form.value.password);
-  formData.append('name', form.value.name);
-  formData.append('email', form.value.email);
-
-  try {
-    const response = await axios.post(
-      'http://localhost:8080/api/member',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
-    console.log('회원가입 성공:', response.data);
-    router.push('/welcome');
-  } catch (error) {
-    console.error('회원가입 실패:', error);
-  }
+const navigateToLogin = () => {
+  router.push("/auth/login");
 };
 </script>
 
 <style scoped>
+.back {
+  background-color: #d9e8f6;
+}
+
 .back-img {
-  background-image: url('@/assets/images/register/register.jpg');
-  background-size: cover; /* 이미지가 div를 채우도록 설정 */
-  background-position: center; /* 이미지를 중앙에 위치시킴 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.p-150 {
-  padding: 100px;
-}
-
-.mt-20 {
-  margin-top: 20px;
-}
-
-.ls-tight {
-  letter-spacing: -0.02em;
+.mt-7 {
+  margin-top: 7rem;
 }
 
 .fw-bolder {
   font-weight: bolder;
 }
 
-.display-6 {
-  font-size: 2.5rem;
-}
-
-.text-white {
-  color: white;
-}
-
-.text-opacity-75 {
-  opacity: 0.75;
-}
-
-.pe-xl-24 {
-  padding-right: 1.5rem;
-}
-
-.shadow-soft-5 {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.w-md-50 {
-  width: 50%;
-}
-
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.px-10 {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-.px-md-0 {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.py-10 {
-  padding-top: 10px;
-  padding-bottom: 10px;
+.text-success {
+  color: green;
 }
 
 .mb-5 {
-  margin-bottom: 5px;
+  margin-bottom: 5rem;
 }
 </style>
